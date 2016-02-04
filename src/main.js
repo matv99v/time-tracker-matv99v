@@ -20,34 +20,35 @@ console.log(input);
 console.log('===============errors===============');
 console.log(validators.validateRegistrationData(input));
 
+// Псевдо код теста
+// timer.start()
+// wait 1 sec
+// timer.clear()
+// wait 1 sec
+// timer.getSpentTime(); // === 1 sec
+
 const t1 = new Timer();
 
-console.log( 'spentTime: ', t1.getSpentTime() );
+
+console.log('1 before start!', t1, 'spent:',  t1.getSpentTime());
 t1.start();
+console.log('2 start!', t1, 'spent:', t1.getSpentTime());
 
 setTimeout( () => {
     t1.stop();
+    console.log('3 state in 0.5 sec!', t1, 'spent:', t1.getSpentTime());
     t1.start();
-    console.log( 'spentTime: ', t1.getSpentTime() );
-}, 250);
-
-
-setTimeout( () => {
-    console.log( 'spentTime: ', t1.getSpentTime() );
 }, 500);
 
+
 setTimeout( () => {
-    t1.stop();
-    console.log( 'spentTime: ', t1.getSpentTime() );
+    console.log('3 state in one sec!', t1, 'spent:', t1.getSpentTime());
+    t1.clear();
+    console.log('4 cleared', t1, 'spent:', t1.getSpentTime());
 }, 1000);
 
 setTimeout( () => {
-    console.log( 'spentTime: ', t1.getSpentTime() );
-    t1.start();
-}, 1500);
-
-setTimeout( () => {
-    console.log( 'spentTime: ', t1.getSpentTime() );
-    t1.clear();
-    console.log( 'spentTime: ', t1.getSpentTime() );
+    console.log( '5 before stop in one sec: ', 'spent:', t1.getSpentTime() );
+    t1.stop();
+    console.log( '6 stopped in one sec: ', 'spent:', t1.getSpentTime() );
 }, 2000);
