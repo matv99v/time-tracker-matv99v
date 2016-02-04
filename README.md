@@ -1,6 +1,1 @@
-Time tracker
-------------
-
-1. npm install
-2. npm run webpack
-3. open index.html in browser
+[![Build Status](https://travis-ci.org/FE-Advanced/time-tracker-matv99v.svg?branch=master)](https://travis-ci.org/FE-Advanced/time-tracker-matv99v)
