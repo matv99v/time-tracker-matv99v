@@ -13,11 +13,11 @@ export default React.createClass({
             <Grid fluid>
                 <Row className="show-grid">
 
-                    <Col md={6} style={{ textAlign: 'center' }}>
-                        <Glyphicon glyph="user" style={{ color: 'grey' }}/>
+                    <Col md={6} className="text-center">
+                        <Glyphicon glyph="user" />
                     </Col>
 
-                    <Col md={6} style={{ textAlign: 'center' }}>
+                    <Col md={6} className="text-center">
                         <h5><a>Logout</a></h5>
                     </Col>
 

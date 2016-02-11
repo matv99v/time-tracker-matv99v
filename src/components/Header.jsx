@@ -10,10 +10,10 @@ export default React.createClass({
     render() {
         return (
             <Grid>
-                <Row className="show-grid">
+                <Row className='show-grid'>
 
                     <Col md={10} sm={10} xs={8} >
-                        <h1 style={{ textAlign: 'center' }}>Time tracker</h1>
+                        <h1 className='text-center'>Time tracker</h1>
                     </Col>
 
                     <Col md={2} sm={2} xs={4} >

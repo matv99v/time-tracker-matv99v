@@ -25973,35 +25973,38 @@
 	
 	var _HeaderUserSectionJsx2 = _interopRequireDefault(_HeaderUserSectionJsx);
 	
-	exports['default'] = function (props) {
-	    return _react2['default'].createElement(
-	        _reactBootstrapLibGrid2['default'],
-	        null,
-	        _react2['default'].createElement(
-	            _reactBootstrapLibRow2['default'],
-	            { className: 'show-grid' },
+	exports['default'] = _react2['default'].createClass({
+	    displayName: 'Header',
+	
+	    render: function render() {
+	        return _react2['default'].createElement(
+	            _reactBootstrapLibGrid2['default'],
+	            null,
 	            _react2['default'].createElement(
-	                _reactBootstrapLibCol2['default'],
-	                { md: 10, sm: 10, xs: 8 },
+	                _reactBootstrapLibRow2['default'],
+	                { className: 'show-grid' },
 	                _react2['default'].createElement(
-	                    'h1',
-	                    { style: { textAlign: 'center' } },
-	                    'Time tracker'
-	                )
-	            ),
-	            _react2['default'].createElement(
-	                _reactBootstrapLibCol2['default'],
-	                { md: 2, sm: 2, xs: 4 },
+	                    _reactBootstrapLibCol2['default'],
+	                    { md: 10, sm: 10, xs: 8 },
+	                    _react2['default'].createElement(
+	                        'h1',
+	                        { className: 'text-center' },
+	                        'Time tracker'
+	                    )
+	                ),
 	                _react2['default'].createElement(
-	                    'h2',
-	                    null,
-	                    _react2['default'].createElement(_HeaderUserSectionJsx2['default'], null)
+	                    _reactBootstrapLibCol2['default'],
+	                    { md: 2, sm: 2, xs: 4 },
+	                    _react2['default'].createElement(
+	                        'h2',
+	                        null,
+	                        _react2['default'].createElement(_HeaderUserSectionJsx2['default'], null)
+	                    )
 	                )
 	            )
-	        )
-	    );
-	};
-	
+	        );
+	    }
+	});
 	module.exports = exports['default'];
 
 	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "Header.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
@@ -27039,35 +27042,38 @@
 	
 	var _reactBootstrapLibGlyphicon2 = _interopRequireDefault(_reactBootstrapLibGlyphicon);
 	
-	exports['default'] = function (props) {
-	    return _react2['default'].createElement(
-	        _reactBootstrapLibGrid2['default'],
-	        { fluid: true },
-	        _react2['default'].createElement(
-	            _reactBootstrapLibRow2['default'],
-	            { className: 'show-grid' },
+	exports['default'] = _react2['default'].createClass({
+	    displayName: 'UserSection',
+	
+	    render: function render() {
+	        return _react2['default'].createElement(
+	            _reactBootstrapLibGrid2['default'],
+	            { fluid: true },
 	            _react2['default'].createElement(
-	                _reactBootstrapLibCol2['default'],
-	                { md: 6, style: { textAlign: 'center' } },
-	                _react2['default'].createElement(_reactBootstrapLibGlyphicon2['default'], { glyph: 'user', style: { color: 'grey' } })
-	            ),
-	            _react2['default'].createElement(
-	                _reactBootstrapLibCol2['default'],
-	                { md: 6, style: { textAlign: 'center' } },
+	                _reactBootstrapLibRow2['default'],
+	                { className: 'show-grid' },
 	                _react2['default'].createElement(
-	                    'h5',
-	                    null,
+	                    _reactBootstrapLibCol2['default'],
+	                    { md: 6, className: 'text-center' },
+	                    _react2['default'].createElement(_reactBootstrapLibGlyphicon2['default'], { glyph: 'user' })
+	                ),
+	                _react2['default'].createElement(
+	                    _reactBootstrapLibCol2['default'],
+	                    { md: 6, className: 'text-center' },
 	                    _react2['default'].createElement(
-	                        'a',
+	                        'h5',
 	                        null,
-	                        'Logout'
+	                        _react2['default'].createElement(
+	                            'a',
+	                            null,
+	                            'Logout'
+	                        )
 	                    )
 	                )
 	            )
-	        )
-	    );
-	};
-	
+	        );
+	    }
+	});
 	module.exports = exports['default'];
 
 	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "UserSection.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
@@ -28869,27 +28875,30 @@
 
 	/* REACT HOT LOADER */ if (false) { (function () { var ReactHotAPI = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-api/modules/index.js"), RootInstanceProvider = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/RootInstanceProvider.js"), ReactMount = require("react/lib/ReactMount"), React = require("react"); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
 	
-	'use strict';
+	"use strict";
 	
-	Object.defineProperty(exports, '__esModule', {
+	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 	
 	var _react = __webpack_require__(/*! react */ 192);
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	exports['default'] = function (props) {
-	    return _react2['default'].createElement(
-	        'h3',
-	        { style: { textAlign: 'center' } },
-	        'Drink tea: 10m 34s'
-	    );
-	};
+	exports["default"] = _react2["default"].createClass({
+	    displayName: "CurrentTask",
 	
-	module.exports = exports['default'];
+	    render: function render() {
+	        return _react2["default"].createElement(
+	            "h3",
+	            { className: "text-center" },
+	            "Drink tea: 10m 34s"
+	        );
+	    }
+	});
+	module.exports = exports["default"];
 
 	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "CurrentTask.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
 
@@ -28922,129 +28931,136 @@
 	
 	var _reactBootstrapLibGlyphicon2 = _interopRequireDefault(_reactBootstrapLibGlyphicon);
 	
-	exports['default'] = function (props) {
-	    return _react2['default'].createElement(
-	        _reactBootstrapLibTable2['default'],
-	        { striped: true, bordered: true, condensed: true, hover: true },
-	        _react2['default'].createElement(
-	            'thead',
-	            null,
-	            _react2['default'].createElement(
-	                'tr',
-	                null,
-	                _react2['default'].createElement(
-	                    'th',
-	                    null,
-	                    'Name'
-	                ),
-	                _react2['default'].createElement(
-	                    'th',
-	                    null,
-	                    'Spent time'
-	                ),
-	                _react2['default'].createElement(
-	                    'th',
-	                    null,
-	                    'Start/Stop'
-	                ),
-	                _react2['default'].createElement('th', null),
-	                _react2['default'].createElement('th', null)
-	            )
-	        ),
-	        _react2['default'].createElement(
-	            'tbody',
-	            null,
-	            _react2['default'].createElement(
-	                'tr',
-	                null,
-	                _react2['default'].createElement(
-	                    'td',
-	                    null,
-	                    'Drink tea'
-	                ),
-	                _react2['default'].createElement(
-	                    'td',
-	                    null,
-	                    '5m'
-	                ),
-	                _react2['default'].createElement(
-	                    'td',
-	                    null,
-	                    _react2['default'].createElement(_reactBootstrapLibGlyphicon2['default'], { glyph: 'unchecked', style: { color: 'grey', fontSize: 17 } })
-	                ),
-	                _react2['default'].createElement(
-	                    'td',
-	                    null,
-	                    'Clear'
-	                ),
-	                _react2['default'].createElement(
-	                    'td',
-	                    null,
-	                    'Del'
-	                )
-	            ),
-	            _react2['default'].createElement(
-	                'tr',
-	                null,
-	                _react2['default'].createElement(
-	                    'td',
-	                    null,
-	                    'Development'
-	                ),
-	                _react2['default'].createElement(
-	                    'td',
-	                    null,
-	                    '3h'
-	                ),
-	                _react2['default'].createElement(
-	                    'td',
-	                    null,
-	                    _react2['default'].createElement(_reactBootstrapLibGlyphicon2['default'], { glyph: 'expand', style: { color: 'grey', fontSize: 17 } })
-	                ),
-	                _react2['default'].createElement(
-	                    'td',
-	                    null,
-	                    'Clear'
-	                ),
-	                _react2['default'].createElement(
-	                    'td',
-	                    null,
-	                    'Del'
-	                )
-	            ),
-	            _react2['default'].createElement(
-	                'tr',
-	                null,
-	                _react2['default'].createElement(
-	                    'td',
-	                    null,
-	                    'Read books'
-	                ),
-	                _react2['default'].createElement(
-	                    'td',
-	                    null,
-	                    '2h'
-	                ),
-	                _react2['default'].createElement(
-	                    'td',
-	                    null,
-	                    _react2['default'].createElement(_reactBootstrapLibGlyphicon2['default'], { glyph: 'unchecked', style: { color: 'grey', fontSize: 17 } })
-	                ),
-	                _react2['default'].createElement(
-	                    'td',
-	                    null,
-	                    'Clear'
-	                ),
-	                _react2['default'].createElement(
-	                    'td',
-	                    null,
-	                    'Del'
-	                )
-	            )
-	        )
-	    );
-	};
+	exports['default'] = _react2['default'].createClass({
+	    displayName: 'StoredTasks',
 	
+	    render: function render() {
+	        return _react2['default'].createElement(
+	            'div',
+	            { style: { margin: '3%' } },
+	            _react2['default'].createElement(
+	                _reactBootstrapLibTable2['default'],
+	                { striped: true, bordered: true, condensed: true, hover: true },
+	                _react2['default'].createElement(
+	                    'thead',
+	                    null,
+	                    _react2['default'].createElement(
+	                        'tr',
+	                        null,
+	                        _react2['default'].createElement(
+	                            'th',
+	                            null,
+	                            'Name'
+	                        ),
+	                        _react2['default'].createElement(
+	                            'th',
+	                            null,
+	                            'Spent time'
+	                        ),
+	                        _react2['default'].createElement(
+	                            'th',
+	                            null,
+	                            'Start/Stop'
+	                        ),
+	                        _react2['default'].createElement('th', null),
+	                        _react2['default'].createElement('th', null)
+	                    )
+	                ),
+	                _react2['default'].createElement(
+	                    'tbody',
+	                    null,
+	                    _react2['default'].createElement(
+	                        'tr',
+	                        null,
+	                        _react2['default'].createElement(
+	                            'td',
+	                            null,
+	                            'Drink tea'
+	                        ),
+	                        _react2['default'].createElement(
+	                            'td',
+	                            null,
+	                            '5m'
+	                        ),
+	                        _react2['default'].createElement(
+	                            'td',
+	                            null,
+	                            _react2['default'].createElement(_reactBootstrapLibGlyphicon2['default'], { glyph: 'unchecked', style: { color: 'grey', fontSize: 17 } })
+	                        ),
+	                        _react2['default'].createElement(
+	                            'td',
+	                            null,
+	                            'Clear'
+	                        ),
+	                        _react2['default'].createElement(
+	                            'td',
+	                            null,
+	                            'Del'
+	                        )
+	                    ),
+	                    _react2['default'].createElement(
+	                        'tr',
+	                        null,
+	                        _react2['default'].createElement(
+	                            'td',
+	                            null,
+	                            'Development'
+	                        ),
+	                        _react2['default'].createElement(
+	                            'td',
+	                            null,
+	                            '3h'
+	                        ),
+	                        _react2['default'].createElement(
+	                            'td',
+	                            null,
+	                            _react2['default'].createElement(_reactBootstrapLibGlyphicon2['default'], { glyph: 'expand', style: { color: 'grey', fontSize: 17 } })
+	                        ),
+	                        _react2['default'].createElement(
+	                            'td',
+	                            null,
+	                            'Clear'
+	                        ),
+	                        _react2['default'].createElement(
+	                            'td',
+	                            null,
+	                            'Del'
+	                        )
+	                    ),
+	                    _react2['default'].createElement(
+	                        'tr',
+	                        null,
+	                        _react2['default'].createElement(
+	                            'td',
+	                            null,
+	                            'Read books'
+	                        ),
+	                        _react2['default'].createElement(
+	                            'td',
+	                            null,
+	                            '2h'
+	                        ),
+	                        _react2['default'].createElement(
+	                            'td',
+	                            null,
+	                            _react2['default'].createElement(_reactBootstrapLibGlyphicon2['default'], { glyph: 'unchecked', style: { color: 'grey', fontSize: 17 } })
+	                        ),
+	                        _react2['default'].createElement(
+	                            'td',
+	                            null,
+	                            'Clear'
+	                        ),
+	                        _react2['default'].createElement(
+	                            'td',
+	                            null,
+	                            'Del'
+	                        )
+	                    )
+	                )
+	            )
+	        );
+	    }
+	});
 	module.exports = exports['default'];
 
 	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "StoredTasks.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
@@ -29159,27 +29175,30 @@
 	
 	var _reactBootstrapLibCol2 = _interopRequireDefault(_reactBootstrapLibCol);
 	
-	exports['default'] = function (props) {
-	    return _react2['default'].createElement(
-	        _reactBootstrapLibGrid2['default'],
-	        null,
-	        _react2['default'].createElement(
-	            _reactBootstrapLibRow2['default'],
-	            { className: 'show-grid' },
-	            _react2['default'].createElement(
-	                _reactBootstrapLibCol2['default'],
-	                { md: 10, sm: 10, xs: 12 },
-	                _react2['default'].createElement(_reactBootstrapLibInput2['default'], { type: 'text', label: '', placeholder: 'New task' })
-	            ),
-	            _react2['default'].createElement(
-	                _reactBootstrapLibCol2['default'],
-	                { md: 2, sm: 2, xs: 12, style: { textAlign: 'center' } },
-	                _react2['default'].createElement(_reactBootstrapLibButtonInput2['default'], { value: 'Create', style: { width: '100%', maxWidth: 150 } })
-	            )
-	        )
-	    );
-	};
+	exports['default'] = _react2['default'].createClass({
+	    displayName: 'NewTask',
 	
+	    render: function render() {
+	        return _react2['default'].createElement(
+	            _reactBootstrapLibGrid2['default'],
+	            null,
+	            _react2['default'].createElement(
+	                _reactBootstrapLibRow2['default'],
+	                { className: 'show-grid' },
+	                _react2['default'].createElement(
+	                    _reactBootstrapLibCol2['default'],
+	                    { md: 10, sm: 10, xs: 12 },
+	                    _react2['default'].createElement(_reactBootstrapLibInput2['default'], { type: 'text', label: '', placeholder: 'New task' })
+	                ),
+	                _react2['default'].createElement(
+	                    _reactBootstrapLibCol2['default'],
+	                    { md: 2, sm: 2, xs: 12, className: 'text-center' },
+	                    _react2['default'].createElement(_reactBootstrapLibButtonInput2['default'], { value: 'Create', className: 'NewTask__button-input' })
+	                )
+	            )
+	        );
+	    }
+	});
 	module.exports = exports['default'];
 
 	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "NewTask.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
