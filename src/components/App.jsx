@@ -31,7 +31,6 @@ const activeTasks = [
         spentTime: '15m',
         isActive: false
     }
-
 ];
 
 

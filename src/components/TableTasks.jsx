@@ -1,8 +1,6 @@
 import React from 'react';
 
 import Table from 'react-bootstrap/lib/Table';
-import Glyphicon from 'react-bootstrap/lib/Glyphicon';
-
 import HeadRow from './TableTasks/HeadRow.jsx';
 import OneRow from './TableTasks/OneRow.jsx';
 
