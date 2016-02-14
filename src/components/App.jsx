@@ -1,44 +1,37 @@
 import React from 'react';
 
 import Header from './Header.jsx';
-import CurrentTask from './CurrentTask.jsx';
-import TableTasks from './TableTasks.jsx';
-import NewTask from './NewTask.jsx';
+import CreateTask from './CreateTask.jsx';
+import TaskList from './TaskList.jsx';
 
-const activeTasks = [
-    {
-        name: 'Drink tea',
-        spentTime: '5m',
-        isActive: false
-    },
-    {
-        name: 'Development',
-        spentTime: '3h',
-        isActive: true
-    },
-    {
-        name: 'Read books',
-        spentTime: '2h',
-        isActive: false
-    },
-    {
-        name: 'Learn React',
-        spentTime: '3h',
-        isActive: false
-    },
-    {
-        name: 'Drinking coffee',
-        spentTime: '15m',
-        isActive: false
+export default class App extends React.Component {
+    state = {
+        tasks : []
+    };
+
+    handleNewTaskSubmit = (newTaskName) => {
+        const {tasks} = this.state; // tasks = this.state.tasks;
+
+        tasks.push({
+            id: Date.now(),
+            name: newTaskName,
+            isActive: false
+        });
+
+        console.log('New tasks:');
+        console.dir(tasks);
+
+        this.setState({tasks}); // {tasks: tasks}
+    };
+
+    render() {
+
+        return (
+            <div>
+                <Header />
+                <CreateTask onSubmit={this.handleNewTaskSubmit} />
+                <TaskList />
+            </div>
+        );
     }
-];
-
-
-export default props => (
-    <div>
-        <Header/>
-        <NewTask/>
-        <CurrentTask/>
-        <TableTasks activeTasks={activeTasks}/>
-    </div>
-);
+}

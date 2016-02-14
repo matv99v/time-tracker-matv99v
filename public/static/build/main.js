@@ -25899,7 +25899,15 @@
 	    value: true
 	});
 	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var _react = __webpack_require__(/*! react */ 192);
 	
@@ -25909,51 +25917,40 @@
 	
 	var _HeaderJsx2 = _interopRequireDefault(_HeaderJsx);
 	
-	var _CurrentTaskJsx = __webpack_require__(/*! ./CurrentTask.jsx */ 383);
+	var _CreateTaskJsx = __webpack_require__(/*! ./CreateTask.jsx */ 383);
 	
-	var _CurrentTaskJsx2 = _interopRequireDefault(_CurrentTaskJsx);
+	var _CreateTaskJsx2 = _interopRequireDefault(_CreateTaskJsx);
 	
-	var _TableTasksJsx = __webpack_require__(/*! ./TableTasks.jsx */ 384);
+	var App = (function (_React$Component) {
+	    _inherits(App, _React$Component);
 	
-	var _TableTasksJsx2 = _interopRequireDefault(_TableTasksJsx);
+	    function App() {
+	        _classCallCheck(this, App);
 	
-	var _NewTaskJsx = __webpack_require__(/*! ./NewTask.jsx */ 406);
+	        _get(Object.getPrototypeOf(App.prototype), 'constructor', this).apply(this, arguments);
 	
-	var _NewTaskJsx2 = _interopRequireDefault(_NewTaskJsx);
+	        this.state = {
+	            tasks: []
+	        };
+	    }
 	
-	var activeTasks = [{
-	    name: 'Drink tea',
-	    spentTime: '5m',
-	    isActive: false
-	}, {
-	    name: 'Development',
-	    spentTime: '3h',
-	    isActive: true
-	}, {
-	    name: 'Read books',
-	    spentTime: '2h',
-	    isActive: false
-	}, {
-	    name: 'Learn React',
-	    spentTime: '3h',
-	    isActive: false
-	}, {
-	    name: 'Drinking coffee',
-	    spentTime: '15m',
-	    isActive: false
-	}];
+	    _createClass(App, [{
+	        key: 'render',
+	        value: function render() {
 	
-	exports['default'] = function (props) {
-	    return _react2['default'].createElement(
-	        'div',
-	        null,
-	        _react2['default'].createElement(_HeaderJsx2['default'], null),
-	        _react2['default'].createElement(_NewTaskJsx2['default'], null),
-	        _react2['default'].createElement(_CurrentTaskJsx2['default'], null),
-	        _react2['default'].createElement(_TableTasksJsx2['default'], { activeTasks: activeTasks })
-	    );
-	};
+	            return _react2['default'].createElement(
+	                'div',
+	                null,
+	                _react2['default'].createElement(_HeaderJsx2['default'], null),
+	                _react2['default'].createElement(_CreateTaskJsx2['default'], null)
+	            );
+	        }
+	    }]);
 	
+	    return App;
+	})(_react2['default'].Component);
+	
+	exports['default'] = App;
 	module.exports = exports['default'];
 
 	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "App.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
@@ -25973,36 +25970,45 @@
 	    value: true
 	});
 	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var _react = __webpack_require__(/*! react */ 192);
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactBootstrapLibGrid = __webpack_require__(/*! react-bootstrap/lib/Grid */ 351);
-	
-	var _reactBootstrapLibGrid2 = _interopRequireDefault(_reactBootstrapLibGrid);
-	
-	var _reactBootstrapLibRow = __webpack_require__(/*! react-bootstrap/lib/Row */ 372);
+	var _reactBootstrapLibRow = __webpack_require__(/*! react-bootstrap/lib/Row */ 351);
 	
 	var _reactBootstrapLibRow2 = _interopRequireDefault(_reactBootstrapLibRow);
 	
-	var _reactBootstrapLibCol = __webpack_require__(/*! react-bootstrap/lib/Col */ 373);
+	var _reactBootstrapLibCol = __webpack_require__(/*! react-bootstrap/lib/Col */ 372);
 	
 	var _reactBootstrapLibCol2 = _interopRequireDefault(_reactBootstrapLibCol);
 	
-	var _HeaderUserSectionJsx = __webpack_require__(/*! ./Header/UserSection.jsx */ 381);
+	var _UserSectionJsx = __webpack_require__(/*! ./UserSection.jsx */ 380);
 	
-	var _HeaderUserSectionJsx2 = _interopRequireDefault(_HeaderUserSectionJsx);
+	var _UserSectionJsx2 = _interopRequireDefault(_UserSectionJsx);
 	
-	exports['default'] = _react2['default'].createClass({
-	    displayName: 'Header',
+	var Header = (function (_React$Component) {
+	    _inherits(Header, _React$Component);
 	
-	    render: function render() {
-	        return _react2['default'].createElement(
-	            _reactBootstrapLibGrid2['default'],
-	            null,
-	            _react2['default'].createElement(
+	    function Header() {
+	        _classCallCheck(this, Header);
+	
+	        _get(Object.getPrototypeOf(Header.prototype), 'constructor', this).apply(this, arguments);
+	    }
+	
+	    _createClass(Header, [{
+	        key: 'render',
+	        value: function render() {
+	            return _react2['default'].createElement(
 	                _reactBootstrapLibRow2['default'],
 	                { className: 'show-grid' },
 	                _react2['default'].createElement(
@@ -26020,22 +26026,26 @@
 	                    _react2['default'].createElement(
 	                        'h2',
 	                        null,
-	                        _react2['default'].createElement(_HeaderUserSectionJsx2['default'], null)
+	                        _react2['default'].createElement(_UserSectionJsx2['default'], null)
 	                    )
 	                )
-	            )
-	        );
-	    }
-	});
+	            );
+	        }
+	    }]);
+	
+	    return Header;
+	})(_react2['default'].Component);
+	
+	exports['default'] = Header;
 	module.exports = exports['default'];
 
 	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "Header.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
 
 /***/ },
 /* 351 */
-/*!***************************************!*\
-  !*** ./~/react-bootstrap/lib/Grid.js ***!
-  \***************************************/
+/*!**************************************!*\
+  !*** ./~/react-bootstrap/lib/Row.js ***!
+  \**************************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26058,16 +26068,10 @@
 	
 	var _reactPropTypesLibElementType2 = _interopRequireDefault(_reactPropTypesLibElementType);
 	
-	var Grid = _react2['default'].createClass({
-	  displayName: 'Grid',
+	var Row = _react2['default'].createClass({
+	  displayName: 'Row',
 	
 	  propTypes: {
-	    /**
-	     * Turn any fixed-width grid layout into a full-width layout by this property.
-	     *
-	     * Adds `container-fluid` class.
-	     */
-	    fluid: _react2['default'].PropTypes.bool,
 	    /**
 	     * You can use a custom element for this component
 	     */
@@ -26076,25 +26080,22 @@
 	
 	  getDefaultProps: function getDefaultProps() {
 	    return {
-	      componentClass: 'div',
-	      fluid: false
+	      componentClass: 'div'
 	    };
 	  },
 	
 	  render: function render() {
 	    var ComponentClass = this.props.componentClass;
-	    var className = this.props.fluid ? 'container-fluid' : 'container';
 	
 	    return _react2['default'].createElement(
 	      ComponentClass,
-	      _extends({}, this.props, {
-	        className: _classnames2['default'](this.props.className, className) }),
+	      _extends({}, this.props, { className: _classnames2['default'](this.props.className, 'row') }),
 	      this.props.children
 	    );
 	  }
 	});
 	
-	exports['default'] = Grid;
+	exports['default'] = Row;
 	module.exports = exports['default'];
 
 /***/ },
@@ -26568,63 +26569,6 @@
 /***/ },
 /* 372 */
 /*!**************************************!*\
-  !*** ./~/react-bootstrap/lib/Row.js ***!
-  \**************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _extends = __webpack_require__(/*! babel-runtime/helpers/extends */ 352)['default'];
-	
-	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 368)['default'];
-	
-	exports.__esModule = true;
-	
-	var _react = __webpack_require__(/*! react */ 192);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _classnames = __webpack_require__(/*! classnames */ 369);
-	
-	var _classnames2 = _interopRequireDefault(_classnames);
-	
-	var _reactPropTypesLibElementType = __webpack_require__(/*! react-prop-types/lib/elementType */ 370);
-	
-	var _reactPropTypesLibElementType2 = _interopRequireDefault(_reactPropTypesLibElementType);
-	
-	var Row = _react2['default'].createClass({
-	  displayName: 'Row',
-	
-	  propTypes: {
-	    /**
-	     * You can use a custom element for this component
-	     */
-	    componentClass: _reactPropTypesLibElementType2['default']
-	  },
-	
-	  getDefaultProps: function getDefaultProps() {
-	    return {
-	      componentClass: 'div'
-	    };
-	  },
-	
-	  render: function render() {
-	    var ComponentClass = this.props.componentClass;
-	
-	    return _react2['default'].createElement(
-	      ComponentClass,
-	      _extends({}, this.props, { className: _classnames2['default'](this.props.className, 'row') }),
-	      this.props.children
-	    );
-	  }
-	});
-	
-	exports['default'] = Row;
-	module.exports = exports['default'];
-
-/***/ },
-/* 373 */
-/*!**************************************!*\
   !*** ./~/react-bootstrap/lib/Col.js ***!
   \**************************************/
 /***/ function(module, exports, __webpack_require__) {
@@ -26633,7 +26577,7 @@
 	
 	var _extends = __webpack_require__(/*! babel-runtime/helpers/extends */ 352)['default'];
 	
-	var _Object$keys = __webpack_require__(/*! babel-runtime/core-js/object/keys */ 374)['default'];
+	var _Object$keys = __webpack_require__(/*! babel-runtime/core-js/object/keys */ 373)['default'];
 	
 	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 368)['default'];
 	
@@ -26647,7 +26591,7 @@
 	
 	var _classnames2 = _interopRequireDefault(_classnames);
 	
-	var _styleMaps = __webpack_require__(/*! ./styleMaps */ 378);
+	var _styleMaps = __webpack_require__(/*! ./styleMaps */ 377);
 	
 	var _styleMaps2 = _interopRequireDefault(_styleMaps);
 	
@@ -26879,26 +26823,26 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 374 */
+/* 373 */
 /*!************************************************!*\
   !*** ./~/babel-runtime/core-js/object/keys.js ***!
   \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(/*! core-js/library/fn/object/keys */ 375), __esModule: true };
+	module.exports = { "default": __webpack_require__(/*! core-js/library/fn/object/keys */ 374), __esModule: true };
 
 /***/ },
-/* 375 */
+/* 374 */
 /*!*********************************************!*\
   !*** ./~/core-js/library/fn/object/keys.js ***!
   \*********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(/*! ../../modules/es6.object.keys */ 376);
+	__webpack_require__(/*! ../../modules/es6.object.keys */ 375);
 	module.exports = __webpack_require__(/*! ../../modules/$.core */ 358).Object.keys;
 
 /***/ },
-/* 376 */
+/* 375 */
 /*!******************************************************!*\
   !*** ./~/core-js/library/modules/es6.object.keys.js ***!
   \******************************************************/
@@ -26907,14 +26851,14 @@
 	// 19.1.2.14 Object.keys(O)
 	var toObject = __webpack_require__(/*! ./$.to-object */ 363);
 	
-	__webpack_require__(/*! ./$.object-sap */ 377)('keys', function($keys){
+	__webpack_require__(/*! ./$.object-sap */ 376)('keys', function($keys){
 	  return function keys(it){
 	    return $keys(toObject(it));
 	  };
 	});
 
 /***/ },
-/* 377 */
+/* 376 */
 /*!***************************************************!*\
   !*** ./~/core-js/library/modules/$.object-sap.js ***!
   \***************************************************/
@@ -26932,7 +26876,7 @@
 	};
 
 /***/ },
-/* 378 */
+/* 377 */
 /*!********************************************!*\
   !*** ./~/react-bootstrap/lib/styleMaps.js ***!
   \********************************************/
@@ -26942,9 +26886,9 @@
 	
 	var _Object$assign = __webpack_require__(/*! babel-runtime/core-js/object/assign */ 353)['default'];
 	
-	var _Object$create = __webpack_require__(/*! babel-runtime/core-js/object/create */ 379)['default'];
+	var _Object$create = __webpack_require__(/*! babel-runtime/core-js/object/create */ 378)['default'];
 	
-	var _Object$keys = __webpack_require__(/*! babel-runtime/core-js/object/keys */ 374)['default'];
+	var _Object$keys = __webpack_require__(/*! babel-runtime/core-js/object/keys */ 373)['default'];
 	
 	exports.__esModule = true;
 	
@@ -27003,16 +26947,16 @@
 	exports['default'] = styleMaps;
 
 /***/ },
-/* 379 */
+/* 378 */
 /*!**************************************************!*\
   !*** ./~/babel-runtime/core-js/object/create.js ***!
   \**************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(/*! core-js/library/fn/object/create */ 380), __esModule: true };
+	module.exports = { "default": __webpack_require__(/*! core-js/library/fn/object/create */ 379), __esModule: true };
 
 /***/ },
-/* 380 */
+/* 379 */
 /*!***********************************************!*\
   !*** ./~/core-js/library/fn/object/create.js ***!
   \***********************************************/
@@ -27024,10 +26968,10 @@
 	};
 
 /***/ },
-/* 381 */
-/*!***********************************************!*\
-  !*** ./src/components/Header/UserSection.jsx ***!
-  \***********************************************/
+/* 380 */
+/*!****************************************!*\
+  !*** ./src/components/UserSection.jsx ***!
+  \****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	/* REACT HOT LOADER */ if (false) { (function () { var ReactHotAPI = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-api/modules/index.js"), RootInstanceProvider = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/RootInstanceProvider.js"), ReactMount = require("react/lib/ReactMount"), React = require("react"); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
@@ -27038,21 +26982,29 @@
 	    value: true
 	});
 	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var _react = __webpack_require__(/*! react */ 192);
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactBootstrapLibGrid = __webpack_require__(/*! react-bootstrap/lib/Grid */ 351);
+	var _reactBootstrapLibGrid = __webpack_require__(/*! react-bootstrap/lib/Grid */ 381);
 	
 	var _reactBootstrapLibGrid2 = _interopRequireDefault(_reactBootstrapLibGrid);
 	
-	var _reactBootstrapLibRow = __webpack_require__(/*! react-bootstrap/lib/Row */ 372);
+	var _reactBootstrapLibRow = __webpack_require__(/*! react-bootstrap/lib/Row */ 351);
 	
 	var _reactBootstrapLibRow2 = _interopRequireDefault(_reactBootstrapLibRow);
 	
-	var _reactBootstrapLibCol = __webpack_require__(/*! react-bootstrap/lib/Col */ 373);
+	var _reactBootstrapLibCol = __webpack_require__(/*! react-bootstrap/lib/Col */ 372);
 	
 	var _reactBootstrapLibCol2 = _interopRequireDefault(_reactBootstrapLibCol);
 	
@@ -27060,41 +27012,120 @@
 	
 	var _reactBootstrapLibGlyphicon2 = _interopRequireDefault(_reactBootstrapLibGlyphicon);
 	
-	exports['default'] = _react2['default'].createClass({
-	    displayName: 'UserSection',
+	var UserSection = (function (_React$Component) {
+	    _inherits(UserSection, _React$Component);
 	
-	    render: function render() {
-	        return _react2['default'].createElement(
-	            _reactBootstrapLibGrid2['default'],
-	            { fluid: true },
-	            _react2['default'].createElement(
-	                _reactBootstrapLibRow2['default'],
-	                { className: 'show-grid' },
+	    function UserSection() {
+	        _classCallCheck(this, UserSection);
+	
+	        _get(Object.getPrototypeOf(UserSection.prototype), 'constructor', this).apply(this, arguments);
+	    }
+	
+	    _createClass(UserSection, [{
+	        key: 'render',
+	        value: function render() {
+	            return _react2['default'].createElement(
+	                _reactBootstrapLibGrid2['default'],
+	                { fluid: true },
 	                _react2['default'].createElement(
-	                    _reactBootstrapLibCol2['default'],
-	                    { md: 6, className: 'text-center' },
-	                    _react2['default'].createElement(_reactBootstrapLibGlyphicon2['default'], { glyph: 'user' })
-	                ),
-	                _react2['default'].createElement(
-	                    _reactBootstrapLibCol2['default'],
-	                    { md: 6, className: 'text-center' },
+	                    _reactBootstrapLibRow2['default'],
+	                    { className: 'show-grid' },
 	                    _react2['default'].createElement(
-	                        'h5',
-	                        null,
+	                        _reactBootstrapLibCol2['default'],
+	                        { md: 6, className: 'text-center' },
+	                        _react2['default'].createElement(_reactBootstrapLibGlyphicon2['default'], { glyph: 'user' })
+	                    ),
+	                    _react2['default'].createElement(
+	                        _reactBootstrapLibCol2['default'],
+	                        { md: 6, className: 'text-center' },
 	                        _react2['default'].createElement(
-	                            'a',
+	                            'h5',
 	                            null,
-	                            'Logout'
+	                            _react2['default'].createElement(
+	                                'a',
+	                                null,
+	                                'Logout'
+	                            )
 	                        )
 	                    )
 	                )
-	            )
-	        );
-	    }
-	});
+	            );
+	        }
+	    }]);
+	
+	    return UserSection;
+	})(_react2['default'].Component);
+	
+	exports['default'] = UserSection;
 	module.exports = exports['default'];
 
 	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "UserSection.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
+
+/***/ },
+/* 381 */
+/*!***************************************!*\
+  !*** ./~/react-bootstrap/lib/Grid.js ***!
+  \***************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _extends = __webpack_require__(/*! babel-runtime/helpers/extends */ 352)['default'];
+	
+	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 368)['default'];
+	
+	exports.__esModule = true;
+	
+	var _react = __webpack_require__(/*! react */ 192);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _classnames = __webpack_require__(/*! classnames */ 369);
+	
+	var _classnames2 = _interopRequireDefault(_classnames);
+	
+	var _reactPropTypesLibElementType = __webpack_require__(/*! react-prop-types/lib/elementType */ 370);
+	
+	var _reactPropTypesLibElementType2 = _interopRequireDefault(_reactPropTypesLibElementType);
+	
+	var Grid = _react2['default'].createClass({
+	  displayName: 'Grid',
+	
+	  propTypes: {
+	    /**
+	     * Turn any fixed-width grid layout into a full-width layout by this property.
+	     *
+	     * Adds `container-fluid` class.
+	     */
+	    fluid: _react2['default'].PropTypes.bool,
+	    /**
+	     * You can use a custom element for this component
+	     */
+	    componentClass: _reactPropTypesLibElementType2['default']
+	  },
+	
+	  getDefaultProps: function getDefaultProps() {
+	    return {
+	      componentClass: 'div',
+	      fluid: false
+	    };
+	  },
+	
+	  render: function render() {
+	    var ComponentClass = this.props.componentClass;
+	    var className = this.props.fluid ? 'container-fluid' : 'container';
+	
+	    return _react2['default'].createElement(
+	      ComponentClass,
+	      _extends({}, this.props, {
+	        className: _classnames2['default'](this.props.className, className) }),
+	      this.props.children
+	    );
+	  }
+	});
+	
+	exports['default'] = Grid;
+	module.exports = exports['default'];
 
 /***/ },
 /* 382 */
@@ -27164,44 +27195,8 @@
 
 /***/ },
 /* 383 */
-/*!****************************************!*\
-  !*** ./src/components/CurrentTask.jsx ***!
-  \****************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	/* REACT HOT LOADER */ if (false) { (function () { var ReactHotAPI = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-api/modules/index.js"), RootInstanceProvider = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/RootInstanceProvider.js"), ReactMount = require("react/lib/ReactMount"), React = require("react"); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	    value: true
-	});
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	var _react = __webpack_require__(/*! react */ 192);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	exports['default'] = _react2['default'].createClass({
-	    displayName: 'CurrentTask',
-	
-	    render: function render() {
-	        return _react2['default'].createElement(
-	            'h3',
-	            { className: 'text-center' },
-	            'Drink tea: 10m 34s'
-	        );
-	    }
-	});
-	module.exports = exports['default'];
-
-	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "CurrentTask.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
-
-/***/ },
-/* 384 */
 /*!***************************************!*\
-  !*** ./src/components/TableTasks.jsx ***!
+  !*** ./src/components/CreateTask.jsx ***!
   \***************************************/
 /***/ function(module, exports, __webpack_require__) {
 
@@ -27213,508 +27208,97 @@
 	    value: true
 	});
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	var _react = __webpack_require__(/*! react */ 192);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactBootstrapLibTable = __webpack_require__(/*! react-bootstrap/lib/Table */ 385);
-	
-	var _reactBootstrapLibTable2 = _interopRequireDefault(_reactBootstrapLibTable);
-	
-	var _TableTasksHeadRowJsx = __webpack_require__(/*! ./TableTasks/HeadRow.jsx */ 386);
-	
-	var _TableTasksHeadRowJsx2 = _interopRequireDefault(_TableTasksHeadRowJsx);
-	
-	var _TableTasksOneRowJsx = __webpack_require__(/*! ./TableTasks/OneRow.jsx */ 387);
-	
-	var _TableTasksOneRowJsx2 = _interopRequireDefault(_TableTasksOneRowJsx);
-	
-	exports['default'] = _react2['default'].createClass({
-	    displayName: 'TableTasks',
-	
-	    render: function render() {
-	        var tasks = this.props.activeTasks;
-	        return _react2['default'].createElement(
-	            _reactBootstrapLibTable2['default'],
-	            { striped: true, bordered: true, condensed: true, hover: true },
-	            _react2['default'].createElement(
-	                'thead',
-	                null,
-	                _react2['default'].createElement(_TableTasksHeadRowJsx2['default'], null)
-	            ),
-	            _react2['default'].createElement(
-	                'tbody',
-	                null,
-	                tasks.map(function (task, indx) {
-	                    return _react2['default'].createElement(_TableTasksOneRowJsx2['default'], {
-	                        key: indx,
-	                        name: task.name,
-	                        spentTime: task.spentTime,
-	                        isActive: task.isActive });
-	                })
-	            )
-	        );
-	    }
-	});
-	module.exports = exports['default'];
-
-	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "TableTasks.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
-
-/***/ },
-/* 385 */
-/*!****************************************!*\
-  !*** ./~/react-bootstrap/lib/Table.js ***!
-  \****************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _extends = __webpack_require__(/*! babel-runtime/helpers/extends */ 352)['default'];
-	
-	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 368)['default'];
-	
-	exports.__esModule = true;
-	
-	var _react = __webpack_require__(/*! react */ 192);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _classnames = __webpack_require__(/*! classnames */ 369);
-	
-	var _classnames2 = _interopRequireDefault(_classnames);
-	
-	var Table = _react2['default'].createClass({
-	  displayName: 'Table',
-	
-	  propTypes: {
-	    striped: _react2['default'].PropTypes.bool,
-	    bordered: _react2['default'].PropTypes.bool,
-	    condensed: _react2['default'].PropTypes.bool,
-	    hover: _react2['default'].PropTypes.bool,
-	    responsive: _react2['default'].PropTypes.bool
-	  },
-	
-	  getDefaultProps: function getDefaultProps() {
-	    return {
-	      bordered: false,
-	      condensed: false,
-	      hover: false,
-	      responsive: false,
-	      striped: false
-	    };
-	  },
-	
-	  render: function render() {
-	    var classes = {
-	      'table': true,
-	      'table-striped': this.props.striped,
-	      'table-bordered': this.props.bordered,
-	      'table-condensed': this.props.condensed,
-	      'table-hover': this.props.hover
-	    };
-	    var table = _react2['default'].createElement(
-	      'table',
-	      _extends({}, this.props, { className: _classnames2['default'](this.props.className, classes) }),
-	      this.props.children
-	    );
-	
-	    return this.props.responsive ? _react2['default'].createElement(
-	      'div',
-	      { className: 'table-responsive' },
-	      table
-	    ) : table;
-	  }
-	});
-	
-	exports['default'] = Table;
-	module.exports = exports['default'];
-
-/***/ },
-/* 386 */
-/*!***********************************************!*\
-  !*** ./src/components/TableTasks/HeadRow.jsx ***!
-  \***********************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	/* REACT HOT LOADER */ if (false) { (function () { var ReactHotAPI = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-api/modules/index.js"), RootInstanceProvider = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/RootInstanceProvider.js"), ReactMount = require("react/lib/ReactMount"), React = require("react"); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	    value: true
-	});
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _react = __webpack_require__(/*! react */ 192);
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactBootstrapLibTable = __webpack_require__(/*! react-bootstrap/lib/Table */ 385);
-	
-	var _reactBootstrapLibTable2 = _interopRequireDefault(_reactBootstrapLibTable);
-	
-	exports['default'] = function (props) {
-	    return _react2['default'].createElement(
-	        'tr',
-	        null,
-	        _react2['default'].createElement(
-	            'th',
-	            null,
-	            'Name'
-	        ),
-	        _react2['default'].createElement(
-	            'th',
-	            null,
-	            'Spent time'
-	        ),
-	        _react2['default'].createElement(
-	            'th',
-	            null,
-	            'Start/Stop'
-	        ),
-	        _react2['default'].createElement('th', null),
-	        _react2['default'].createElement('th', null)
-	    );
-	};
-	
-	module.exports = exports['default'];
-
-	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "HeadRow.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
-
-/***/ },
-/* 387 */
-/*!**********************************************!*\
-  !*** ./src/components/TableTasks/OneRow.jsx ***!
-  \**********************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	/* REACT HOT LOADER */ if (false) { (function () { var ReactHotAPI = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-api/modules/index.js"), RootInstanceProvider = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/RootInstanceProvider.js"), ReactMount = require("react/lib/ReactMount"), React = require("react"); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	    value: true
-	});
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var _react = __webpack_require__(/*! react */ 192);
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactBootstrapLibGlyphicon = __webpack_require__(/*! react-bootstrap/lib/Glyphicon */ 382);
+	var _reactBootstrapLibButton = __webpack_require__(/*! react-bootstrap/lib/Button */ 384);
 	
-	var _reactBootstrapLibGlyphicon2 = _interopRequireDefault(_reactBootstrapLibGlyphicon);
+	var _reactBootstrapLibButton2 = _interopRequireDefault(_reactBootstrapLibButton);
 	
-	var _reactBootstrapLibTable = __webpack_require__(/*! react-bootstrap/lib/Table */ 385);
+	var _reactBootstrapLibInput = __webpack_require__(/*! react-bootstrap/lib/Input */ 388);
 	
-	var _reactBootstrapLibTable2 = _interopRequireDefault(_reactBootstrapLibTable);
+	var _reactBootstrapLibInput2 = _interopRequireDefault(_reactBootstrapLibInput);
 	
-	var _reactBootstrapLibButtonInput = __webpack_require__(/*! react-bootstrap/lib/ButtonInput */ 388);
+	var _reactBootstrapLibGrid = __webpack_require__(/*! react-bootstrap/lib/Grid */ 381);
 	
-	var _reactBootstrapLibButtonInput2 = _interopRequireDefault(_reactBootstrapLibButtonInput);
+	var _reactBootstrapLibGrid2 = _interopRequireDefault(_reactBootstrapLibGrid);
 	
-	exports['default'] = _react2['default'].createClass({
-	    displayName: 'OneRow',
+	var _reactBootstrapLibRow = __webpack_require__(/*! react-bootstrap/lib/Row */ 351);
 	
-	    render: function render() {
+	var _reactBootstrapLibRow2 = _interopRequireDefault(_reactBootstrapLibRow);
 	
-	        return _react2['default'].createElement(
-	            'tr',
-	            null,
-	            _react2['default'].createElement(
-	                'td',
-	                null,
-	                this.props.name
-	            ),
-	            _react2['default'].createElement(
-	                'td',
-	                null,
-	                this.props.spentTime
-	            ),
-	            _react2['default'].createElement(
-	                'td',
-	                null,
-	                this.props.isActive ? _react2['default'].createElement(_reactBootstrapLibGlyphicon2['default'], { glyph: 'play' }) : _react2['default'].createElement(_reactBootstrapLibGlyphicon2['default'], { glyph: 'pause' })
-	            ),
-	            _react2['default'].createElement(
-	                'td',
-	                null,
-	                _react2['default'].createElement(_reactBootstrapLibButtonInput2['default'], { value: 'Clear', className: 'btn-xs', bsStyle: 'warning' })
-	            ),
-	            _react2['default'].createElement(
-	                'td',
-	                null,
-	                _react2['default'].createElement(_reactBootstrapLibButtonInput2['default'], { value: 'Delete', className: 'btn-xs', bsStyle: 'danger' })
-	            )
-	        );
+	var _reactBootstrapLibCol = __webpack_require__(/*! react-bootstrap/lib/Col */ 372);
+	
+	var _reactBootstrapLibCol2 = _interopRequireDefault(_reactBootstrapLibCol);
+	
+	__webpack_require__(/*! ./CreateTask.less */ 405);
+	
+	var CreateTask = (function (_React$Component) {
+	    _inherits(CreateTask, _React$Component);
+	
+	    function CreateTask() {
+	        var _this = this;
+	
+	        _classCallCheck(this, CreateTask);
+	
+	        _get(Object.getPrototypeOf(CreateTask.prototype), 'constructor', this).apply(this, arguments);
+	
+	        this.handleNewTaskClick = function () {
+	            console.log('yeeee!');
+	            console.log(_this.refs.newTaskNameInput.refs.input.value);
+	        };
 	    }
-	});
+	
+	    _createClass(CreateTask, [{
+	        key: 'render',
+	        value: function render() {
+	            return _react2['default'].createElement(
+	                _reactBootstrapLibGrid2['default'],
+	                null,
+	                _react2['default'].createElement(
+	                    _reactBootstrapLibRow2['default'],
+	                    null,
+	                    _react2['default'].createElement(
+	                        _reactBootstrapLibCol2['default'],
+	                        { md: 10, sm: 10 },
+	                        _react2['default'].createElement(_reactBootstrapLibInput2['default'], { type: 'text', placeholder: 'New task', ref: 'newTaskNameInput' })
+	                    ),
+	                    _react2['default'].createElement(
+	                        _reactBootstrapLibCol2['default'],
+	                        { md: 2, sm: 2 },
+	                        _react2['default'].createElement(
+	                            _reactBootstrapLibButton2['default'],
+	                            { onClick: this.handleNewTaskClick,
+	                                className: 'CreateTask__button' },
+	                            'Create'
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return CreateTask;
+	})(_react2['default'].Component);
+	
+	exports['default'] = CreateTask;
 	module.exports = exports['default'];
 
-	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "OneRow.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
+	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "CreateTask.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
 
 /***/ },
-/* 388 */
-/*!**********************************************!*\
-  !*** ./~/react-bootstrap/lib/ButtonInput.js ***!
-  \**********************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _inherits = __webpack_require__(/*! babel-runtime/helpers/inherits */ 389)['default'];
-	
-	var _classCallCheck = __webpack_require__(/*! babel-runtime/helpers/class-call-check */ 396)['default'];
-	
-	var _objectWithoutProperties = __webpack_require__(/*! babel-runtime/helpers/object-without-properties */ 397)['default'];
-	
-	var _extends = __webpack_require__(/*! babel-runtime/helpers/extends */ 352)['default'];
-	
-	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 368)['default'];
-	
-	exports.__esModule = true;
-	
-	var _react = __webpack_require__(/*! react */ 192);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _Button = __webpack_require__(/*! ./Button */ 398);
-	
-	var _Button2 = _interopRequireDefault(_Button);
-	
-	var _FormGroup = __webpack_require__(/*! ./FormGroup */ 402);
-	
-	var _FormGroup2 = _interopRequireDefault(_FormGroup);
-	
-	var _InputBase2 = __webpack_require__(/*! ./InputBase */ 403);
-	
-	var _InputBase3 = _interopRequireDefault(_InputBase2);
-	
-	var _utilsChildrenValueInputValidation = __webpack_require__(/*! ./utils/childrenValueInputValidation */ 404);
-	
-	var _utilsChildrenValueInputValidation2 = _interopRequireDefault(_utilsChildrenValueInputValidation);
-	
-	var ButtonInput = (function (_InputBase) {
-	  _inherits(ButtonInput, _InputBase);
-	
-	  function ButtonInput() {
-	    _classCallCheck(this, ButtonInput);
-	
-	    _InputBase.apply(this, arguments);
-	  }
-	
-	  ButtonInput.prototype.renderFormGroup = function renderFormGroup(children) {
-	    var _props = this.props;
-	    var bsStyle = _props.bsStyle;
-	    var value = _props.value;
-	
-	    var other = _objectWithoutProperties(_props, ['bsStyle', 'value']);
-	
-	    return _react2['default'].createElement(
-	      _FormGroup2['default'],
-	      other,
-	      children
-	    );
-	  };
-	
-	  ButtonInput.prototype.renderInput = function renderInput() {
-	    var _props2 = this.props;
-	    var children = _props2.children;
-	    var value = _props2.value;
-	
-	    var other = _objectWithoutProperties(_props2, ['children', 'value']);
-	
-	    var val = children ? children : value;
-	    return _react2['default'].createElement(_Button2['default'], _extends({}, other, { componentClass: 'input', ref: 'input', key: 'input', value: val }));
-	  };
-	
-	  return ButtonInput;
-	})(_InputBase3['default']);
-	
-	ButtonInput.types = _Button2['default'].types;
-	
-	ButtonInput.defaultProps = {
-	  type: 'button'
-	};
-	
-	ButtonInput.propTypes = {
-	  type: _react2['default'].PropTypes.oneOf(ButtonInput.types),
-	  bsStyle: function bsStyle() {
-	    // defer to Button propTypes of bsStyle
-	    return null;
-	  },
-	  children: _utilsChildrenValueInputValidation2['default'],
-	  value: _utilsChildrenValueInputValidation2['default']
-	};
-	
-	exports['default'] = ButtonInput;
-	module.exports = exports['default'];
-
-/***/ },
-/* 389 */
-/*!*********************************************!*\
-  !*** ./~/babel-runtime/helpers/inherits.js ***!
-  \*********************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	
-	var _Object$create = __webpack_require__(/*! babel-runtime/core-js/object/create */ 379)["default"];
-	
-	var _Object$setPrototypeOf = __webpack_require__(/*! babel-runtime/core-js/object/set-prototype-of */ 390)["default"];
-	
-	exports["default"] = function (subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-	  }
-	
-	  subClass.prototype = _Object$create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      enumerable: false,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) _Object$setPrototypeOf ? _Object$setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-	};
-	
-	exports.__esModule = true;
-
-/***/ },
-/* 390 */
-/*!************************************************************!*\
-  !*** ./~/babel-runtime/core-js/object/set-prototype-of.js ***!
-  \************************************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(/*! core-js/library/fn/object/set-prototype-of */ 391), __esModule: true };
-
-/***/ },
-/* 391 */
-/*!*********************************************************!*\
-  !*** ./~/core-js/library/fn/object/set-prototype-of.js ***!
-  \*********************************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(/*! ../../modules/es6.object.set-prototype-of */ 392);
-	module.exports = __webpack_require__(/*! ../../modules/$.core */ 358).Object.setPrototypeOf;
-
-/***/ },
-/* 392 */
-/*!******************************************************************!*\
-  !*** ./~/core-js/library/modules/es6.object.set-prototype-of.js ***!
-  \******************************************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	// 19.1.3.19 Object.setPrototypeOf(O, proto)
-	var $export = __webpack_require__(/*! ./$.export */ 356);
-	$export($export.S, 'Object', {setPrototypeOf: __webpack_require__(/*! ./$.set-proto */ 393).set});
-
-/***/ },
-/* 393 */
-/*!**************************************************!*\
-  !*** ./~/core-js/library/modules/$.set-proto.js ***!
-  \**************************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	// Works with __proto__ only. Old v8 can't work with null proto objects.
-	/* eslint-disable no-proto */
-	var getDesc  = __webpack_require__(/*! ./$ */ 362).getDesc
-	  , isObject = __webpack_require__(/*! ./$.is-object */ 394)
-	  , anObject = __webpack_require__(/*! ./$.an-object */ 395);
-	var check = function(O, proto){
-	  anObject(O);
-	  if(!isObject(proto) && proto !== null)throw TypeError(proto + ": can't set as prototype!");
-	};
-	module.exports = {
-	  set: Object.setPrototypeOf || ('__proto__' in {} ? // eslint-disable-line
-	    function(test, buggy, set){
-	      try {
-	        set = __webpack_require__(/*! ./$.ctx */ 359)(Function.call, getDesc(Object.prototype, '__proto__').set, 2);
-	        set(test, []);
-	        buggy = !(test instanceof Array);
-	      } catch(e){ buggy = true; }
-	      return function setPrototypeOf(O, proto){
-	        check(O, proto);
-	        if(buggy)O.__proto__ = proto;
-	        else set(O, proto);
-	        return O;
-	      };
-	    }({}, false) : undefined),
-	  check: check
-	};
-
-/***/ },
-/* 394 */
-/*!**************************************************!*\
-  !*** ./~/core-js/library/modules/$.is-object.js ***!
-  \**************************************************/
-/***/ function(module, exports) {
-
-	module.exports = function(it){
-	  return typeof it === 'object' ? it !== null : typeof it === 'function';
-	};
-
-/***/ },
-/* 395 */
-/*!**************************************************!*\
-  !*** ./~/core-js/library/modules/$.an-object.js ***!
-  \**************************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	var isObject = __webpack_require__(/*! ./$.is-object */ 394);
-	module.exports = function(it){
-	  if(!isObject(it))throw TypeError(it + ' is not an object!');
-	  return it;
-	};
-
-/***/ },
-/* 396 */
-/*!*****************************************************!*\
-  !*** ./~/babel-runtime/helpers/class-call-check.js ***!
-  \*****************************************************/
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	exports["default"] = function (instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	};
-	
-	exports.__esModule = true;
-
-/***/ },
-/* 397 */
-/*!**************************************************************!*\
-  !*** ./~/babel-runtime/helpers/object-without-properties.js ***!
-  \**************************************************************/
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	exports["default"] = function (obj, keys) {
-	  var target = {};
-	
-	  for (var i in obj) {
-	    if (keys.indexOf(i) >= 0) continue;
-	    if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
-	    target[i] = obj[i];
-	  }
-	
-	  return target;
-	};
-	
-	exports.__esModule = true;
-
-/***/ },
-/* 398 */
+/* 384 */
 /*!*****************************************!*\
   !*** ./~/react-bootstrap/lib/Button.js ***!
   \*****************************************/
@@ -27740,11 +27324,11 @@
 	
 	var _reactPropTypesLibElementType2 = _interopRequireDefault(_reactPropTypesLibElementType);
 	
-	var _utilsBootstrapUtils = __webpack_require__(/*! ./utils/bootstrapUtils */ 399);
+	var _utilsBootstrapUtils = __webpack_require__(/*! ./utils/bootstrapUtils */ 385);
 	
 	var _utilsBootstrapUtils2 = _interopRequireDefault(_utilsBootstrapUtils);
 	
-	var _styleMaps = __webpack_require__(/*! ./styleMaps */ 378);
+	var _styleMaps = __webpack_require__(/*! ./styleMaps */ 377);
 	
 	var types = ['button', 'reset', 'submit'];
 	
@@ -27850,7 +27434,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 399 */
+/* 385 */
 /*!*******************************************************!*\
   !*** ./~/react-bootstrap/lib/utils/bootstrapUtils.js ***!
   \*******************************************************/
@@ -27866,15 +27450,15 @@
 	
 	var _react = __webpack_require__(/*! react */ 192);
 	
-	var _styleMaps = __webpack_require__(/*! ../styleMaps */ 378);
+	var _styleMaps = __webpack_require__(/*! ../styleMaps */ 377);
 	
 	var _styleMaps2 = _interopRequireDefault(_styleMaps);
 	
-	var _invariant = __webpack_require__(/*! invariant */ 400);
+	var _invariant = __webpack_require__(/*! invariant */ 386);
 	
 	var _invariant2 = _interopRequireDefault(_invariant);
 	
-	var _warning = __webpack_require__(/*! warning */ 401);
+	var _warning = __webpack_require__(/*! warning */ 387);
 	
 	var _warning2 = _interopRequireDefault(_warning);
 	
@@ -28035,7 +27619,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./~/process/browser.js */ 191)))
 
 /***/ },
-/* 400 */
+/* 386 */
 /*!********************************!*\
   !*** ./~/invariant/browser.js ***!
   \********************************/
@@ -28096,7 +27680,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./~/process/browser.js */ 191)))
 
 /***/ },
-/* 401 */
+/* 387 */
 /*!******************************!*\
   !*** ./~/warning/browser.js ***!
   \******************************/
@@ -28166,10 +27750,10 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./~/process/browser.js */ 191)))
 
 /***/ },
-/* 402 */
-/*!********************************************!*\
-  !*** ./~/react-bootstrap/lib/FormGroup.js ***!
-  \********************************************/
+/* 388 */
+/*!****************************************!*\
+  !*** ./~/react-bootstrap/lib/Input.js ***!
+  \****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28180,70 +27764,220 @@
 	
 	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 368)['default'];
 	
+	var _interopRequireWildcard = __webpack_require__(/*! babel-runtime/helpers/interop-require-wildcard */ 397)['default'];
+	
 	exports.__esModule = true;
 	
 	var _react = __webpack_require__(/*! react */ 192);
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _classnames = __webpack_require__(/*! classnames */ 369);
+	var _InputBase2 = __webpack_require__(/*! ./InputBase */ 398);
 	
-	var _classnames2 = _interopRequireDefault(_classnames);
+	var _InputBase3 = _interopRequireDefault(_InputBase2);
 	
-	var FormGroup = (function (_React$Component) {
-	  _inherits(FormGroup, _React$Component);
+	var _FormControls = __webpack_require__(/*! ./FormControls */ 400);
 	
-	  function FormGroup() {
-	    _classCallCheck(this, FormGroup);
+	var FormControls = _interopRequireWildcard(_FormControls);
 	
-	    _React$Component.apply(this, arguments);
+	var _utilsDeprecationWarning = __webpack_require__(/*! ./utils/deprecationWarning */ 404);
+	
+	var _utilsDeprecationWarning2 = _interopRequireDefault(_utilsDeprecationWarning);
+	
+	var Input = (function (_InputBase) {
+	  _inherits(Input, _InputBase);
+	
+	  function Input() {
+	    _classCallCheck(this, Input);
+	
+	    _InputBase.apply(this, arguments);
 	  }
 	
-	  FormGroup.prototype.render = function render() {
-	    var classes = {
-	      'form-group': !this.props.standalone,
-	      'form-group-lg': !this.props.standalone && this.props.bsSize === 'large',
-	      'form-group-sm': !this.props.standalone && this.props.bsSize === 'small',
-	      'has-feedback': this.props.hasFeedback,
-	      'has-success': this.props.bsStyle === 'success',
-	      'has-warning': this.props.bsStyle === 'warning',
-	      'has-error': this.props.bsStyle === 'error'
-	    };
-	
-	    return _react2['default'].createElement(
-	      'div',
-	      { className: _classnames2['default'](classes, this.props.groupClassName) },
-	      this.props.children
-	    );
-	  };
-	
-	  return FormGroup;
-	})(_react2['default'].Component);
-	
-	FormGroup.defaultProps = {
-	  hasFeedback: false,
-	  standalone: false
-	};
-	
-	FormGroup.propTypes = {
-	  standalone: _react2['default'].PropTypes.bool,
-	  hasFeedback: _react2['default'].PropTypes.bool,
-	  bsSize: function bsSize(props) {
-	    if (props.standalone && props.bsSize !== undefined) {
-	      return new Error('bsSize will not be used when `standalone` is set.');
+	  Input.prototype.render = function render() {
+	    if (this.props.type === 'static') {
+	      _utilsDeprecationWarning2['default']('Input type=static', 'FormControls.Static');
+	      return _react2['default'].createElement(FormControls.Static, this.props);
 	    }
 	
-	    return _react2['default'].PropTypes.oneOf(['small', 'medium', 'large']).apply(null, arguments);
-	  },
-	  bsStyle: _react2['default'].PropTypes.oneOf(['success', 'warning', 'error']),
-	  groupClassName: _react2['default'].PropTypes.string
+	    return _InputBase.prototype.render.call(this);
+	  };
+	
+	  return Input;
+	})(_InputBase3['default']);
+	
+	Input.propTypes = {
+	  type: _react2['default'].PropTypes.string
 	};
 	
-	exports['default'] = FormGroup;
+	exports['default'] = Input;
 	module.exports = exports['default'];
 
 /***/ },
-/* 403 */
+/* 389 */
+/*!*********************************************!*\
+  !*** ./~/babel-runtime/helpers/inherits.js ***!
+  \*********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	var _Object$create = __webpack_require__(/*! babel-runtime/core-js/object/create */ 378)["default"];
+	
+	var _Object$setPrototypeOf = __webpack_require__(/*! babel-runtime/core-js/object/set-prototype-of */ 390)["default"];
+	
+	exports["default"] = function (subClass, superClass) {
+	  if (typeof superClass !== "function" && superClass !== null) {
+	    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+	  }
+	
+	  subClass.prototype = _Object$create(superClass && superClass.prototype, {
+	    constructor: {
+	      value: subClass,
+	      enumerable: false,
+	      writable: true,
+	      configurable: true
+	    }
+	  });
+	  if (superClass) _Object$setPrototypeOf ? _Object$setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+	};
+	
+	exports.__esModule = true;
+
+/***/ },
+/* 390 */
+/*!************************************************************!*\
+  !*** ./~/babel-runtime/core-js/object/set-prototype-of.js ***!
+  \************************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(/*! core-js/library/fn/object/set-prototype-of */ 391), __esModule: true };
+
+/***/ },
+/* 391 */
+/*!*********************************************************!*\
+  !*** ./~/core-js/library/fn/object/set-prototype-of.js ***!
+  \*********************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(/*! ../../modules/es6.object.set-prototype-of */ 392);
+	module.exports = __webpack_require__(/*! ../../modules/$.core */ 358).Object.setPrototypeOf;
+
+/***/ },
+/* 392 */
+/*!******************************************************************!*\
+  !*** ./~/core-js/library/modules/es6.object.set-prototype-of.js ***!
+  \******************************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.3.19 Object.setPrototypeOf(O, proto)
+	var $export = __webpack_require__(/*! ./$.export */ 356);
+	$export($export.S, 'Object', {setPrototypeOf: __webpack_require__(/*! ./$.set-proto */ 393).set});
+
+/***/ },
+/* 393 */
+/*!**************************************************!*\
+  !*** ./~/core-js/library/modules/$.set-proto.js ***!
+  \**************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	// Works with __proto__ only. Old v8 can't work with null proto objects.
+	/* eslint-disable no-proto */
+	var getDesc  = __webpack_require__(/*! ./$ */ 362).getDesc
+	  , isObject = __webpack_require__(/*! ./$.is-object */ 394)
+	  , anObject = __webpack_require__(/*! ./$.an-object */ 395);
+	var check = function(O, proto){
+	  anObject(O);
+	  if(!isObject(proto) && proto !== null)throw TypeError(proto + ": can't set as prototype!");
+	};
+	module.exports = {
+	  set: Object.setPrototypeOf || ('__proto__' in {} ? // eslint-disable-line
+	    function(test, buggy, set){
+	      try {
+	        set = __webpack_require__(/*! ./$.ctx */ 359)(Function.call, getDesc(Object.prototype, '__proto__').set, 2);
+	        set(test, []);
+	        buggy = !(test instanceof Array);
+	      } catch(e){ buggy = true; }
+	      return function setPrototypeOf(O, proto){
+	        check(O, proto);
+	        if(buggy)O.__proto__ = proto;
+	        else set(O, proto);
+	        return O;
+	      };
+	    }({}, false) : undefined),
+	  check: check
+	};
+
+/***/ },
+/* 394 */
+/*!**************************************************!*\
+  !*** ./~/core-js/library/modules/$.is-object.js ***!
+  \**************************************************/
+/***/ function(module, exports) {
+
+	module.exports = function(it){
+	  return typeof it === 'object' ? it !== null : typeof it === 'function';
+	};
+
+/***/ },
+/* 395 */
+/*!**************************************************!*\
+  !*** ./~/core-js/library/modules/$.an-object.js ***!
+  \**************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	var isObject = __webpack_require__(/*! ./$.is-object */ 394);
+	module.exports = function(it){
+	  if(!isObject(it))throw TypeError(it + ' is not an object!');
+	  return it;
+	};
+
+/***/ },
+/* 396 */
+/*!*****************************************************!*\
+  !*** ./~/babel-runtime/helpers/class-call-check.js ***!
+  \*****************************************************/
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	exports["default"] = function (instance, Constructor) {
+	  if (!(instance instanceof Constructor)) {
+	    throw new TypeError("Cannot call a class as a function");
+	  }
+	};
+	
+	exports.__esModule = true;
+
+/***/ },
+/* 397 */
+/*!*************************************************************!*\
+  !*** ./~/babel-runtime/helpers/interop-require-wildcard.js ***!
+  \*************************************************************/
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	exports["default"] = function (obj) {
+	  if (obj && obj.__esModule) {
+	    return obj;
+	  } else {
+	    var newObj = {};
+	
+	    if (obj != null) {
+	      for (var key in obj) {
+	        if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+	      }
+	    }
+	
+	    newObj["default"] = obj;
+	    return newObj;
+	  }
+	};
+	
+	exports.__esModule = true;
+
+/***/ },
+/* 398 */
 /*!********************************************!*\
   !*** ./~/react-bootstrap/lib/InputBase.js ***!
   \********************************************/
@@ -28269,7 +28003,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _FormGroup = __webpack_require__(/*! ./FormGroup */ 402);
+	var _FormGroup = __webpack_require__(/*! ./FormGroup */ 399);
 	
 	var _FormGroup2 = _interopRequireDefault(_FormGroup);
 	
@@ -28513,7 +28247,174 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 404 */
+/* 399 */
+/*!********************************************!*\
+  !*** ./~/react-bootstrap/lib/FormGroup.js ***!
+  \********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _inherits = __webpack_require__(/*! babel-runtime/helpers/inherits */ 389)['default'];
+	
+	var _classCallCheck = __webpack_require__(/*! babel-runtime/helpers/class-call-check */ 396)['default'];
+	
+	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 368)['default'];
+	
+	exports.__esModule = true;
+	
+	var _react = __webpack_require__(/*! react */ 192);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _classnames = __webpack_require__(/*! classnames */ 369);
+	
+	var _classnames2 = _interopRequireDefault(_classnames);
+	
+	var FormGroup = (function (_React$Component) {
+	  _inherits(FormGroup, _React$Component);
+	
+	  function FormGroup() {
+	    _classCallCheck(this, FormGroup);
+	
+	    _React$Component.apply(this, arguments);
+	  }
+	
+	  FormGroup.prototype.render = function render() {
+	    var classes = {
+	      'form-group': !this.props.standalone,
+	      'form-group-lg': !this.props.standalone && this.props.bsSize === 'large',
+	      'form-group-sm': !this.props.standalone && this.props.bsSize === 'small',
+	      'has-feedback': this.props.hasFeedback,
+	      'has-success': this.props.bsStyle === 'success',
+	      'has-warning': this.props.bsStyle === 'warning',
+	      'has-error': this.props.bsStyle === 'error'
+	    };
+	
+	    return _react2['default'].createElement(
+	      'div',
+	      { className: _classnames2['default'](classes, this.props.groupClassName) },
+	      this.props.children
+	    );
+	  };
+	
+	  return FormGroup;
+	})(_react2['default'].Component);
+	
+	FormGroup.defaultProps = {
+	  hasFeedback: false,
+	  standalone: false
+	};
+	
+	FormGroup.propTypes = {
+	  standalone: _react2['default'].PropTypes.bool,
+	  hasFeedback: _react2['default'].PropTypes.bool,
+	  bsSize: function bsSize(props) {
+	    if (props.standalone && props.bsSize !== undefined) {
+	      return new Error('bsSize will not be used when `standalone` is set.');
+	    }
+	
+	    return _react2['default'].PropTypes.oneOf(['small', 'medium', 'large']).apply(null, arguments);
+	  },
+	  bsStyle: _react2['default'].PropTypes.oneOf(['success', 'warning', 'error']),
+	  groupClassName: _react2['default'].PropTypes.string
+	};
+	
+	exports['default'] = FormGroup;
+	module.exports = exports['default'];
+
+/***/ },
+/* 400 */
+/*!*****************************************************!*\
+  !*** ./~/react-bootstrap/lib/FormControls/index.js ***!
+  \*****************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 368)['default'];
+	
+	exports.__esModule = true;
+	
+	var _Static2 = __webpack_require__(/*! ./Static */ 401);
+	
+	var _Static3 = _interopRequireDefault(_Static2);
+	
+	exports.Static = _Static3['default'];
+
+/***/ },
+/* 401 */
+/*!******************************************************!*\
+  !*** ./~/react-bootstrap/lib/FormControls/Static.js ***!
+  \******************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _inherits = __webpack_require__(/*! babel-runtime/helpers/inherits */ 389)['default'];
+	
+	var _classCallCheck = __webpack_require__(/*! babel-runtime/helpers/class-call-check */ 396)['default'];
+	
+	var _extends = __webpack_require__(/*! babel-runtime/helpers/extends */ 352)['default'];
+	
+	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 368)['default'];
+	
+	exports.__esModule = true;
+	
+	var _react = __webpack_require__(/*! react */ 192);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _classnames = __webpack_require__(/*! classnames */ 369);
+	
+	var _classnames2 = _interopRequireDefault(_classnames);
+	
+	var _InputBase2 = __webpack_require__(/*! ../InputBase */ 398);
+	
+	var _InputBase3 = _interopRequireDefault(_InputBase2);
+	
+	var _utilsChildrenValueInputValidation = __webpack_require__(/*! ../utils/childrenValueInputValidation */ 402);
+	
+	var _utilsChildrenValueInputValidation2 = _interopRequireDefault(_utilsChildrenValueInputValidation);
+	
+	var Static = (function (_InputBase) {
+	  _inherits(Static, _InputBase);
+	
+	  function Static() {
+	    _classCallCheck(this, Static);
+	
+	    _InputBase.apply(this, arguments);
+	  }
+	
+	  Static.prototype.getValue = function getValue() {
+	    var _props = this.props;
+	    var children = _props.children;
+	    var value = _props.value;
+	
+	    return children ? children : value;
+	  };
+	
+	  Static.prototype.renderInput = function renderInput() {
+	    return _react2['default'].createElement(
+	      'p',
+	      _extends({}, this.props, { className: _classnames2['default'](this.props.className, 'form-control-static'), ref: 'input', key: 'input' }),
+	      this.getValue()
+	    );
+	  };
+	
+	  return Static;
+	})(_InputBase3['default']);
+	
+	Static.propTypes = {
+	  value: _utilsChildrenValueInputValidation2['default'],
+	  children: _utilsChildrenValueInputValidation2['default']
+	};
+	
+	exports['default'] = Static;
+	module.exports = exports['default'];
+
+/***/ },
+/* 402 */
 /*!*********************************************************************!*\
   !*** ./~/react-bootstrap/lib/utils/childrenValueInputValidation.js ***!
   \*********************************************************************/
@@ -28530,7 +28431,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactPropTypesLibSinglePropFrom = __webpack_require__(/*! react-prop-types/lib/singlePropFrom */ 405);
+	var _reactPropTypesLibSinglePropFrom = __webpack_require__(/*! react-prop-types/lib/singlePropFrom */ 403);
 	
 	var _reactPropTypesLibSinglePropFrom2 = _interopRequireDefault(_reactPropTypesLibSinglePropFrom);
 	
@@ -28547,7 +28448,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 405 */
+/* 403 */
 /*!**************************************************!*\
   !*** ./~/react-prop-types/lib/singlePropFrom.js ***!
   \**************************************************/
@@ -28593,259 +28494,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 406 */
-/*!************************************!*\
-  !*** ./src/components/NewTask.jsx ***!
-  \************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	/* REACT HOT LOADER */ if (false) { (function () { var ReactHotAPI = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-api/modules/index.js"), RootInstanceProvider = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/RootInstanceProvider.js"), ReactMount = require("react/lib/ReactMount"), React = require("react"); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	    value: true
-	});
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	var _react = __webpack_require__(/*! react */ 192);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactBootstrapLibInput = __webpack_require__(/*! react-bootstrap/lib/Input */ 407);
-	
-	var _reactBootstrapLibInput2 = _interopRequireDefault(_reactBootstrapLibInput);
-	
-	var _reactBootstrapLibButtonInput = __webpack_require__(/*! react-bootstrap/lib/ButtonInput */ 388);
-	
-	var _reactBootstrapLibButtonInput2 = _interopRequireDefault(_reactBootstrapLibButtonInput);
-	
-	var _reactBootstrapLibGrid = __webpack_require__(/*! react-bootstrap/lib/Grid */ 351);
-	
-	var _reactBootstrapLibGrid2 = _interopRequireDefault(_reactBootstrapLibGrid);
-	
-	var _reactBootstrapLibRow = __webpack_require__(/*! react-bootstrap/lib/Row */ 372);
-	
-	var _reactBootstrapLibRow2 = _interopRequireDefault(_reactBootstrapLibRow);
-	
-	var _reactBootstrapLibCol = __webpack_require__(/*! react-bootstrap/lib/Col */ 373);
-	
-	var _reactBootstrapLibCol2 = _interopRequireDefault(_reactBootstrapLibCol);
-	
-	__webpack_require__(/*! ./NewTask.css */ 412);
-	
-	exports['default'] = _react2['default'].createClass({
-	    displayName: 'NewTask',
-	
-	    render: function render() {
-	        return _react2['default'].createElement(
-	            _reactBootstrapLibGrid2['default'],
-	            null,
-	            _react2['default'].createElement(
-	                _reactBootstrapLibRow2['default'],
-	                { className: 'show-grid' },
-	                _react2['default'].createElement(
-	                    _reactBootstrapLibCol2['default'],
-	                    { md: 10, sm: 10, xs: 12 },
-	                    _react2['default'].createElement(_reactBootstrapLibInput2['default'], { type: 'text', label: '', placeholder: 'New task' })
-	                ),
-	                _react2['default'].createElement(
-	                    _reactBootstrapLibCol2['default'],
-	                    { md: 2, sm: 2, xs: 12, className: 'text-center' },
-	                    _react2['default'].createElement(_reactBootstrapLibButtonInput2['default'], { value: 'Create', className: 'NewTask__button-input', bsStyle: 'success' })
-	                )
-	            )
-	        );
-	    }
-	});
-	module.exports = exports['default'];
-
-	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "NewTask.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
-
-/***/ },
-/* 407 */
-/*!****************************************!*\
-  !*** ./~/react-bootstrap/lib/Input.js ***!
-  \****************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _inherits = __webpack_require__(/*! babel-runtime/helpers/inherits */ 389)['default'];
-	
-	var _classCallCheck = __webpack_require__(/*! babel-runtime/helpers/class-call-check */ 396)['default'];
-	
-	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 368)['default'];
-	
-	var _interopRequireWildcard = __webpack_require__(/*! babel-runtime/helpers/interop-require-wildcard */ 408)['default'];
-	
-	exports.__esModule = true;
-	
-	var _react = __webpack_require__(/*! react */ 192);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _InputBase2 = __webpack_require__(/*! ./InputBase */ 403);
-	
-	var _InputBase3 = _interopRequireDefault(_InputBase2);
-	
-	var _FormControls = __webpack_require__(/*! ./FormControls */ 409);
-	
-	var FormControls = _interopRequireWildcard(_FormControls);
-	
-	var _utilsDeprecationWarning = __webpack_require__(/*! ./utils/deprecationWarning */ 411);
-	
-	var _utilsDeprecationWarning2 = _interopRequireDefault(_utilsDeprecationWarning);
-	
-	var Input = (function (_InputBase) {
-	  _inherits(Input, _InputBase);
-	
-	  function Input() {
-	    _classCallCheck(this, Input);
-	
-	    _InputBase.apply(this, arguments);
-	  }
-	
-	  Input.prototype.render = function render() {
-	    if (this.props.type === 'static') {
-	      _utilsDeprecationWarning2['default']('Input type=static', 'FormControls.Static');
-	      return _react2['default'].createElement(FormControls.Static, this.props);
-	    }
-	
-	    return _InputBase.prototype.render.call(this);
-	  };
-	
-	  return Input;
-	})(_InputBase3['default']);
-	
-	Input.propTypes = {
-	  type: _react2['default'].PropTypes.string
-	};
-	
-	exports['default'] = Input;
-	module.exports = exports['default'];
-
-/***/ },
-/* 408 */
-/*!*************************************************************!*\
-  !*** ./~/babel-runtime/helpers/interop-require-wildcard.js ***!
-  \*************************************************************/
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	exports["default"] = function (obj) {
-	  if (obj && obj.__esModule) {
-	    return obj;
-	  } else {
-	    var newObj = {};
-	
-	    if (obj != null) {
-	      for (var key in obj) {
-	        if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
-	      }
-	    }
-	
-	    newObj["default"] = obj;
-	    return newObj;
-	  }
-	};
-	
-	exports.__esModule = true;
-
-/***/ },
-/* 409 */
-/*!*****************************************************!*\
-  !*** ./~/react-bootstrap/lib/FormControls/index.js ***!
-  \*****************************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 368)['default'];
-	
-	exports.__esModule = true;
-	
-	var _Static2 = __webpack_require__(/*! ./Static */ 410);
-	
-	var _Static3 = _interopRequireDefault(_Static2);
-	
-	exports.Static = _Static3['default'];
-
-/***/ },
-/* 410 */
-/*!******************************************************!*\
-  !*** ./~/react-bootstrap/lib/FormControls/Static.js ***!
-  \******************************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _inherits = __webpack_require__(/*! babel-runtime/helpers/inherits */ 389)['default'];
-	
-	var _classCallCheck = __webpack_require__(/*! babel-runtime/helpers/class-call-check */ 396)['default'];
-	
-	var _extends = __webpack_require__(/*! babel-runtime/helpers/extends */ 352)['default'];
-	
-	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 368)['default'];
-	
-	exports.__esModule = true;
-	
-	var _react = __webpack_require__(/*! react */ 192);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _classnames = __webpack_require__(/*! classnames */ 369);
-	
-	var _classnames2 = _interopRequireDefault(_classnames);
-	
-	var _InputBase2 = __webpack_require__(/*! ../InputBase */ 403);
-	
-	var _InputBase3 = _interopRequireDefault(_InputBase2);
-	
-	var _utilsChildrenValueInputValidation = __webpack_require__(/*! ../utils/childrenValueInputValidation */ 404);
-	
-	var _utilsChildrenValueInputValidation2 = _interopRequireDefault(_utilsChildrenValueInputValidation);
-	
-	var Static = (function (_InputBase) {
-	  _inherits(Static, _InputBase);
-	
-	  function Static() {
-	    _classCallCheck(this, Static);
-	
-	    _InputBase.apply(this, arguments);
-	  }
-	
-	  Static.prototype.getValue = function getValue() {
-	    var _props = this.props;
-	    var children = _props.children;
-	    var value = _props.value;
-	
-	    return children ? children : value;
-	  };
-	
-	  Static.prototype.renderInput = function renderInput() {
-	    return _react2['default'].createElement(
-	      'p',
-	      _extends({}, this.props, { className: _classnames2['default'](this.props.className, 'form-control-static'), ref: 'input', key: 'input' }),
-	      this.getValue()
-	    );
-	  };
-	
-	  return Static;
-	})(_InputBase3['default']);
-	
-	Static.propTypes = {
-	  value: _utilsChildrenValueInputValidation2['default'],
-	  children: _utilsChildrenValueInputValidation2['default']
-	};
-	
-	exports['default'] = Static;
-	module.exports = exports['default'];
-
-/***/ },
-/* 411 */
+/* 404 */
 /*!***********************************************************!*\
   !*** ./~/react-bootstrap/lib/utils/deprecationWarning.js ***!
   \***********************************************************/
@@ -28861,7 +28510,7 @@
 	
 	exports.__esModule = true;
 	
-	var _warning = __webpack_require__(/*! warning */ 401);
+	var _warning = __webpack_require__(/*! warning */ 387);
 	
 	var _warning2 = _interopRequireDefault(_warning);
 	
@@ -28925,26 +28574,26 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./~/process/browser.js */ 191)))
 
 /***/ },
-/* 412 */
-/*!************************************!*\
-  !*** ./src/components/NewTask.css ***!
-  \************************************/
+/* 405 */
+/*!****************************************!*\
+  !*** ./src/components/CreateTask.less ***!
+  \****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(/*! !./../../~/css-loader!./../../~/autoprefixer-loader!./NewTask.css */ 413);
+	var content = __webpack_require__(/*! !./../../~/css-loader!./../../~/autoprefixer-loader!./../../~/less-loader!./CreateTask.less */ 406);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(/*! ./../../~/style-loader/addStyles.js */ 415)(content, {});
+	var update = __webpack_require__(/*! ./../../~/style-loader/addStyles.js */ 408)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/autoprefixer-loader/index.js!./NewTask.css", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/autoprefixer-loader/index.js!./NewTask.css");
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/autoprefixer-loader/index.js!./../../node_modules/less-loader/index.js!./CreateTask.less", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/autoprefixer-loader/index.js!./../../node_modules/less-loader/index.js!./CreateTask.less");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -28954,24 +28603,24 @@
 	}
 
 /***/ },
-/* 413 */
-/*!***************************************************************************!*\
-  !*** ./~/css-loader!./~/autoprefixer-loader!./src/components/NewTask.css ***!
-  \***************************************************************************/
+/* 406 */
+/*!***********************************************************************************************!*\
+  !*** ./~/css-loader!./~/autoprefixer-loader!./~/less-loader!./src/components/CreateTask.less ***!
+  \***********************************************************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(/*! ./../../~/css-loader/lib/css-base.js */ 414)();
+	exports = module.exports = __webpack_require__(/*! ./../../~/css-loader/lib/css-base.js */ 407)();
 	// imports
 	
 	
 	// module
-	exports.push([module.id, ".NewTask__button-input {\n    width: 100%;\n    max-width: 150px;\n}\n", ""]);
+	exports.push([module.id, ".CreateTask__button {\n  background-color: red;\n}\nbody {\n  background-color: blue;\n}\n", ""]);
 	
 	// exports
 
 
 /***/ },
-/* 414 */
+/* 407 */
 /*!**************************************!*\
   !*** ./~/css-loader/lib/css-base.js ***!
   \**************************************/
@@ -29030,7 +28679,7 @@
 
 
 /***/ },
-/* 415 */
+/* 408 */
 /*!*************************************!*\
   !*** ./~/style-loader/addStyles.js ***!
   \*************************************/

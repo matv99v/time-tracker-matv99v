@@ -5,24 +5,22 @@ import Row from 'react-bootstrap/lib/Row';
 import Col from 'react-bootstrap/lib/Col';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
 
-export default React.createClass({
+export default class UserSection extends React.Component {
     render() {
         return (
 
             <Grid fluid>
-                <Row className="show-grid">
+                <Row className="text-center">
 
-                    <Col md={6} className="text-center">
                         <Glyphicon glyph="user" />
-                    </Col>
+                </Row>
+                <Row className="text-center">
 
-                    <Col md={6} className="text-center">
                         <h5><a>Logout</a></h5>
-                    </Col>
 
                 </Row>
             </Grid>
 
         );
     }
-});
+}
