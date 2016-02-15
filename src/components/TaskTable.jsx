@@ -11,7 +11,7 @@ export default class TaskTable extends React.Component {
     render() {
         const tasks = this.props.tasks;
         return (
-            <Table responsive className='TaskTable'>
+            <Table className='TaskTable'>
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -28,6 +28,8 @@ export default class TaskTable extends React.Component {
                                 <SingleTask key={task.id}
                                             task={task}
                                             onDeleteTask={this.props.onDeleteTask}
+                                            onClearTask={this.props.onClearTask}
+                                            onToggleStartStop={this.props.onToggleStartStop}
                                 />
                             );
                         })

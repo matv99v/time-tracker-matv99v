@@ -7,15 +7,14 @@ import Button from 'react-bootstrap/lib/Button';
 export default class SingleTask extends React.Component {
 
     handleStartStopClick = () => {
-        console.log('start/stop', this.props.task.name);
+        this.props.onToggleStartStop(this.props.task);
     };
 
     handleClearClick = () => {
-        console.log('clear', this.props.task.name);
+        this.props.onClearTask(this.props.task);
     };
 
     handleStartDeleteClick = () => {
-        console.log('SingleTask: delete', this.props.task.name);
         this.props.onDeleteTask(this.props.task);
     };
 
@@ -38,7 +37,10 @@ export default class SingleTask extends React.Component {
             <tr>
                 <td>{task.name}</td>
                 <td>{task.spentTime}</td>
-                <td><Button onClick={this.handleStartStopClick} >Start/Stop</Button></td>
+                <td><Button onClick={this.handleStartStopClick} >
+                        { task.isActive ? 'Stop' : 'Start' }
+                    </Button>
+                </td>
                 <td><Button onClick={this.handleClearClick} >Clear</Button></td>
                 <td><Button onClick={this.handleStartDeleteClick} >Delete</Button></td>
             </tr>
