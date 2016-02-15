@@ -13,7 +13,13 @@ export default class CreateTask extends React.Component {
 
     handleNewTaskClick = () => {
         const newTaskName = this.refs.newTaskNameInput.refs.input.value;
-        this.props.onSubmit(newTaskName);
+
+        if (newTaskName) {
+            this.props.onSubmit(newTaskName);
+            this.refs.newTaskNameInput.refs.input.value = '';
+        } else {
+            console.log('Input required');
+        }
 
     };
 
@@ -22,7 +28,10 @@ export default class CreateTask extends React.Component {
             <Grid fluid>
                 <Row>
                     <Col md={10} sm={10}>
-                        <Input type="text" placeholder="New task" ref='newTaskNameInput'/>
+                        <Input  type="text"
+                                ref='newTaskNameInput'
+                                placeholder="New task"
+                        />
                     </Col>
                     <Col md={2} sm={2} className="text-center">
                         <Button onClick={ this.handleNewTaskClick }
