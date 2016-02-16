@@ -9,7 +9,8 @@ import Timer from '../Timer.js';
 
 export default class App extends React.Component {
     state = {
-        tasks : []
+        tasks : [],
+        activeTaskId : null
     };
 
     handleNewTaskSubmit = (newTaskName) => {
@@ -19,7 +20,7 @@ export default class App extends React.Component {
             id: Date.now(),
             name: newTaskName,
             isActive: false,
-            spentTime: 0,
+            spentTime: '00:00:00',
             timerAPI: new Timer()
         });
 
@@ -30,37 +31,80 @@ export default class App extends React.Component {
         const storedTasks = this.state.tasks;
         const ind = storedTasks.indexOf(taskToDelete);
 
-        if (ind > -1) {
-            storedTasks.splice(ind, 1);
-            this.setState({tasks: storedTasks});
+        storedTasks.splice(ind, 1);
+
+        if (taskToDelete.isActive) {
+            clearInterval(this.interval);
         }
+
+        this.setState({
+            tasks: storedTasks,
+            activeTaskId: null
+        });
     };
 
     handleTaskClear = (taskToClear) => {
         const storedTasks = this.state.tasks;
-        const ind = storedTasks.indexOf(taskToClear);
 
-        storedTasks[ind].spentTime = 100;
+        taskToClear.timerAPI.clear();
+        taskToClear.spentTime = this.parseTimeString(
+            taskToClear.timerAPI.getSpentTime()
+        );
+
         this.setState({tasks: storedTasks});
     };
 
     handleTaskStartStop = (taskToToggleStartStop) => {
         const storedTasks = this.state.tasks;
         const ind = storedTasks.indexOf(taskToToggleStartStop);
-        const currActiveTask = storedTasks[ind];
 
-        if (!storedTasks[ind].isActive) { // reset all 'isActive' states
+        if (!taskToToggleStartStop.isActive) {
+            clearInterval(this.interval);
+
             storedTasks.forEach( (task) => {
+                task.timerAPI.stop();
                 task.isActive = false;
             });
+
+            taskToToggleStartStop.isActive = true;
+            taskToToggleStartStop.timerAPI.start();
+
+            this.interval = setInterval( () => {
+                taskToToggleStartStop.spentTime = this.parseTimeString(
+                    taskToToggleStartStop.timerAPI.getSpentTime()
+                );
+
+                this.setState({tasks: storedTasks});
+            }, 1000);
+
+        } else {
+            taskToToggleStartStop.timerAPI.stop();
+            taskToToggleStartStop.isActive = false;
+            clearInterval(this.interval);
         }
 
-        storedTasks[ind].isActive = !storedTasks[ind].isActive; // toggle isActive state
-
-        this.setState({tasks: storedTasks});
+        this.setState({ tasks: storedTasks,
+                        activeTaskId:   taskToToggleStartStop.isActive
+                                        ? taskToToggleStartStop.id
+                                        : null
+        });
     };
 
+    parseTimeString = (timeNum) => {
+        function addZero(arg) {
+            const numOfDigits = (arg + '').length;
+            return '00'.slice(0, 2 - numOfDigits);
+        }
 
+        const seconds = (timeNum / 1000).toFixed() % 60;
+        const minutes =  Math.floor(timeNum / 60000) % 60;
+        const hours =  Math.floor( timeNum / (60000 * 60) );
+
+        return (addZero(hours) + hours + ':' +
+                addZero(minutes) + minutes + ':' +
+                addZero(seconds) + seconds
+        );
+    };
 
     render() {
         return (

@@ -18,7 +18,6 @@ export default class SingleTask extends React.Component {
         this.props.onDeleteTask(this.props.task);
     };
 
-
     render() {
         const task = this.props.task;
         if (!task) {
