@@ -147,4 +147,4 @@ function validateRegistrationData(formData) {
     return errors;
 }
 
-module.exports = {validateRegistrationData};
+module.exports = validateRegistrationData;
