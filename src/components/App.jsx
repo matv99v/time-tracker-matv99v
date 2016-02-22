@@ -1,106 +1,116 @@
-import React from 'react';
-
-import Header from './Header.jsx';
+import React      from 'react';
+import Header     from './Header.jsx';
 import CreateTask from './CreateTask.jsx';
-import TaskTable from './TaskTable.jsx';
 import ActiveTask from './ActiveTask.jsx';
+import TasksList  from './TasksList.jsx';
 
-import Timer from '../Timer.js';
+import Timer  from '../Timer.js';
 
 export default class App extends React.Component {
+    interval = null;
+
     state = {
-        tasks : [],
+        tasks        : [],
         activeTaskId : null
     };
 
-    handleNewTaskSubmit = (newTaskName) => {
-        const {tasks} = this.state; // tasks = this.state.tasks;
 
-        tasks.push({
-            id: Date.now(),
-            name: newTaskName,
-            isActive: false,
-            spentTime: '00:00:00',
-            timerAPI: new Timer()
+    handleNewTaskSubmit = (taskName) => {
+        this.state.tasks.push({
+            name     : taskName,
+            spentTime: 0,
+            isActive : false,
+            id       : Date.now(),
+            timer    : new Timer()
         });
-
-        this.setState({tasks}); // {tasks: tasks}
+        this.setState({tasks: this.state.tasks});
     };
 
-    handleTaskDelete = (taskToDelete) => {
-        const storedTasks = this.state.tasks;
-        const ind = storedTasks.indexOf(taskToDelete);
+    handleStartTask = (taskID) => {
+        clearInterval(this.interval);
+        const prevActiveTaskId = this.state.activeTaskId;
 
-        storedTasks.splice(ind, 1);
+        const tasks = this.state.tasks.map( (task) => {
+            if (task.id === taskID) {
+                task.isActive = true;
+                task.timer.start();
+            } else if (task.id === prevActiveTaskId) {
+                task.isActive = false;
+                task.timer.stop();
+            }
+            return task;
+        });
 
-        if (taskToDelete.isActive) {
-            clearInterval(this.interval);
-        }
+        this.initTimerInterval();
+        this.setState({
+            tasks,
+            activeTaskId: taskID
+        });
+    };
+
+    handleStopTask = (taskID) => {
+        clearInterval(this.interval);
+
+        const tasks = this.state.tasks.map( (task) => {
+            if (task.id === taskID) {
+                task.isActive = false;
+                task.timer.stop();
+            }
+            return task;
+        });
 
         this.setState({
-            tasks: storedTasks,
+            tasks,
+            activeTaskId: null
+        });
+
+    };
+
+    handleClearTimer = (taskID) => {
+        const tasks = this.state.tasks.map( (task) => {
+            if (task.id === taskID) {
+                task.timer.clear();
+                task.spentTime = task.timer.getSpentTime();
+            }
+            return task;
+        });
+
+        this.setState({tasks});
+    };
+
+    handleDeleteTask = (taskID) => {
+        if (this.state.activeTaskId === taskID) clearInterval(this.interval);
+
+        const tasks = this.state.tasks.filter( (task) => task.id !== taskID );
+        this.setState({
+            tasks,
             activeTaskId: null
         });
     };
 
-    handleTaskClear = (taskToClear) => {
-        const storedTasks = this.state.tasks;
-
-        taskToClear.timerAPI.clear();
-        taskToClear.spentTime = this.parseTimeString(
-            taskToClear.timerAPI.getSpentTime()
-        );
-
-        this.setState({tasks: storedTasks});
-    };
-
-    handleTaskStartStop = (taskToToggleStartStop) => {
-        const storedTasks = this.state.tasks;
-        const ind = storedTasks.indexOf(taskToToggleStartStop);
-
-        if (!taskToToggleStartStop.isActive) {
-            clearInterval(this.interval);
-
-            storedTasks.forEach( (task) => {
-                task.timerAPI.stop();
-                task.isActive = false;
+    initTimerInterval = () => {
+        this.interval = setInterval( () => {
+            const tasks = this.state.tasks.map( (task) => {
+                if (task.isActive) task.spentTime = task.timer.getSpentTime();
+                return task;
             });
 
-            taskToToggleStartStop.isActive = true;
-            taskToToggleStartStop.timerAPI.start();
+            this.setState({tasks});
+        }, 1000);
 
-            this.interval = setInterval( () => {
-                taskToToggleStartStop.spentTime = this.parseTimeString(
-                    taskToToggleStartStop.timerAPI.getSpentTime()
-                );
-
-                this.setState({tasks: storedTasks});
-            }, 1000);
-
-        } else {
-            taskToToggleStartStop.timerAPI.stop();
-            taskToToggleStartStop.isActive = false;
-            clearInterval(this.interval);
-        }
-
-        this.setState({ tasks: storedTasks,
-                        activeTaskId:   taskToToggleStartStop.isActive
-                                        ? taskToToggleStartStop.id
-                                        : null
-        });
     };
 
-    parseTimeString = (timeNum) => {
+    handleParseTimeString = (timeNum) => {
         function addZero(arg) {
             const numOfDigits = (arg + '').length;
             return '00'.slice(0, 2 - numOfDigits);
         }
 
         const seconds = (timeNum / 1000).toFixed() % 60;
-        const minutes =  Math.floor(timeNum / 60000) % 60;
-        const hours =  Math.floor( timeNum / (60000 * 60) );
+        const minutes = Math.floor(timeNum / 60000) % 60;
+        const hours   = Math.floor( timeNum / (60000 * 60) );
 
-        return (addZero(hours) + hours + ':' +
+        return (addZero(hours)   + hours   + ':' +
                 addZero(minutes) + minutes + ':' +
                 addZero(seconds) + seconds
         );
@@ -110,13 +120,14 @@ export default class App extends React.Component {
         return (
             <div>
                 <Header />
-                <CreateTask onSubmit={this.handleNewTaskSubmit} />
-                <ActiveTask tasks={this.state.tasks} />
-                <TaskTable
-                    tasks={this.state.tasks}
-                    onDeleteTask={this.handleTaskDelete}
-                    onClearTask={this.handleTaskClear}
-                    onToggleStartStop={this.handleTaskStartStop}
+                <CreateTask onSubmit = { this.handleNewTaskSubmit } />
+                <ActiveTask />
+                <TasksList tasks              = {this.state.tasks}
+                            onParseTimeString = {this.handleParseTimeString}
+                            onStartTask       = {this.handleStartTask}
+                            onStopTask        = {this.handleStopTask}
+                            onClearTimer      = {this.handleClearTimer}
+                            onDeleteTask      = {this.handleDeleteTask}
                 />
             </div>
         );

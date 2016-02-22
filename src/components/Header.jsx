@@ -1,9 +1,7 @@
-import React from 'react';
-
-import Grid from 'react-bootstrap/lib/Grid';
-import Row from 'react-bootstrap/lib/Row';
-import Col from 'react-bootstrap/lib/Col';
-
+import React       from 'react';
+import Grid        from 'react-bootstrap/lib/Grid';
+import Row         from 'react-bootstrap/lib/Row';
+import Col         from 'react-bootstrap/lib/Col';
 import UserSection from './UserSection.jsx';
 
 export default class Header extends React.Component {
