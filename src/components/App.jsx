@@ -80,8 +80,8 @@ export default class App extends React.Component {
 
     handleDeleteTask = (taskID) => {
         if (this.state.activeTaskId === taskID) clearInterval(this.interval);
-
         const tasks = this.state.tasks.filter( (task) => task.id !== taskID );
+
         this.setState({
             tasks,
             activeTaskId: null
@@ -120,14 +120,18 @@ export default class App extends React.Component {
         return (
             <div>
                 <Header />
-                <CreateTask onSubmit = { this.handleNewTaskSubmit } />
-                <ActiveTask />
-                <TasksList tasks              = {this.state.tasks}
-                            onParseTimeString = {this.handleParseTimeString}
-                            onStartTask       = {this.handleStartTask}
-                            onStopTask        = {this.handleStopTask}
-                            onClearTimer      = {this.handleClearTimer}
-                            onDeleteTask      = {this.handleDeleteTask}
+                <CreateTask onSubmit   = { this.handleNewTaskSubmit } />
+
+                <ActiveTask activeTask      = { this.state.tasks.find( (task) => task.id === this.state.activeTaskId )}
+                            parseTimeString = {this.handleParseTimeString}
+                />
+
+                <TasksList tasks           = {this.state.tasks}
+                           onStartTask     = {this.handleStartTask}
+                           onStopTask      = {this.handleStopTask}
+                           onClearTimer    = {this.handleClearTimer}
+                           onDeleteTask    = {this.handleDeleteTask}
+                           parseTimeString = {this.handleParseTimeString}
                 />
             </div>
         );

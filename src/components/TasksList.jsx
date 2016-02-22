@@ -23,12 +23,12 @@ export default class TasksList extends React.Component {
             return (
                 <ListGroupItem key={ind} >
                     <Grid>
-                        <Row>
+                        <Row bStyle    = 'danger' >
 
-                            <Col xs={4}>{task.name}</Col>
-                            <Col xs={4}>{ this.props.onParseTimeString(task.spentTime) }</Col>
+                            <Col xs={5}>{task.name}</Col>
+                            <Col xs={3}>{ this.props.parseTimeString(task.spentTime) }</Col>
 
-                            <Col xs={4} className='text-right'>
+                            <Col xs={4} className='text-right' >
                                 <Button bsSize    = 'xsmall'
                                         className = 'TasksList__button'
                                         onClick   = {this.handleStartStopClikc.bind(this, task)}>
@@ -59,14 +59,18 @@ export default class TasksList extends React.Component {
         return (
             <ListGroup >
 
-                <ListGroupItem >
-                    <Grid>
-                        <Row>
-                            <Col xs={4}>Task name</Col>
-                            <Col xs={4}>Spent time</Col>
-                        </Row>
-                    </Grid>
-                </ListGroupItem>
+                {
+                    this.props.tasks.length
+                        ?   <ListGroupItem >
+                                <Grid>
+                                    <Row>
+                                        <Col xs={5}>Task name</Col>
+                                        <Col xs={3}>Spent time</Col>
+                                    </Row>
+                                </Grid>
+                            </ListGroupItem>
+                        : null
+                }
 
                 {this.formList()}
 
