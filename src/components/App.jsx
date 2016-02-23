@@ -79,13 +79,16 @@ export default class App extends React.Component {
     };
 
     handleDeleteTask = (taskID) => {
-        if (this.state.activeTaskId === taskID) clearInterval(this.interval);
         const tasks = this.state.tasks.filter( (task) => task.id !== taskID );
 
-        this.setState({
-            tasks,
-            activeTaskId: null
-        });
+        if (this.state.activeTaskId === taskID) {
+            clearInterval(this.interval);
+            this.setState({
+                tasks,
+                activeTaskId: null
+            });
+        }
+        else this.setState({tasks});
     };
 
     initTimerInterval = () => {

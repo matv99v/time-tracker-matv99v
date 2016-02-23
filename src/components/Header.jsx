@@ -8,7 +8,7 @@ export default class Header extends React.Component {
     render() {
         return (
             <Grid fluid>
-                <Row className='show-grid'>
+                <Row >
 
                     <Col md={2} sm={2} xs={2}></Col>
 

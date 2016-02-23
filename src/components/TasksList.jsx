@@ -21,9 +21,9 @@ export default class TasksList extends React.Component {
     formList = () => {
         return this.props.tasks.map( (task, ind) => {
             return (
-                <ListGroupItem key={ind} >
+                <ListGroupItem key={ind} className='TasksList__list-group-item'>
                     <Grid>
-                        <Row bStyle    = 'danger' >
+                        <Row>
 
                             <Col xs={5}>{task.name}</Col>
                             <Col xs={3}>{ this.props.parseTimeString(task.spentTime) }</Col>
@@ -31,19 +31,20 @@ export default class TasksList extends React.Component {
                             <Col xs={4} className='text-right' >
                                 <Button bsSize    = 'xsmall'
                                         className = 'TasksList__button'
-                                        onClick   = {this.handleStartStopClikc.bind(this, task)}>
+                                        onClick   = {this.handleStartStopClikc.bind(this, task)}
+                                        bsStyle   = {task.isActive ? 'info' : 'default' }>
                                     {task.isActive ? 'Stop' : 'Start' }
                                 </Button>
 
                                 <Button bsSize    = 'xsmall'
                                         className = 'TasksList__button'
-                                        onClick = {this.props.onClearTimer.bind(this, task.id)}>
+                                        onClick   = {this.props.onClearTimer.bind(this, task.id)}>
                                     Clear
                                 </Button>
 
                                 <Button bsSize    = 'xsmall'
                                         className = 'TasksList__button'
-                                        onClick = {this.props.onDeleteTask.bind(this, task.id)}>
+                                        onClick   = {this.props.onDeleteTask.bind(this, task.id)}>
                                     Delete
                                 </Button>
                             </Col>
