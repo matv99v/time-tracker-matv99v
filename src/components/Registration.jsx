@@ -25,12 +25,6 @@ export default class Registration extends React.Component {
         }
 
         const errors = validateRegistrationData(inputData);
-
-        console.log( 'input----------' );
-        console.dir( inputData );
-        console.log( 'errors-----------' );
-        console.dir( errors );
-
         const newState = {errMsg: {}, bsStyle: {}};
 
         for (const field in this.state.errMsg) {
@@ -67,7 +61,7 @@ export default class Registration extends React.Component {
 
     render() {
         return (
-            <form>
+            <form >
                 <Input type     = 'text'
                         help    = {this.state.errMsg.name}
                         bsStyle = {this.state.bsStyle.name}
@@ -133,7 +127,8 @@ export default class Registration extends React.Component {
                         name  = 'sex' />
 
                 <Col className = 'text-center'>
-                    <Button bsStyle = 'success' onClick = {this.handleSubmitButton}>
+                    <Button bsStyle = 'success'
+                            onClick = {this.handleSubmitButton} >
                         Submit
                     </Button>
                 </Col>

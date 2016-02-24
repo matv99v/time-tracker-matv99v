@@ -21,14 +21,14 @@ export default class TasksList extends React.Component {
     formList = () => {
         return this.props.tasks.map( (task, ind) => {
             return (
-                <ListGroupItem key={ind} className='TasksList__list-group-item'>
-                    <Grid>
-                        <Row>
+                <ListGroupItem key={ind} className='TasksList__list-group-item' >
+                    <Grid >
+                        <Row >
 
                             <Col xs={5}>{task.name}</Col>
                             <Col xs={3}>{ this.props.parseTimeString(task.spentTime) }</Col>
 
-                            <Col xs={4} className='text-right' >
+                            <Col xs={4} >
                                 <Button bsSize    = 'xsmall'
                                         className = 'TasksList__button'
                                         onClick   = {this.handleStartStopClikc.bind(this, task)}
