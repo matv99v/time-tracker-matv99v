@@ -2,6 +2,7 @@ import React  from 'react';
 
 import Button from 'react-bootstrap/lib/Button';
 import Input  from 'react-bootstrap/lib/Input';
+import Col  from 'react-bootstrap/lib/Col';
 
 import './CreateTask.less';
 
@@ -47,20 +48,21 @@ export default class CreateTask extends React.Component {
         const submitButton =    <Button className = 'CreateTask__createButton'
                                         onClick   = {this.handleSubmitClick}
                                         disabled  = {!this.state.isValid}
-                                        bsStyle   = {this.state.isValid ? 'success' : 'danger'}
-                                >
+                                        bsStyle   = {this.state.isValid ? 'success' : 'danger'} >
                                     {this.state.isValid ? 'Create' : 'letters or digits only'}
                                 </Button>;
 
         return (
-            <Input  type        = 'text'
-                    ref         = 'newTaskNameInput'
-                    placeholder = 'New task'
-                    value       = {this.state.inputValue}
-                    onChange    = {this.handleInputChange}
-                    bsStyle     = {this.state.isValid ? 'success' : 'error'}
-                    buttonAfter = {submitButton}
-            />
+            <Col xs={12} sm={10} smOffset={1}>
+                <Input  type        = 'text'
+                        ref         = 'newTaskNameInput'
+                        placeholder = 'New task'
+                        value       = {this.state.inputValue}
+                        onChange    = {this.handleInputChange}
+                        bsStyle     = {this.state.isValid ? 'success' : 'error'}
+                        buttonAfter = {submitButton}
+                />
+            </Col>
         );
     }
 }

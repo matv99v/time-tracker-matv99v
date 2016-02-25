@@ -16,9 +16,13 @@ export default class ActiveTask extends React.Component {
                                 + this.props.parseTimeString(this.props.activeTask.spentTime)
                         :   'none';
         return (
-            <div className = {this.props.activeTask ? 'text-center' : 'ActiveTask__container'}>
-                <h2>{str}</h2>
-            </div>
+            <Grid className = {this.props.activeTask ? 'text-center' : 'ActiveTask__container'}>
+                <Row>
+                    <Col xs={12}>
+                        <h2>{str}</h2>
+                    </Col>
+                </Row>
+            </Grid>
         );
     }
 }

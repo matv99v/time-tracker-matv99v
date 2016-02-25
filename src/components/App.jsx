@@ -14,7 +14,6 @@ export default class App extends React.Component {
         activeTaskId : null
     };
 
-
     handleNewTaskSubmit = (taskName) => {
         this.state.tasks.push({
             name     : taskName,

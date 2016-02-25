@@ -22,11 +22,11 @@ export default class TasksList extends React.Component {
         return this.props.tasks.map( (task, ind) => {
             return (
                 <ListGroupItem key={ind} className='TasksList__list-group-item' >
-                    <Grid >
+                    <Grid fluid>
                         <Row >
 
-                            <Col xs={5}>{task.name}</Col>
-                            <Col xs={3}>{ this.props.parseTimeString(task.spentTime) }</Col>
+                            <Col xs={4} >{task.name}</Col>
+                            <Col xs={4} >{ this.props.parseTimeString(task.spentTime) }</Col>
 
                             <Col xs={4} >
                                 <Button bsSize    = 'xsmall'
@@ -58,24 +58,35 @@ export default class TasksList extends React.Component {
 
     render() {
         return (
-            <ListGroup >
+            <Grid fluid>
+                <Row>
+                    <Col  xs={12} xsOffset={0}
+                          sm={10} smOffset={1}
+                          md={10} mdOffset={1}>
 
-                {
-                    this.props.tasks.length
-                        ?   <ListGroupItem >
-                                <Grid>
-                                    <Row>
-                                        <Col xs={5}>Task name</Col>
-                                        <Col xs={3}>Spent time</Col>
-                                    </Row>
-                                </Grid>
-                            </ListGroupItem>
-                        : null
-                }
+                        <ListGroup>
 
-                {this.formList()}
+                            {
+                                this.props.tasks.length
+                                    ?   <ListGroupItem >
+                                            <Grid fluid>
+                                                <Row>
+                                                    <Col xs={4}>Task name</Col>
+                                                    <Col xs={4}>Spent time</Col>
+                                                    <Col xs={4}>Controls</Col>
+                                                </Row>
+                                            </Grid>
+                                        </ListGroupItem>
+                                    : null
+                            }
 
-            </ListGroup>
+                            {this.formList()}
+
+                        </ListGroup>
+                    </Col>
+                    <Col  xs={0} sm={1} md={1}></Col>
+                </Row>
+            </Grid>
         );
     }
 }
