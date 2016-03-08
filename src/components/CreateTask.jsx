@@ -4,8 +4,6 @@ import Button from 'react-bootstrap/lib/Button';
 import Input  from 'react-bootstrap/lib/Input';
 import Col  from 'react-bootstrap/lib/Col';
 
-import './CreateTask.less';
-
 export default class CreateTask extends React.Component {
     state = {
         inputValue: '',

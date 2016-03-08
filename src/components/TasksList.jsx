@@ -5,6 +5,8 @@ import Grid          from 'react-bootstrap/lib/Grid';
 import Row           from 'react-bootstrap/lib/Row';
 import Col           from 'react-bootstrap/lib/Col';
 import Button        from 'react-bootstrap/lib/Button';
+import ButtonToolbar        from 'react-bootstrap/lib/ButtonToolbar';
+import ButtonGroup        from 'react-bootstrap/lib/ButtonGroup';
 
 import './TasksList.less';
 
@@ -29,24 +31,22 @@ export default class TasksList extends React.Component {
                             <Col xs={4} >{ this.props.parseTimeString(task.spentTime) }</Col>
 
                             <Col xs={4} >
-                                <Button bsSize    = 'xsmall'
-                                        className = 'TasksList__button'
-                                        onClick   = {this.handleStartStopClikc.bind(this, task)}
-                                        bsStyle   = {task.isActive ? 'info' : 'default' }>
-                                    {task.isActive ? 'Stop' : 'Start' }
-                                </Button>
+                                <ButtonToolbar>
+                                    <ButtonGroup bsSize = 'xsmall'>
+                                        <Button onClick   = {this.handleStartStopClikc.bind(this, task)}
+                                                bsStyle   = {task.isActive ? 'info' : 'default' }>
+                                            {task.isActive ? 'Stop' : 'Start' }
+                                        </Button>
 
-                                <Button bsSize    = 'xsmall'
-                                        className = 'TasksList__button'
-                                        onClick   = {this.props.onClearTimer.bind(this, task.id)}>
-                                    Clear
-                                </Button>
+                                        <Button onClick   = {this.props.onClearTimer.bind(this, task.id)}>
+                                            Clear
+                                        </Button>
 
-                                <Button bsSize    = 'xsmall'
-                                        className = 'TasksList__button'
-                                        onClick   = {this.props.onDeleteTask.bind(this, task.id)}>
-                                    Delete
-                                </Button>
+                                        <Button onClick   = {this.props.onDeleteTask.bind(this, task.id)}>
+                                            Delete
+                                        </Button>
+                                    </ButtonGroup>
+                                </ButtonToolbar>
                             </Col>
 
                         </Row>

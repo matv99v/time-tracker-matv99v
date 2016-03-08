@@ -5,14 +5,31 @@ import Col         from 'react-bootstrap/lib/Col';
 import Row         from 'react-bootstrap/lib/Row';
 import Grid        from 'react-bootstrap/lib/Grid';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
+import {Link}      from 'react-router';
 
 import {validateRegistrationData} from '../validators.js';
 
 export default class Registration extends React.Component {
-    handleSubmitButton = () => {
+    state = {
+        inputs: {
+            name       : {error: null, inputStyle: null},
+            email      : {error: null, inputStyle: null},
+            username   : {error: null, inputStyle: null},
+            password   : {error: null, inputStyle: null},
+            repassword : {error: null, inputStyle: null},
+            birthday   : {error: null, inputStyle: null},
+            phone      : {error: null, inputStyle: null},
+            male       : {error: null, inputStyle: null},
+            female     : {error: null, inputStyle: null}
+        },
+        isFormValid : false
+    };
+
+
+    getErrors = () => {
         const inputData = {};
 
-        for (const field in this.refs) {
+        Object.keys(this.refs).forEach( (field) => {
             const value = this.refs[field].getValue();
 
             if (field === 'birthday' &&  value) {
@@ -23,126 +40,131 @@ export default class Registration extends React.Component {
             } else if (field === 'gender') {
                 inputData.gender = this.refs.gender.getChecked() ? 'm' : 'f';
             } else inputData[field] = this.refs[field].getValue();
-
-        }
-
-        const errors = validateRegistrationData(inputData);
-        const newState = {errMsg: {}, bsStyle: {}};
-
-        for (const field in this.state.errMsg) {
-            newState.errMsg[field] = errors[field] || '';
-            newState.bsStyle[field] = newState.errMsg[field] ? 'error' : 'success';
-        }
-
-        this.setState( newState );
-
+        });
+        return validateRegistrationData( inputData );
     };
 
-    state = {
-        errMsg:
-        {
-            name       : null,
-            email      : null,
-            username   : null,
-            password   : null,
-            repassword : null,
-            birthday   : null,
-            phone      : null
-        },
-        bsStyle:
-        {
-            name       : null,
-            email      : null,
-            username   : null,
-            password   : null,
-            repassword : null,
-            birthday   : null,
-            phone      : null
-        }
+
+    handleFormChange = (e) => {
+        const keyChanged   = e.target.attributes.label.textContent.toLowerCase();
+        const valueChanged = e.target.value;
+        const errors       = this.getErrors();
+        const newState     = {
+            inputs: JSON.parse(JSON.stringify(this.state.inputs))  // clone object
+        };
+
+        newState.isFormValid = !Object.keys(errors).length;
+
+        newState.inputs[keyChanged].error      = errors[keyChanged];
+        newState.inputs[keyChanged].inputStyle = newState.inputs[keyChanged].error
+                                                 ? 'error'
+                                                 : 'success';
+        this.setState(newState);
+    };
+
+    handleSubmitForm = () => {
+        const errors = this.getErrors();
+        const newState = JSON.parse(JSON.stringify(this.state));
+
+        Object.keys(errors).forEach( (field) => {
+            newState.inputs[field] = {
+                error     : errors[field],
+                inputStyle: newState.inputs[field].error && newState.isValid
+                            ? 'success'
+                            : 'error'
+            };
+        });
+
+        this.setState(newState);
+
     };
 
     render() {
         return (
             <Grid fluid>
-            <Row>
-            <Col xs={10} xsOffset={1}
-                 sm={6} smOffset={3}
-                 md={6} mdOffset={3}>
-                <form >
-                    <Input type     = 'text'
-                            help    = {this.state.errMsg.name}
-                            bsStyle = {this.state.bsStyle.name}
-                            label   = 'Name'
-                            ref     = 'name'
-                            hasFeedback
-                            required />
+                <Row>
+                    <Col xs={10} xsOffset={1}
+                         sm={6}  smOffset={3}
+                         md={6}  mdOffset={3} >
 
-                    <Input type     = 'email'
-                            help    = {this.state.errMsg.email}
-                            bsStyle = {this.state.bsStyle.email}
-                            label   = 'Email'
-                            ref     = 'email'
-                            hasFeedback
-                            required />
+                        <form onChange={this.handleFormChange} >
+                            <Input type     = 'text'
+                                    help    = {this.state.inputs.name.error}
+                                    label   = 'Name'
+                                    ref     = 'name'
+                                    bsStyle = {this.state.inputs.name.inputStyle}
+                                    hasFeedback
+                                    required />
 
-                    <Input type     = 'text'
-                            help    = {this.state.errMsg.username}
-                            bsStyle = {this.state.bsStyle.username}
-                            label   = 'Username'
-                            ref     = 'username'
-                            hasFeedback
-                            required />
+                            <Input type     = 'email'
+                                    help    = {this.state.inputs.email.error}
+                                    label   = 'Email'
+                                    ref     = 'email'
+                                    bsStyle = {this.state.inputs.email.inputStyle}
+                                    hasFeedback
+                                    required />
 
-                    <Input type     = 'password'
-                            help    = {this.state.errMsg.password}
-                            bsStyle = {this.state.bsStyle.password}
-                            label   = 'Password'
-                            ref     = 'password'
-                            hasFeedback
-                            required />
+                            <Input type     = 'text'
+                                    help    = {this.state.inputs.username.error}
+                                    label   = 'Username'
+                                    ref     = 'username'
+                                    bsStyle = {this.state.inputs.username.inputStyle}
+                                    hasFeedback
+                                    required />
 
-                    <Input type     = 'password'
-                            help    = {this.state.errMsg.repassword}
-                            bsStyle = {this.state.bsStyle.repassword}
-                            label   = 'Repassword'
-                            ref     = 'repassword'
-                            hasFeedback
-                            required />
+                            <Input type     = 'password'
+                                    help    = {this.state.inputs.password.error}
+                                    label   = 'Password'
+                                    ref     = 'password'
+                                    bsStyle = {this.state.inputs.password.inputStyle}
+                                    hasFeedback
+                                    required />
 
-                    <Input type     = 'date'
-                            help    = {this.state.errMsg.birthday}
-                            bsStyle = {this.state.bsStyle.birthday}
-                            label   = 'Birthday'
-                            ref     = 'birthday'
-                            hasFeedback />
+                            <Input type     = 'password'
+                                    help    = {this.state.inputs.repassword.error}
+                                    label   = 'Repassword'
+                                    ref     = 'repassword'
+                                    bsStyle = {this.state.inputs.repassword.inputStyle}
+                                    hasFeedback
+                                    required />
 
-                    <Input type     = 'tel'
-                            help    = {this.state.errMsg.phone}
-                            bsStyle = {this.state.bsStyle.phone}
-                            label   = 'Phone'
-                            ref     = 'phone'
-                            hasFeedback />
+                            <Input type     = 'date'
+                                    help    = {this.state.inputs.birthday.error}
+                                    label   = 'Birthday'
+                                    ref     = 'birthday'
+                                    bsStyle = {this.state.inputs.birthday.inputStyle}
+                                    hasFeedback />
 
-                    <Input type   = 'radio'
-                            ref   = 'gender'
-                            label = 'Male'
-                            name  = 'sex'
-                            defaultChecked />
+                            <Input type     = 'tel'
+                                    help    = {this.state.inputs.phone.error}
+                                    label   = 'Phone'
+                                    ref     = 'phone'
+                                    bsStyle = {this.state.inputs.phone.inputStyle}
+                                    hasFeedback />
 
-                    <Input type   = 'radio'
-                            label = 'Female'
-                            name  = 'sex' />
+                            <Input type   = 'radio'
+                                    ref   = 'gender'
+                                    label = 'Male'
+                                    name  = 'sex'
+                                    defaultChecked />
 
-                    <Col className = 'text-center'>
-                        <Button bsStyle = 'success'
-                                onClick = {this.handleSubmitButton} >
-                            Submit
-                        </Button>
+                            <Input type   = 'radio'
+                                    label = 'Female'
+                                    name  = 'sex' />
+
+                            <Col className = 'text-center' >
+                                <Link to = {this.state.isFormValid ? '/tracker' : '#'} >
+                                    <Button bsStyle = 'success' onClick={this.handleSubmitForm}>
+                                        Submit
+                                    </Button>
+                                </Link>
+
+                            </Col>
+
+                        </form>
+
                     </Col>
-
-                </form>
-            </Col>
-            </Row>
+                </Row>
             </Grid>
         );
     }
