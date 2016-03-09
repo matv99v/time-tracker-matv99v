@@ -4,7 +4,6 @@ import Button      from 'react-bootstrap/lib/Button';
 import Col         from 'react-bootstrap/lib/Col';
 import Row         from 'react-bootstrap/lib/Row';
 import Grid        from 'react-bootstrap/lib/Grid';
-import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import {Link}      from 'react-router';
 
 import {validateRegistrationData} from '../validators.js';
@@ -153,7 +152,7 @@ export default class Registration extends React.Component {
                                     name  = 'sex' />
 
                             <Col className = 'text-center' >
-                                <Link to = {this.state.isFormValid ? '/tracker' : '#'} >
+                                <Link to = {this.state.isFormValid ? '/tracker' : '/'} >
                                     <Button bsStyle = 'success' onClick={this.handleSubmitForm}>
                                         Submit
                                     </Button>

@@ -1,6 +1,6 @@
 import 'babel-core/polyfill';
 
-import { Router, Route, hashHistory } from 'react-router';
+import { Router, Route, browserHistory } from 'react-router';
 
 import React        from 'react';
 import ReactDOM     from 'react-dom';
@@ -10,7 +10,7 @@ import Registration from './components/Registration.jsx';
 
 
 ReactDOM.render((
-        <Router history={hashHistory}>
+        <Router history={browserHistory}>
             <Route path='/' component={Registration} />
             <Route path='/tracker' component={App} />
         </Router>
