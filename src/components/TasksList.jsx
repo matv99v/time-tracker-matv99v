@@ -5,8 +5,11 @@ import Grid          from 'react-bootstrap/lib/Grid';
 import Row           from 'react-bootstrap/lib/Row';
 import Col           from 'react-bootstrap/lib/Col';
 import Button        from 'react-bootstrap/lib/Button';
-import ButtonToolbar        from 'react-bootstrap/lib/ButtonToolbar';
-import ButtonGroup        from 'react-bootstrap/lib/ButtonGroup';
+import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
+import ButtonGroup   from 'react-bootstrap/lib/ButtonGroup';
+
+import moment        from 'moment';
+import 'moment-duration-format';
 
 import './TasksList.less';
 
@@ -28,7 +31,15 @@ export default class TasksList extends React.Component {
                         <Row >
 
                             <Col xs={4} >{task.name}</Col>
-                            <Col xs={4} >{ this.props.parseTimeString(task.spentTime) }</Col>
+
+                            <Col xs={4} >
+                                {
+                                    moment.duration(task.spentTime).format({
+                                        template: 'HH:mm:ss',
+                                        trim: false
+                                    })
+                                }
+                            </Col>
 
                             <Col xs={4} >
                                 <ButtonToolbar>
@@ -65,7 +76,6 @@ export default class TasksList extends React.Component {
                           md={10} mdOffset={1}>
 
                         <ListGroup>
-
                             {
                                 this.props.tasks.length
                                     ?   <ListGroupItem >
@@ -81,7 +91,6 @@ export default class TasksList extends React.Component {
                             }
 
                             {this.formList()}
-
                         </ListGroup>
                     </Col>
                     <Col  xs={0} sm={1} md={1}></Col>

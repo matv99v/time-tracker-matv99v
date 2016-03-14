@@ -4,7 +4,7 @@ import CreateTask from './CreateTask.jsx';
 import ActiveTask from './ActiveTask.jsx';
 import TasksList  from './TasksList.jsx';
 
-import Timer  from '../Timer.js';
+import Timer      from '../Timer.js';
 
 export default class App extends React.Component {
     interval = null;
@@ -14,28 +14,35 @@ export default class App extends React.Component {
         activeTaskId : null
     };
 
+    timersStorage = {
+        addTimer    : (id) => this.timersStorage[id] = new Timer(),
+        deleteTimer : (id) => delete this.timersStorage[id]
+    };
+
     handleNewTaskSubmit = (taskName) => {
-        this.state.tasks.push({
+        const initTaskState = {
             name     : taskName,
             spentTime: 0,
             isActive : false,
-            id       : Date.now(),
-            timer    : new Timer()
-        });
+            id       : Date.now()
+        };
+
+        this.state.tasks.push(initTaskState);
+        this.timersStorage.addTimer(initTaskState.id);
         this.setState({tasks: this.state.tasks});
     };
 
-    handleStartTask = (taskID) => {
+    handleStartTask = (taskId) => {
         clearInterval(this.interval);
         const prevActiveTaskId = this.state.activeTaskId;
 
         const tasks = this.state.tasks.map( (task) => {
-            if (task.id === taskID) {
+            if (task.id === taskId) {
                 task.isActive = true;
-                task.timer.start();
+                this.timersStorage[taskId].start();
             } else if (task.id === prevActiveTaskId) {
                 task.isActive = false;
-                task.timer.stop();
+                this.timersStorage[taskId].stop();
             }
             return task;
         });
@@ -43,17 +50,17 @@ export default class App extends React.Component {
         this.initTimerInterval();
         this.setState({
             tasks,
-            activeTaskId: taskID
+            activeTaskId: taskId
         });
     };
 
-    handleStopTask = (taskID) => {
+    handleStopTask = (taskId) => {
         clearInterval(this.interval);
 
         const tasks = this.state.tasks.map( (task) => {
-            if (task.id === taskID) {
+            if (task.id === taskId) {
                 task.isActive = false;
-                task.timer.stop();
+                this.timersStorage[taskId].stop();
             }
             return task;
         });
@@ -65,11 +72,11 @@ export default class App extends React.Component {
 
     };
 
-    handleClearTimer = (taskID) => {
+    handleClearTimer = (taskId) => {
         const tasks = this.state.tasks.map( (task) => {
-            if (task.id === taskID) {
-                task.timer.clear();
-                task.spentTime = task.timer.getSpentTime();
+            if (task.id === taskId) {
+                this.timersStorage[taskId].clear();
+                task.spentTime = this.timersStorage[taskId].getSpentTime();
             }
             return task;
         });
@@ -77,10 +84,10 @@ export default class App extends React.Component {
         this.setState({tasks});
     };
 
-    handleDeleteTask = (taskID) => {
-        const tasks = this.state.tasks.filter( (task) => task.id !== taskID );
+    handleDeleteTask = (taskId) => {
+        const tasks = this.state.tasks.filter( (task) => task.id !== taskId );
 
-        if (this.state.activeTaskId === taskID) {
+        if (this.state.activeTaskId === taskId) {
             clearInterval(this.interval);
             this.setState({
                 tasks,
@@ -93,29 +100,13 @@ export default class App extends React.Component {
     initTimerInterval = () => {
         this.interval = setInterval( () => {
             const tasks = this.state.tasks.map( (task) => {
-                if (task.isActive) task.spentTime = task.timer.getSpentTime();
+                if (task.isActive) task.spentTime = this.timersStorage[task.id].getSpentTime();
                 return task;
             });
 
             this.setState({tasks});
         }, 1000);
 
-    };
-
-    handleParseTimeString = (timeNum) => {
-        function addZero(arg) {
-            const numOfDigits = (arg + '').length;
-            return '00'.slice(0, 2 - numOfDigits);
-        }
-
-        const seconds = (timeNum / 1000).toFixed() % 60;
-        const minutes = Math.floor(timeNum / 60000) % 60;
-        const hours   = Math.floor( timeNum / (60000 * 60) );
-
-        return (addZero(hours)   + hours   + ':' +
-                addZero(minutes) + minutes + ':' +
-                addZero(seconds) + seconds
-        );
     };
 
     componentWillUnmount = () => {
@@ -129,7 +120,6 @@ export default class App extends React.Component {
                 <CreateTask onSubmit   = { this.handleNewTaskSubmit } />
 
                 <ActiveTask activeTask      = { this.state.tasks.find( (task) => task.id === this.state.activeTaskId )}
-                            parseTimeString = {this.handleParseTimeString}
                 />
 
                 <TasksList tasks           = {this.state.tasks}
@@ -137,7 +127,6 @@ export default class App extends React.Component {
                            onStopTask      = {this.handleStopTask}
                            onClearTimer    = {this.handleClearTimer}
                            onDeleteTask    = {this.handleDeleteTask}
-                           parseTimeString = {this.handleParseTimeString}
                 />
             </div>
         );
