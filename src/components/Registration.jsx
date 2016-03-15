@@ -78,6 +78,10 @@ export default class Registration extends React.Component {
 
     };
 
+    shouldComponentUpdate = (nextProps, nextState) => {
+        return JSON.stringify(this.state) !== JSON.stringify(nextState);
+    };
+
     render() {
         return (
             <Grid fluid>

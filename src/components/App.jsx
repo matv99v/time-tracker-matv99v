@@ -26,91 +26,92 @@ export default class App extends React.Component {
             isActive : false,
             id       : Date.now()
         };
+        const newState = JSON.parse(JSON.stringify(this.state));
 
-        this.state.tasks.push(initTaskState);
+        newState.tasks.push(initTaskState);
         this.timersStorage.addTimer(initTaskState.id);
-        this.setState({tasks: this.state.tasks});
+        this.setState(newState);
     };
 
     handleStartTask = (taskId) => {
         clearInterval(this.interval);
-        const prevActiveTaskId = this.state.activeTaskId;
+        const newState = JSON.parse(JSON.stringify(this.state));
+        const prevActiveTaskId = newState.activeTaskId;
 
-        const tasks = this.state.tasks.map( (task) => {
+        newState.tasks.forEach( (task) => {
             if (task.id === taskId) {
                 task.isActive = true;
-                this.timersStorage[taskId].start();
-            } else if (task.id === prevActiveTaskId) {
-                task.isActive = false;
-                this.timersStorage[taskId].stop();
+                this.timersStorage[task.id].start();
             }
-            return task;
+            if (task.id === prevActiveTaskId) {
+                task.isActive = false;
+                this.timersStorage[task.id].stop();
+            }
         });
 
+        newState.activeTaskId = taskId;
         this.initTimerInterval();
-        this.setState({
-            tasks,
-            activeTaskId: taskId
-        });
+        this.setState(newState);
     };
 
     handleStopTask = (taskId) => {
         clearInterval(this.interval);
+        const newState = JSON.parse(JSON.stringify(this.state));
+        newState.activeTaskId = null;
 
-        const tasks = this.state.tasks.map( (task) => {
+        newState.tasks.forEach( (task) => {
             if (task.id === taskId) {
                 task.isActive = false;
                 this.timersStorage[taskId].stop();
             }
-            return task;
         });
 
-        this.setState({
-            tasks,
-            activeTaskId: null
-        });
-
+        this.setState(newState);
     };
 
     handleClearTimer = (taskId) => {
-        const tasks = this.state.tasks.map( (task) => {
+        const newState = JSON.parse(JSON.stringify(this.state));
+        newState.tasks.forEach( (task) => {
             if (task.id === taskId) {
                 this.timersStorage[taskId].clear();
                 task.spentTime = this.timersStorage[taskId].getSpentTime();
             }
-            return task;
         });
 
-        this.setState({tasks});
+        this.setState(newState);
     };
 
     handleDeleteTask = (taskId) => {
-        const tasks = this.state.tasks.filter( (task) => task.id !== taskId );
+        const newState = JSON.parse(JSON.stringify(this.state));
+        newState.tasks = this.state.tasks.filter( (task) => task.id !== taskId );
 
-        if (this.state.activeTaskId === taskId) {
+        if (newState.activeTaskId === taskId) {
             clearInterval(this.interval);
-            this.setState({
-                tasks,
-                activeTaskId: null
-            });
+            newState.activeTaskId = null;
+            this.setState(newState);
         }
-        else this.setState({tasks});
+        else this.setState(newState);
     };
 
     initTimerInterval = () => {
         this.interval = setInterval( () => {
-            const tasks = this.state.tasks.map( (task) => {
+            const newState = JSON.parse(JSON.stringify(this.state));
+
+            newState.tasks.forEach( (task) => {
                 if (task.isActive) task.spentTime = this.timersStorage[task.id].getSpentTime();
-                return task;
             });
 
-            this.setState({tasks});
+            this.setState(newState);
         }, 1000);
 
     };
 
     componentWillUnmount = () => {
         clearInterval(this.interval);
+    };
+
+    shouldComponentUpdate = (nextProps, nextState) => {
+        return JSON.stringify(this.state) !== JSON.stringify(nextState);
     };
 
     render() {
