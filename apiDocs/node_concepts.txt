@@ -1,0 +1,39 @@
+nodejs architecture: v8 + node + i/o + event loop + etc
+
+преимущества:
+- скорость,
+- изоморфность,
+- асинхронность
+
+недостатки:
+- мало библиотек
+- асинхронность
+- ограничение на использование RAM на сервере
+- работа garbage collector (два основных алгоритма, проблема циклических ссылок)
+
+
+фреймворк express
+libev хорошо работал только в линуксе
+libuv разработчики ноды переключилась
+
+nodemon для того, чтобы не перезапускать сервер постоянно
+
+плагин REST для хрома
+https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo?utm_source=chrome-ntp-icon
+
+REST API - CSRF
+
+core modules nodejs
+fs - модуль для работы с файловой системой
+nodejs написан на колбеках а не на промисах
+bluebird - библиотека, которая расширяет ноду до промисов (PromisifyAll)
+inspect
+
+krakenjs - базовая архитектура для проекта
+
+Martin Fowler patterns:
+- mvc
+- domain model (модель области определения)
+- service layer
+- front controller (Контроллер входа / Единая точка входа)
+- active record
