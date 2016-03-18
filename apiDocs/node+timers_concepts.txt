@@ -1,0 +1,7 @@
+https://github.com/koorchik/jsonapi-for-terrans
+
+даты - юникс или iso8601
+
+mongoDB book: http://openmymind.net/mongodb.pdf
+npm mongojs - драйвер для реализации API не только в консоли
+mongoose - удобная надстройка над mongodb
