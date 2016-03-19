@@ -1,27 +1,18 @@
 [
     {
-        "_id": "56ec48802b97ec2b2623af91",
-        "name": "Maria",
-        "age": 26
+        "_id": "56edbdb6e35707ee1220f1c5",
+        "name": "koding",
+        "spent": 0,
+        "createdAt": 1458421174103,
+        "updatedAt": 1458421174103,
+        "status": "INACTIVE"
     },
     {
-        "_id": "56ec51a7339c97312af655cd",
-        "name": "vova",
-        "age": 31
-    },
-    {
-        "_id": "56ec5d97b27cab482aa087c1",
-        "name": "valik",
-        "age": 27
-    },
-    {
-        "_id": "56ec60184c6aab452ce30e93",
-        "name": "roma",
-        "age": 45
-    },
-    {
-        "_id": "56ec60bb625b37582ce81cb4",
-        "name": "kolya",
-        "age": 45
+        "_id": "56edbdcb849092fe128caa8f",
+        "name": "reading",
+        "spent": 0,
+        "createdAt": 1458421195456,
+        "updatedAt": 1458421195456,
+        "status": "INACTIVE"
     }
 ]

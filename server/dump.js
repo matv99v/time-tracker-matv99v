@@ -1,6 +1,6 @@
 module.exports = (db) => {
     const fs = require('fs');
-    const data = db.tasks.find((err, result) => {
+    const data = db.find((err, result) => {
 
             result = JSON.stringify(result, null, 4);
 
