@@ -1,10 +1,10 @@
 'use strict';
 
 class Timer {
-    constructor() {
+    constructor(accumulatedTime) {
         this.isPlaying = false;
         this.timeStamp = 0;
-        this.accumulatedTime = 0;
+        this.accumulatedTime = accumulatedTime || 0;
     }
 
     start() {
