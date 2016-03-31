@@ -5,3 +5,32 @@ https://github.com/koorchik/jsonapi-for-terrans
 mongoDB book Karl Seguin: http://openmymind.net/mongodb.pdf
 npm mongojs - драйвер для реализации API не только в консоли
 mongoose - удобная надстройка над mongodb
+
+Command pattern
+Service Layer pattern
+
+-алгоритмы сортировки
+-хеш-функции
+-сохранение паролей в бд, соль
+-юникод
+-что такое utf-8, 16, 32
+-Byte Order Mark
+-отличие UDP от TCP
+
+архитектурные вопросы:
+-mvc
+
+
+-селекторы jquery
+
+
+развернуть приложение - ansible.com - указывать состояня системы
+новый eslint
+fetch - новый способ делать запросы к серверу
+
+gettext - локализация (poedit - программа)
+jed - библиотека для локализации
+
+источники инфы:
+- dan abramov: twitter, medium (список подписок - My React List)
+- Javascript jabber
