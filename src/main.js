@@ -11,8 +11,8 @@ import Registration from './components/Registration.jsx';
 
 ReactDOM.render((
         <Router history={browserHistory}>
-            <Route path='/public/' component={Registration} />
-            <Route path='/public/tracker' component={App} />
+            <Route path='/time-tracker-matv99v/public/' component={Registration} />
+            <Route path='/time-tracker-matv99v/public/tracker' component={App} />
         </Router>
     ), document.getElementById('main-content')
 );
