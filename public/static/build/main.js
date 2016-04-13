@@ -72,12 +72,13 @@
 	var _componentsRegistrationJsx2 = _interopRequireDefault(_componentsRegistrationJsx);
 	
 	var url = window.location.pathname;
+	console.log(url);
 	
 	_reactDom2['default'].render(_react2['default'].createElement(
 	    _reactRouter.Router,
 	    { history: _reactRouter.browserHistory },
 	    _react2['default'].createElement(_reactRouter.Route, { path: url, component: _componentsRegistrationJsx2['default'] }),
-	    _react2['default'].createElement(_reactRouter.Route, { path: url + '/tracker', component: _componentsAppJsx2['default'] })
+	    _react2['default'].createElement(_reactRouter.Route, { path: url + 'tracker', component: _componentsAppJsx2['default'] })
 	), document.getElementById('main-content'));
 
 /***/ },
