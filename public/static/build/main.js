@@ -49286,7 +49286,7 @@
 	                                { className: 'text-center' },
 	                                _react2['default'].createElement(
 	                                    _reactRouter.Link,
-	                                    { to: this.state.isFormValid ? '/tracker' : 'time-tracker-matv99v/public/' },
+	                                    { to: this.state.isFormValid ? 'time-tracker-matv99v/public/tracker' : 'time-tracker-matv99v/public/' },
 	                                    _react2['default'].createElement(
 	                                        _reactBootstrapLibButton2['default'],
 	                                        { bsStyle: 'success', onClick: this.handleSubmitForm },
