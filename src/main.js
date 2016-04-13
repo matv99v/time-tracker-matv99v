@@ -10,8 +10,8 @@ import Registration from './components/Registration.jsx';
 
 ReactDOM.render((
         <Router history={browserHistory}>
-            <Route path='time-tracker-matv99v/public/' component={Registration} />
-            <Route path='./tracker' component={App} />
+            <Route path='/' component={Registration} />
+            <Route path='/tracker' component={App} />
         </Router>
     ), document.getElementById('main-content')
 );
