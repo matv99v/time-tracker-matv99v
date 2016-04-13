@@ -9,6 +9,7 @@ import Registration from './components/Registration.jsx';
 
 const url = window.location.pathname;
 console.log(url);
+console.log(url + 'tracker');
 
 ReactDOM.render((
         <Router history={browserHistory}>

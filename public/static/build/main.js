@@ -73,6 +73,7 @@
 	
 	var url = window.location.pathname;
 	console.log(url);
+	console.log(url + 'tracker');
 	
 	_reactDom2['default'].render(_react2['default'].createElement(
 	    _reactRouter.Router,
