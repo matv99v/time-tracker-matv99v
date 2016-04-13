@@ -7,14 +7,12 @@ import ReactDOM     from 'react-dom';
 import App          from './components/App.jsx';
 import Registration from './components/Registration.jsx';
 
-
-
-console.log(window.location.pathname);
+const url = window.location.pathname;
 
 ReactDOM.render((
         <Router history={browserHistory}>
-            <Route path='time-tracker-matv99v/public/' component={Registration} />
-            <Route path='time-tracker-matv99v/public/tracker' component={App} />
+            <Route path={url} component={Registration} />
+            <Route path={url + '/tracker'} component={App} />
         </Router>
     ), document.getElementById('main-content')
 );
