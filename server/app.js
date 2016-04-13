@@ -19,7 +19,7 @@ Promise.promisifyAll([
 const app = express();
 app.use( bodyParser.json() );
 
-//list all tasks
+// list all tasks
 app.get('/api/v1/tasks', (request, response) => {
     db.tasks.findAsync()
     .then(savedTasks => response.json({
@@ -29,18 +29,19 @@ app.get('/api/v1/tasks', (request, response) => {
     .catch(console.error);
 });
 
-//get task by id
+// get task by id
 app.get('/api/v1/tasks/:id', (request, response) => {
     db.tasks.findOneAsync( {_id: mongojs.ObjectID(request.params.id)} )
     .then(task => {
         response.json({
             status: 1,
             data: utils.format(task)
-        })})
+        });
+    })
     .catch(err => console.error);
 });
 
-//delete task by id
+// delete task by id
 app.delete('/api/v1/tasks/:id', (request, response) => {
     db.tasks.findOneAsync( {_id: mongojs.ObjectID(request.params.id)} )
     .then(taskToDelete => {
@@ -48,13 +49,13 @@ app.delete('/api/v1/tasks/:id', (request, response) => {
             db.tasks.remove(taskToDelete);
             response.json({status: 1});
         } else {
-            response.json({status: 1, msg: 'unknown task id'})
+            response.json({status: 1, msg: 'unknown task id'});
         }
     })
     .catch(err => console.error);
 });
 
-//delete task collection
+// delete task collection
 app.delete('/api/v1/tasks', (request, response) => {
     db.tasks.removeAsync()
     .then(() => {
@@ -66,7 +67,7 @@ app.delete('/api/v1/tasks', (request, response) => {
     .catch(err => console.error);
 });
 
-//create task
+// create task
 app.post('/api/v1/tasks', (request, response) => {
     const validator = new LIVR.Validator({
         data: ['required', {'nested_object': {
@@ -85,9 +86,9 @@ app.post('/api/v1/tasks', (request, response) => {
         };
         db.tasks.insertAsync(task)
         .then(task => response.json({
-                status: 1,
-                data: utils.format(task)
-            }))
+            status: 1,
+            data: utils.format(task)
+        }))
         .catch(err => console.error);
     } else {
         response.json({
@@ -97,7 +98,7 @@ app.post('/api/v1/tasks', (request, response) => {
     }
 });
 
-//start
+// start
 app.put('/api/v1/tasks/:id/start', (request, response) => {
     const validator = new LIVR.Validator({
         data: ['required', {'nested_object': {
@@ -110,7 +111,7 @@ app.put('/api/v1/tasks/:id/start', (request, response) => {
     if (validData) {
         db.tasks.findOneAsync( {_id: mongojs.ObjectID(request.params.id)} )
         .then(task => {
-            task.spent     = 'toDo:::getTimerSpentTime';  //TO DO
+            task.spent     = 'toDo:::getTimerSpentTime';  // TO DO
             task.updatedAt = Date.now();
             task.status    = 'ACTIVE';
             return task;
@@ -119,7 +120,8 @@ app.put('/api/v1/tasks/:id/start', (request, response) => {
             response.json({
                 status: 1,
                 data: utils.format(task)
-            })})
+            });
+        })
         .then(() => db.tasks.updateAsync({
             _id: {$ne: mongojs.ObjectID(request.params.id)},
             status: 'ACTIVE'
@@ -139,7 +141,7 @@ app.put('/api/v1/tasks/:id/start', (request, response) => {
     }
 });
 
-//stop
+// stop
 app.put('/api/v1/tasks/:id/stop', (request, response) => {
     const validator = new LIVR.Validator({
         data: ['required', {'nested_object': {
@@ -152,7 +154,7 @@ app.put('/api/v1/tasks/:id/stop', (request, response) => {
     if (validData) {
         db.tasks.findOneAsync( {_id: mongojs.ObjectID(request.params.id)} )
         .then(task => {
-            task.spent     = 'toDo:::getTimerSpentTime';  //TO DO
+            task.spent     = 'toDo:::getTimerSpentTime';  // TO DO
             task.updatedAt = Date.now();
             task.status    = 'INACTIVE';
             return task;
@@ -161,7 +163,8 @@ app.put('/api/v1/tasks/:id/stop', (request, response) => {
             response.json({
                 status: 1,
                 data: utils.format(task)
-            })})
+            });
+        })
         .catch(err => console.error);
 
     } else {
@@ -172,7 +175,7 @@ app.put('/api/v1/tasks/:id/stop', (request, response) => {
     }
 });
 
-//clear
+// clear
 app.put('/api/v1/tasks/:id/clear', (request, response) => {
     const validator = new LIVR.Validator({
         data: ['required', {'nested_object': {
@@ -193,7 +196,8 @@ app.put('/api/v1/tasks/:id/clear', (request, response) => {
             response.json({
                 status: 1,
                 data: utils.format(task)
-            })})
+            });
+        })
         .catch(err => console.error);
 
     } else {

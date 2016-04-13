@@ -67,7 +67,7 @@
 	
 	var _componentsAppJsx2 = _interopRequireDefault(_componentsAppJsx);
 	
-	var _componentsRegistrationJsx = __webpack_require__(/*! ./components/Registration.jsx */ 575);
+	var _componentsRegistrationJsx = __webpack_require__(/*! ./components/Registration.jsx */ 576);
 	
 	var _componentsRegistrationJsx2 = _interopRequireDefault(_componentsRegistrationJsx);
 	
@@ -31132,11 +31132,11 @@
 	
 	var _ActiveTaskJsx2 = _interopRequireDefault(_ActiveTaskJsx);
 	
-	var _TasksListJsx = __webpack_require__(/*! ./TasksList.jsx */ 465);
+	var _TasksListJsx = __webpack_require__(/*! ./TasksList.jsx */ 566);
 	
 	var _TasksListJsx2 = _interopRequireDefault(_TasksListJsx);
 	
-	var _TimerJs = __webpack_require__(/*! ../Timer.js */ 574);
+	var _TimerJs = __webpack_require__(/*! ../Timer.js */ 575);
 	
 	var _TimerJs2 = _interopRequireDefault(_TimerJs);
 	
@@ -31155,109 +31155,108 @@
 	            tasks: [],
 	            activeTaskId: null
 	        };
+	        this.timersStorage = {
+	            addTimer: function addTimer(id) {
+	                return _this.timersStorage[id] = new _TimerJs2['default']();
+	            },
+	            deleteTimer: function deleteTimer(id) {
+	                return delete _this.timersStorage[id];
+	            }
+	        };
 	
 	        this.handleNewTaskSubmit = function (taskName) {
-	            _this.state.tasks.push({
+	            var initTaskState = {
 	                name: taskName,
 	                spentTime: 0,
 	                isActive: false,
-	                id: Date.now(),
-	                timer: new _TimerJs2['default']()
-	            });
-	            _this.setState({ tasks: _this.state.tasks });
+	                id: Date.now()
+	            };
+	            var newState = JSON.parse(JSON.stringify(_this.state));
+	
+	            newState.tasks.push(initTaskState);
+	            _this.timersStorage.addTimer(initTaskState.id);
+	            _this.setState(newState);
 	        };
 	
-	        this.handleStartTask = function (taskID) {
+	        this.handleStartTask = function (taskId) {
 	            clearInterval(_this.interval);
-	            var prevActiveTaskId = _this.state.activeTaskId;
+	            var newState = JSON.parse(JSON.stringify(_this.state));
+	            var prevActiveTaskId = newState.activeTaskId;
 	
-	            var tasks = _this.state.tasks.map(function (task) {
-	                if (task.id === taskID) {
+	            newState.tasks.forEach(function (task) {
+	                if (task.id === taskId) {
 	                    task.isActive = true;
-	                    task.timer.start();
-	                } else if (task.id === prevActiveTaskId) {
-	                    task.isActive = false;
-	                    task.timer.stop();
+	                    _this.timersStorage[task.id].start();
 	                }
-	                return task;
+	                if (task.id === prevActiveTaskId) {
+	                    task.isActive = false;
+	                    _this.timersStorage[task.id].stop();
+	                }
 	            });
 	
+	            newState.activeTaskId = taskId;
 	            _this.initTimerInterval();
-	            _this.setState({
-	                tasks: tasks,
-	                activeTaskId: taskID
-	            });
+	            _this.setState(newState);
 	        };
 	
-	        this.handleStopTask = function (taskID) {
+	        this.handleStopTask = function (taskId) {
 	            clearInterval(_this.interval);
+	            var newState = JSON.parse(JSON.stringify(_this.state));
+	            newState.activeTaskId = null;
 	
-	            var tasks = _this.state.tasks.map(function (task) {
-	                if (task.id === taskID) {
+	            newState.tasks.forEach(function (task) {
+	                if (task.id === taskId) {
 	                    task.isActive = false;
-	                    task.timer.stop();
+	                    _this.timersStorage[taskId].stop();
 	                }
-	                return task;
 	            });
 	
-	            _this.setState({
-	                tasks: tasks,
-	                activeTaskId: null
-	            });
+	            _this.setState(newState);
 	        };
 	
-	        this.handleClearTimer = function (taskID) {
-	            var tasks = _this.state.tasks.map(function (task) {
-	                if (task.id === taskID) {
-	                    task.timer.clear();
-	                    task.spentTime = task.timer.getSpentTime();
+	        this.handleClearTimer = function (taskId) {
+	            var newState = JSON.parse(JSON.stringify(_this.state));
+	            newState.tasks.forEach(function (task) {
+	                if (task.id === taskId) {
+	                    _this.timersStorage[taskId].clear();
+	                    task.spentTime = _this.timersStorage[taskId].getSpentTime();
 	                }
-	                return task;
 	            });
 	
-	            _this.setState({ tasks: tasks });
+	            _this.setState(newState);
 	        };
 	
-	        this.handleDeleteTask = function (taskID) {
-	            var tasks = _this.state.tasks.filter(function (task) {
-	                return task.id !== taskID;
+	        this.handleDeleteTask = function (taskId) {
+	            var newState = JSON.parse(JSON.stringify(_this.state));
+	            newState.tasks = _this.state.tasks.filter(function (task) {
+	                return task.id !== taskId;
 	            });
 	
-	            if (_this.state.activeTaskId === taskID) {
+	            if (newState.activeTaskId === taskId) {
 	                clearInterval(_this.interval);
-	                _this.setState({
-	                    tasks: tasks,
-	                    activeTaskId: null
-	                });
-	            } else _this.setState({ tasks: tasks });
+	                newState.activeTaskId = null;
+	                _this.setState(newState);
+	            } else _this.setState(newState);
 	        };
 	
 	        this.initTimerInterval = function () {
 	            _this.interval = setInterval(function () {
-	                var tasks = _this.state.tasks.map(function (task) {
-	                    if (task.isActive) task.spentTime = task.timer.getSpentTime();
-	                    return task;
+	                var newState = JSON.parse(JSON.stringify(_this.state));
+	
+	                newState.tasks.forEach(function (task) {
+	                    if (task.isActive) task.spentTime = _this.timersStorage[task.id].getSpentTime();
 	                });
 	
-	                _this.setState({ tasks: tasks });
+	                _this.setState(newState);
 	            }, 1000);
-	        };
-	
-	        this.handleParseTimeString = function (timeNum) {
-	            function addZero(arg) {
-	                var numOfDigits = (arg + '').length;
-	                return '00'.slice(0, 2 - numOfDigits);
-	            }
-	
-	            var seconds = (timeNum / 1000).toFixed() % 60;
-	            var minutes = Math.floor(timeNum / 60000) % 60;
-	            var hours = Math.floor(timeNum / (60000 * 60));
-	
-	            return addZero(hours) + hours + ':' + addZero(minutes) + minutes + ':' + addZero(seconds) + seconds;
 	        };
 	
 	        this.componentWillUnmount = function () {
 	            clearInterval(_this.interval);
+	        };
+	
+	        this.shouldComponentUpdate = function (nextProps, nextState) {
+	            return JSON.stringify(_this.state) !== JSON.stringify(nextState);
 	        };
 	    }
 	
@@ -31273,15 +31272,13 @@
 	                _react2['default'].createElement(_CreateTaskJsx2['default'], { onSubmit: this.handleNewTaskSubmit }),
 	                _react2['default'].createElement(_ActiveTaskJsx2['default'], { activeTask: this.state.tasks.find(function (task) {
 	                        return task.id === _this2.state.activeTaskId;
-	                    }),
-	                    parseTimeString: this.handleParseTimeString
+	                    })
 	                }),
 	                _react2['default'].createElement(_TasksListJsx2['default'], { tasks: this.state.tasks,
 	                    onStartTask: this.handleStartTask,
 	                    onStopTask: this.handleStopTask,
 	                    onClearTimer: this.handleClearTimer,
-	                    onDeleteTask: this.handleDeleteTask,
-	                    parseTimeString: this.handleParseTimeString
+	                    onDeleteTask: this.handleDeleteTask
 	                })
 	            );
 	        }
@@ -31339,8 +31336,6 @@
 	var _UserSectionJsx = __webpack_require__(/*! ./UserSection.jsx */ 438);
 	
 	var _UserSectionJsx2 = _interopRequireDefault(_UserSectionJsx);
-	
-	// import './colorMe.less';
 	
 	var Header = (function (_React$Component) {
 	    _inherits(Header, _React$Component);
@@ -33847,7 +33842,13 @@
 	
 	var _reactBootstrapLibCol2 = _interopRequireDefault(_reactBootstrapLibCol);
 	
-	__webpack_require__(/*! ./ActiveTask.less */ 461);
+	var _moment = __webpack_require__(/*! moment */ 461);
+	
+	var _moment2 = _interopRequireDefault(_moment);
+	
+	__webpack_require__(/*! moment-duration-format */ 561);
+	
+	__webpack_require__(/*! ./ActiveTask.less */ 562);
 	
 	var ActiveTask = (function (_React$Component) {
 	    _inherits(ActiveTask, _React$Component);
@@ -33861,7 +33862,10 @@
 	    _createClass(ActiveTask, [{
 	        key: 'render',
 	        value: function render() {
-	            var str = this.props.activeTask ? this.props.activeTask.name + ' ' + this.props.parseTimeString(this.props.activeTask.spentTime) : 'none';
+	            var str = this.props.activeTask ? this.props.activeTask.name + '\n                            ' + _moment2['default'].duration(this.props.activeTask.spentTime).format({
+	                template: 'HH:mm:ss',
+	                trim: false
+	            }) : 'none';
 	            return _react2['default'].createElement(
 	                _reactBootstrapLibGrid2['default'],
 	                { className: this.props.activeTask ? 'text-center' : 'ActiveTask__container' },
@@ -33892,1186 +33896,6 @@
 
 /***/ },
 /* 461 */
-/*!****************************************!*\
-  !*** ./src/components/ActiveTask.less ***!
-  \****************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(/*! !./../../~/css-loader!./../../~/autoprefixer-loader!./../../~/less-loader!./ActiveTask.less */ 462);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(/*! ./../../~/style-loader/addStyles.js */ 464)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/autoprefixer-loader/index.js!./../../node_modules/less-loader/index.js!./ActiveTask.less", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/autoprefixer-loader/index.js!./../../node_modules/less-loader/index.js!./ActiveTask.less");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 462 */
-/*!***********************************************************************************************!*\
-  !*** ./~/css-loader!./~/autoprefixer-loader!./~/less-loader!./src/components/ActiveTask.less ***!
-  \***********************************************************************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(/*! ./../../~/css-loader/lib/css-base.js */ 463)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, ".ActiveTask__container {\n  visibility: hidden;\n}\n", ""]);
-	
-	// exports
-
-
-/***/ },
-/* 463 */
-/*!**************************************!*\
-  !*** ./~/css-loader/lib/css-base.js ***!
-  \**************************************/
-/***/ function(module, exports) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	// css base code, injected by the css-loader
-	module.exports = function() {
-		var list = [];
-	
-		// return the list of modules as css string
-		list.toString = function toString() {
-			var result = [];
-			for(var i = 0; i < this.length; i++) {
-				var item = this[i];
-				if(item[2]) {
-					result.push("@media " + item[2] + "{" + item[1] + "}");
-				} else {
-					result.push(item[1]);
-				}
-			}
-			return result.join("");
-		};
-	
-		// import a list of modules into the list
-		list.i = function(modules, mediaQuery) {
-			if(typeof modules === "string")
-				modules = [[null, modules, ""]];
-			var alreadyImportedModules = {};
-			for(var i = 0; i < this.length; i++) {
-				var id = this[i][0];
-				if(typeof id === "number")
-					alreadyImportedModules[id] = true;
-			}
-			for(i = 0; i < modules.length; i++) {
-				var item = modules[i];
-				// skip already imported module
-				// this implementation is not 100% perfect for weird media query combinations
-				//  when a module is imported multiple times with different media queries.
-				//  I hope this will never occur (Hey this way we have smaller bundles)
-				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-					if(mediaQuery && !item[2]) {
-						item[2] = mediaQuery;
-					} else if(mediaQuery) {
-						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-					}
-					list.push(item);
-				}
-			}
-		};
-		return list;
-	};
-
-
-/***/ },
-/* 464 */
-/*!*************************************!*\
-  !*** ./~/style-loader/addStyles.js ***!
-  \*************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	var stylesInDom = {},
-		memoize = function(fn) {
-			var memo;
-			return function () {
-				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-				return memo;
-			};
-		},
-		isOldIE = memoize(function() {
-			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
-		}),
-		getHeadElement = memoize(function () {
-			return document.head || document.getElementsByTagName("head")[0];
-		}),
-		singletonElement = null,
-		singletonCounter = 0,
-		styleElementsInsertedAtTop = [];
-	
-	module.exports = function(list, options) {
-		if(true) {
-			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-		}
-	
-		options = options || {};
-		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-		// tags it will allow on a page
-		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-	
-		// By default, add <style> tags to the bottom of <head>.
-		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-	
-		var styles = listToStyles(list);
-		addStylesToDom(styles, options);
-	
-		return function update(newList) {
-			var mayRemove = [];
-			for(var i = 0; i < styles.length; i++) {
-				var item = styles[i];
-				var domStyle = stylesInDom[item.id];
-				domStyle.refs--;
-				mayRemove.push(domStyle);
-			}
-			if(newList) {
-				var newStyles = listToStyles(newList);
-				addStylesToDom(newStyles, options);
-			}
-			for(var i = 0; i < mayRemove.length; i++) {
-				var domStyle = mayRemove[i];
-				if(domStyle.refs === 0) {
-					for(var j = 0; j < domStyle.parts.length; j++)
-						domStyle.parts[j]();
-					delete stylesInDom[domStyle.id];
-				}
-			}
-		};
-	}
-	
-	function addStylesToDom(styles, options) {
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			if(domStyle) {
-				domStyle.refs++;
-				for(var j = 0; j < domStyle.parts.length; j++) {
-					domStyle.parts[j](item.parts[j]);
-				}
-				for(; j < item.parts.length; j++) {
-					domStyle.parts.push(addStyle(item.parts[j], options));
-				}
-			} else {
-				var parts = [];
-				for(var j = 0; j < item.parts.length; j++) {
-					parts.push(addStyle(item.parts[j], options));
-				}
-				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-			}
-		}
-	}
-	
-	function listToStyles(list) {
-		var styles = [];
-		var newStyles = {};
-		for(var i = 0; i < list.length; i++) {
-			var item = list[i];
-			var id = item[0];
-			var css = item[1];
-			var media = item[2];
-			var sourceMap = item[3];
-			var part = {css: css, media: media, sourceMap: sourceMap};
-			if(!newStyles[id])
-				styles.push(newStyles[id] = {id: id, parts: [part]});
-			else
-				newStyles[id].parts.push(part);
-		}
-		return styles;
-	}
-	
-	function insertStyleElement(options, styleElement) {
-		var head = getHeadElement();
-		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-		if (options.insertAt === "top") {
-			if(!lastStyleElementInsertedAtTop) {
-				head.insertBefore(styleElement, head.firstChild);
-			} else if(lastStyleElementInsertedAtTop.nextSibling) {
-				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-			} else {
-				head.appendChild(styleElement);
-			}
-			styleElementsInsertedAtTop.push(styleElement);
-		} else if (options.insertAt === "bottom") {
-			head.appendChild(styleElement);
-		} else {
-			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-		}
-	}
-	
-	function removeStyleElement(styleElement) {
-		styleElement.parentNode.removeChild(styleElement);
-		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-		if(idx >= 0) {
-			styleElementsInsertedAtTop.splice(idx, 1);
-		}
-	}
-	
-	function createStyleElement(options) {
-		var styleElement = document.createElement("style");
-		styleElement.type = "text/css";
-		insertStyleElement(options, styleElement);
-		return styleElement;
-	}
-	
-	function createLinkElement(options) {
-		var linkElement = document.createElement("link");
-		linkElement.rel = "stylesheet";
-		insertStyleElement(options, linkElement);
-		return linkElement;
-	}
-	
-	function addStyle(obj, options) {
-		var styleElement, update, remove;
-	
-		if (options.singleton) {
-			var styleIndex = singletonCounter++;
-			styleElement = singletonElement || (singletonElement = createStyleElement(options));
-			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-		} else if(obj.sourceMap &&
-			typeof URL === "function" &&
-			typeof URL.createObjectURL === "function" &&
-			typeof URL.revokeObjectURL === "function" &&
-			typeof Blob === "function" &&
-			typeof btoa === "function") {
-			styleElement = createLinkElement(options);
-			update = updateLink.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-				if(styleElement.href)
-					URL.revokeObjectURL(styleElement.href);
-			};
-		} else {
-			styleElement = createStyleElement(options);
-			update = applyToTag.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-			};
-		}
-	
-		update(obj);
-	
-		return function updateStyle(newObj) {
-			if(newObj) {
-				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-					return;
-				update(obj = newObj);
-			} else {
-				remove();
-			}
-		};
-	}
-	
-	var replaceText = (function () {
-		var textStore = [];
-	
-		return function (index, replacement) {
-			textStore[index] = replacement;
-			return textStore.filter(Boolean).join('\n');
-		};
-	})();
-	
-	function applyToSingletonTag(styleElement, index, remove, obj) {
-		var css = remove ? "" : obj.css;
-	
-		if (styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = replaceText(index, css);
-		} else {
-			var cssNode = document.createTextNode(css);
-			var childNodes = styleElement.childNodes;
-			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-			if (childNodes.length) {
-				styleElement.insertBefore(cssNode, childNodes[index]);
-			} else {
-				styleElement.appendChild(cssNode);
-			}
-		}
-	}
-	
-	function applyToTag(styleElement, obj) {
-		var css = obj.css;
-		var media = obj.media;
-		var sourceMap = obj.sourceMap;
-	
-		if(media) {
-			styleElement.setAttribute("media", media)
-		}
-	
-		if(styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = css;
-		} else {
-			while(styleElement.firstChild) {
-				styleElement.removeChild(styleElement.firstChild);
-			}
-			styleElement.appendChild(document.createTextNode(css));
-		}
-	}
-	
-	function updateLink(linkElement, obj) {
-		var css = obj.css;
-		var media = obj.media;
-		var sourceMap = obj.sourceMap;
-	
-		if(sourceMap) {
-			// http://stackoverflow.com/a/26603875
-			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-		}
-	
-		var blob = new Blob([css], { type: "text/css" });
-	
-		var oldSrc = linkElement.href;
-	
-		linkElement.href = URL.createObjectURL(blob);
-	
-		if(oldSrc)
-			URL.revokeObjectURL(oldSrc);
-	}
-
-
-/***/ },
-/* 465 */
-/*!**************************************!*\
-  !*** ./src/components/TasksList.jsx ***!
-  \**************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	/* REACT HOT LOADER */ if (false) { (function () { var ReactHotAPI = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-api/modules/index.js"), RootInstanceProvider = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/RootInstanceProvider.js"), ReactMount = require("react/lib/ReactMount"), React = require("react"); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	    value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var _react = __webpack_require__(/*! react */ 214);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactBootstrapLibListGroup = __webpack_require__(/*! react-bootstrap/lib/ListGroup */ 466);
-	
-	var _reactBootstrapLibListGroup2 = _interopRequireDefault(_reactBootstrapLibListGroup);
-	
-	var _reactBootstrapLibListGroupItem = __webpack_require__(/*! react-bootstrap/lib/ListGroupItem */ 467);
-	
-	var _reactBootstrapLibListGroupItem2 = _interopRequireDefault(_reactBootstrapLibListGroupItem);
-	
-	var _reactBootstrapLibGrid = __webpack_require__(/*! react-bootstrap/lib/Grid */ 408);
-	
-	var _reactBootstrapLibGrid2 = _interopRequireDefault(_reactBootstrapLibGrid);
-	
-	var _reactBootstrapLibRow = __webpack_require__(/*! react-bootstrap/lib/Row */ 429);
-	
-	var _reactBootstrapLibRow2 = _interopRequireDefault(_reactBootstrapLibRow);
-	
-	var _reactBootstrapLibCol = __webpack_require__(/*! react-bootstrap/lib/Col */ 430);
-	
-	var _reactBootstrapLibCol2 = _interopRequireDefault(_reactBootstrapLibCol);
-	
-	var _reactBootstrapLibButton = __webpack_require__(/*! react-bootstrap/lib/Button */ 441);
-	
-	var _reactBootstrapLibButton2 = _interopRequireDefault(_reactBootstrapLibButton);
-	
-	var _reactBootstrapLibButtonToolbar = __webpack_require__(/*! react-bootstrap/lib/ButtonToolbar */ 469);
-	
-	var _reactBootstrapLibButtonToolbar2 = _interopRequireDefault(_reactBootstrapLibButtonToolbar);
-	
-	var _reactBootstrapLibButtonGroup = __webpack_require__(/*! react-bootstrap/lib/ButtonGroup */ 470);
-	
-	var _reactBootstrapLibButtonGroup2 = _interopRequireDefault(_reactBootstrapLibButtonGroup);
-	
-	var _moment = __webpack_require__(/*! moment */ 472);
-	
-	var _moment2 = _interopRequireDefault(_moment);
-	
-	__webpack_require__(/*! ./TasksList.less */ 572);
-	
-	var TasksList = (function (_React$Component) {
-	    _inherits(TasksList, _React$Component);
-	
-	    function TasksList() {
-	        var _this = this;
-	
-	        _classCallCheck(this, TasksList);
-	
-	        _get(Object.getPrototypeOf(TasksList.prototype), 'constructor', this).apply(this, arguments);
-	
-	        this.handleStartStopClikc = function (task) {
-	            if (task.isActive) {
-	                _this.props.onStopTask(task.id);
-	            } else {
-	                _this.props.onStartTask(task.id);
-	            }
-	        };
-	
-	        this.formList = function () {
-	            return _this.props.tasks.map(function (task, ind) {
-	                return _react2['default'].createElement(
-	                    _reactBootstrapLibListGroupItem2['default'],
-	                    { key: ind, className: 'TasksList__list-group-item' },
-	                    _react2['default'].createElement(
-	                        _reactBootstrapLibGrid2['default'],
-	                        { fluid: true },
-	                        _react2['default'].createElement(
-	                            _reactBootstrapLibRow2['default'],
-	                            null,
-	                            _react2['default'].createElement(
-	                                _reactBootstrapLibCol2['default'],
-	                                { xs: 4 },
-	                                task.name
-	                            ),
-	                            _react2['default'].createElement(
-	                                _reactBootstrapLibCol2['default'],
-	                                { xs: 4 },
-	                                _this.props.parseTimeString(task.spentTime) + (0, _moment2['default'])()
-	                            ),
-	                            _react2['default'].createElement(
-	                                _reactBootstrapLibCol2['default'],
-	                                { xs: 4 },
-	                                _react2['default'].createElement(
-	                                    _reactBootstrapLibButtonToolbar2['default'],
-	                                    null,
-	                                    _react2['default'].createElement(
-	                                        _reactBootstrapLibButtonGroup2['default'],
-	                                        { bsSize: 'xsmall' },
-	                                        _react2['default'].createElement(
-	                                            _reactBootstrapLibButton2['default'],
-	                                            { onClick: _this.handleStartStopClikc.bind(_this, task),
-	                                                bsStyle: task.isActive ? 'info' : 'default' },
-	                                            task.isActive ? 'Stop' : 'Start'
-	                                        ),
-	                                        _react2['default'].createElement(
-	                                            _reactBootstrapLibButton2['default'],
-	                                            { onClick: _this.props.onClearTimer.bind(_this, task.id) },
-	                                            'Clear'
-	                                        ),
-	                                        _react2['default'].createElement(
-	                                            _reactBootstrapLibButton2['default'],
-	                                            { onClick: _this.props.onDeleteTask.bind(_this, task.id) },
-	                                            'Delete'
-	                                        )
-	                                    )
-	                                )
-	                            )
-	                        )
-	                    )
-	                );
-	            });
-	        };
-	    }
-	
-	    _createClass(TasksList, [{
-	        key: 'render',
-	        value: function render() {
-	            return _react2['default'].createElement(
-	                _reactBootstrapLibGrid2['default'],
-	                { fluid: true },
-	                _react2['default'].createElement(
-	                    _reactBootstrapLibRow2['default'],
-	                    null,
-	                    _react2['default'].createElement(
-	                        _reactBootstrapLibCol2['default'],
-	                        { xs: 12, xsOffset: 0,
-	                            sm: 10, smOffset: 1,
-	                            md: 10, mdOffset: 1 },
-	                        _react2['default'].createElement(
-	                            _reactBootstrapLibListGroup2['default'],
-	                            null,
-	                            this.props.tasks.length ? _react2['default'].createElement(
-	                                _reactBootstrapLibListGroupItem2['default'],
-	                                null,
-	                                _react2['default'].createElement(
-	                                    _reactBootstrapLibGrid2['default'],
-	                                    { fluid: true },
-	                                    _react2['default'].createElement(
-	                                        _reactBootstrapLibRow2['default'],
-	                                        null,
-	                                        _react2['default'].createElement(
-	                                            _reactBootstrapLibCol2['default'],
-	                                            { xs: 4 },
-	                                            'Task name'
-	                                        ),
-	                                        _react2['default'].createElement(
-	                                            _reactBootstrapLibCol2['default'],
-	                                            { xs: 4 },
-	                                            'Spent time'
-	                                        ),
-	                                        _react2['default'].createElement(
-	                                            _reactBootstrapLibCol2['default'],
-	                                            { xs: 4 },
-	                                            'Controls'
-	                                        )
-	                                    )
-	                                )
-	                            ) : null,
-	                            this.formList()
-	                        )
-	                    ),
-	                    _react2['default'].createElement(_reactBootstrapLibCol2['default'], { xs: 0, sm: 1, md: 1 })
-	                )
-	            );
-	        }
-	    }]);
-	
-	    return TasksList;
-	})(_react2['default'].Component);
-	
-	exports['default'] = TasksList;
-	module.exports = exports['default'];
-
-	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "TasksList.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
-
-/***/ },
-/* 466 */
-/*!********************************************!*\
-  !*** ./~/react-bootstrap/lib/ListGroup.js ***!
-  \********************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _inherits = __webpack_require__(/*! babel-runtime/helpers/inherits */ 444)['default'];
-	
-	var _classCallCheck = __webpack_require__(/*! babel-runtime/helpers/class-call-check */ 451)['default'];
-	
-	var _extends = __webpack_require__(/*! babel-runtime/helpers/extends */ 409)['default'];
-	
-	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 425)['default'];
-	
-	exports.__esModule = true;
-	
-	var _react = __webpack_require__(/*! react */ 214);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _ListGroupItem = __webpack_require__(/*! ./ListGroupItem */ 467);
-	
-	var _ListGroupItem2 = _interopRequireDefault(_ListGroupItem);
-	
-	var _classnames = __webpack_require__(/*! classnames */ 426);
-	
-	var _classnames2 = _interopRequireDefault(_classnames);
-	
-	var _utilsValidComponentChildren = __webpack_require__(/*! ./utils/ValidComponentChildren */ 468);
-	
-	var _utilsValidComponentChildren2 = _interopRequireDefault(_utilsValidComponentChildren);
-	
-	var ListGroup = (function (_React$Component) {
-	  _inherits(ListGroup, _React$Component);
-	
-	  function ListGroup() {
-	    _classCallCheck(this, ListGroup);
-	
-	    _React$Component.apply(this, arguments);
-	  }
-	
-	  ListGroup.prototype.render = function render() {
-	    var _this = this;
-	
-	    var items = _utilsValidComponentChildren2['default'].map(this.props.children, function (item, index) {
-	      return _react.cloneElement(item, { key: item.key ? item.key : index });
-	    });
-	
-	    if (this.areCustomChildren(items)) {
-	      var Component = this.props.componentClass;
-	      return _react2['default'].createElement(
-	        Component,
-	        _extends({}, this.props, {
-	          className: _classnames2['default'](this.props.className, 'list-group') }),
-	        items
-	      );
-	    }
-	
-	    var shouldRenderDiv = false;
-	
-	    if (!this.props.children) {
-	      shouldRenderDiv = true;
-	    } else {
-	      _utilsValidComponentChildren2['default'].forEach(this.props.children, function (child) {
-	        if (_this.isAnchorOrButton(child.props)) {
-	          shouldRenderDiv = true;
-	        }
-	      });
-	    }
-	
-	    return shouldRenderDiv ? this.renderDiv(items) : this.renderUL(items);
-	  };
-	
-	  ListGroup.prototype.isAnchorOrButton = function isAnchorOrButton(props) {
-	    return props.href || props.onClick;
-	  };
-	
-	  ListGroup.prototype.areCustomChildren = function areCustomChildren(children) {
-	    var customChildren = false;
-	
-	    _utilsValidComponentChildren2['default'].forEach(children, function (child) {
-	      if (child.type !== _ListGroupItem2['default']) {
-	        customChildren = true;
-	      }
-	    }, this);
-	
-	    return customChildren;
-	  };
-	
-	  ListGroup.prototype.renderUL = function renderUL(items) {
-	    var listItems = _utilsValidComponentChildren2['default'].map(items, function (item) {
-	      return _react.cloneElement(item, { listItem: true });
-	    });
-	
-	    return _react2['default'].createElement(
-	      'ul',
-	      _extends({}, this.props, {
-	        className: _classnames2['default'](this.props.className, 'list-group') }),
-	      listItems
-	    );
-	  };
-	
-	  ListGroup.prototype.renderDiv = function renderDiv(items) {
-	    return _react2['default'].createElement(
-	      'div',
-	      _extends({}, this.props, {
-	        className: _classnames2['default'](this.props.className, 'list-group') }),
-	      items
-	    );
-	  };
-	
-	  return ListGroup;
-	})(_react2['default'].Component);
-	
-	ListGroup.defaultProps = {
-	  componentClass: 'div'
-	};
-	
-	ListGroup.propTypes = {
-	  className: _react2['default'].PropTypes.string,
-	  /**
-	   * The element for ListGroup if children are
-	   * user-defined custom components.
-	   * @type {("ul"|"div")}
-	   */
-	  componentClass: _react2['default'].PropTypes.oneOf(['ul', 'div']),
-	  id: _react2['default'].PropTypes.oneOfType([_react2['default'].PropTypes.string, _react2['default'].PropTypes.number])
-	};
-	
-	exports['default'] = ListGroup;
-	module.exports = exports['default'];
-
-/***/ },
-/* 467 */
-/*!************************************************!*\
-  !*** ./~/react-bootstrap/lib/ListGroupItem.js ***!
-  \************************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _inherits = __webpack_require__(/*! babel-runtime/helpers/inherits */ 444)['default'];
-	
-	var _classCallCheck = __webpack_require__(/*! babel-runtime/helpers/class-call-check */ 451)['default'];
-	
-	var _extends = __webpack_require__(/*! babel-runtime/helpers/extends */ 409)['default'];
-	
-	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 425)['default'];
-	
-	exports.__esModule = true;
-	
-	var _react = __webpack_require__(/*! react */ 214);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _utilsBootstrapUtils = __webpack_require__(/*! ./utils/bootstrapUtils */ 442);
-	
-	var _utilsBootstrapUtils2 = _interopRequireDefault(_utilsBootstrapUtils);
-	
-	var _styleMaps = __webpack_require__(/*! ./styleMaps */ 435);
-	
-	var _classnames = __webpack_require__(/*! classnames */ 426);
-	
-	var _classnames2 = _interopRequireDefault(_classnames);
-	
-	var ListGroupItem = (function (_React$Component) {
-	  _inherits(ListGroupItem, _React$Component);
-	
-	  function ListGroupItem() {
-	    _classCallCheck(this, ListGroupItem);
-	
-	    _React$Component.apply(this, arguments);
-	  }
-	
-	  ListGroupItem.prototype.render = function render() {
-	    var classes = _utilsBootstrapUtils2['default'].getClassSet(this.props);
-	
-	    classes.active = this.props.active;
-	    classes.disabled = this.props.disabled;
-	
-	    if (this.props.href) {
-	      return this.renderAnchor(classes);
-	    } else if (this.props.onClick) {
-	      return this.renderButton(classes);
-	    } else if (this.props.listItem) {
-	      return this.renderLi(classes);
-	    }
-	
-	    return this.renderSpan(classes);
-	  };
-	
-	  ListGroupItem.prototype.renderLi = function renderLi(classes) {
-	    return _react2['default'].createElement(
-	      'li',
-	      _extends({}, this.props, { className: _classnames2['default'](this.props.className, classes) }),
-	      this.props.header ? this.renderStructuredContent() : this.props.children
-	    );
-	  };
-	
-	  ListGroupItem.prototype.renderAnchor = function renderAnchor(classes) {
-	    return _react2['default'].createElement(
-	      'a',
-	      _extends({}, this.props, {
-	        className: _classnames2['default'](this.props.className, classes)
-	      }),
-	      this.props.header ? this.renderStructuredContent() : this.props.children
-	    );
-	  };
-	
-	  ListGroupItem.prototype.renderButton = function renderButton(classes) {
-	    return _react2['default'].createElement(
-	      'button',
-	      _extends({
-	        type: 'button'
-	      }, this.props, {
-	        className: _classnames2['default'](this.props.className, classes) }),
-	      this.props.header ? this.renderStructuredContent() : this.props.children
-	    );
-	  };
-	
-	  ListGroupItem.prototype.renderSpan = function renderSpan(classes) {
-	    return _react2['default'].createElement(
-	      'span',
-	      _extends({}, this.props, { className: _classnames2['default'](this.props.className, classes) }),
-	      this.props.header ? this.renderStructuredContent() : this.props.children
-	    );
-	  };
-	
-	  ListGroupItem.prototype.renderStructuredContent = function renderStructuredContent() {
-	    var header = undefined;
-	    var headingClass = _utilsBootstrapUtils2['default'].prefix(this.props, 'heading');
-	
-	    if (_react2['default'].isValidElement(this.props.header)) {
-	      header = _react.cloneElement(this.props.header, {
-	        key: 'header',
-	        className: _classnames2['default'](this.props.header.props.className, headingClass)
-	      });
-	    } else {
-	      header = _react2['default'].createElement(
-	        'h4',
-	        { key: 'header', className: headingClass },
-	        this.props.header
-	      );
-	    }
-	
-	    var content = _react2['default'].createElement(
-	      'p',
-	      { key: 'content', className: _utilsBootstrapUtils2['default'].prefix(this.props, 'text') },
-	      this.props.children
-	    );
-	
-	    return [header, content];
-	  };
-	
-	  return ListGroupItem;
-	})(_react2['default'].Component);
-	
-	ListGroupItem.propTypes = {
-	  className: _react2['default'].PropTypes.string,
-	  active: _react2['default'].PropTypes.any,
-	  disabled: _react2['default'].PropTypes.any,
-	  header: _react2['default'].PropTypes.node,
-	  listItem: _react2['default'].PropTypes.bool,
-	  onClick: _react2['default'].PropTypes.func,
-	  eventKey: _react2['default'].PropTypes.any,
-	  href: _react2['default'].PropTypes.string,
-	  target: _react2['default'].PropTypes.string
-	};
-	
-	ListGroupItem.defaultTypes = {
-	  listItem: false
-	};
-	
-	exports['default'] = _utilsBootstrapUtils.bsStyles(_styleMaps.State.values(), _utilsBootstrapUtils.bsClass('list-group-item', ListGroupItem));
-	module.exports = exports['default'];
-
-/***/ },
-/* 468 */
-/*!***************************************************************!*\
-  !*** ./~/react-bootstrap/lib/utils/ValidComponentChildren.js ***!
-  \***************************************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 425)['default'];
-	
-	exports.__esModule = true;
-	
-	var _react = __webpack_require__(/*! react */ 214);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	/**
-	 * Maps children that are typically specified as `props.children`,
-	 * but only iterates over children that are "valid components".
-	 *
-	 * The mapFunction provided index will be normalised to the components mapped,
-	 * so an invalid component would not increase the index.
-	 *
-	 * @param {?*} children Children tree container.
-	 * @param {function(*, int)} mapFunction.
-	 * @param {*} mapContext Context for mapFunction.
-	 * @return {object} Object containing the ordered map of results.
-	 */
-	function mapValidComponents(children, func, context) {
-	  var index = 0;
-	
-	  return _react2['default'].Children.map(children, function (child) {
-	    if (_react2['default'].isValidElement(child)) {
-	      var lastIndex = index;
-	      index++;
-	      return func.call(context, child, lastIndex);
-	    }
-	
-	    return child;
-	  });
-	}
-	
-	/**
-	 * Iterates through children that are typically specified as `props.children`,
-	 * but only iterates over children that are "valid components".
-	 *
-	 * The provided forEachFunc(child, index) will be called for each
-	 * leaf child with the index reflecting the position relative to "valid components".
-	 *
-	 * @param {?*} children Children tree container.
-	 * @param {function(*, int)} forEachFunc.
-	 * @param {*} forEachContext Context for forEachContext.
-	 */
-	function forEachValidComponents(children, func, context) {
-	  var index = 0;
-	
-	  return _react2['default'].Children.forEach(children, function (child) {
-	    if (_react2['default'].isValidElement(child)) {
-	      func.call(context, child, index);
-	      index++;
-	    }
-	  });
-	}
-	
-	/**
-	 * Count the number of "valid components" in the Children container.
-	 *
-	 * @param {?*} children Children tree container.
-	 * @returns {number}
-	 */
-	function numberOfValidComponents(children) {
-	  var count = 0;
-	
-	  _react2['default'].Children.forEach(children, function (child) {
-	    if (_react2['default'].isValidElement(child)) {
-	      count++;
-	    }
-	  });
-	
-	  return count;
-	}
-	
-	/**
-	 * Determine if the Child container has one or more "valid components".
-	 *
-	 * @param {?*} children Children tree container.
-	 * @returns {boolean}
-	 */
-	function hasValidComponent(children) {
-	  var hasValid = false;
-	
-	  _react2['default'].Children.forEach(children, function (child) {
-	    if (!hasValid && _react2['default'].isValidElement(child)) {
-	      hasValid = true;
-	    }
-	  });
-	
-	  return hasValid;
-	}
-	
-	function find(children, finder) {
-	  var child = undefined;
-	
-	  forEachValidComponents(children, function (c, idx) {
-	    if (!child && finder(c, idx, children)) {
-	      child = c;
-	    }
-	  });
-	
-	  return child;
-	}
-	
-	/**
-	 * Finds children that are typically specified as `props.children`,
-	 * but only iterates over children that are "valid components".
-	 *
-	 * The provided forEachFunc(child, index) will be called for each
-	 * leaf child with the index reflecting the position relative to "valid components".
-	 *
-	 * @param {?*} children Children tree container.
-	 * @param {function(*, int)} findFunc.
-	 * @param {*} findContext Context for findContext.
-	 * @returns {array} of children that meet the findFunc return statement
-	 */
-	function findValidComponents(children, func, context) {
-	  var index = 0;
-	  var returnChildren = [];
-	
-	  _react2['default'].Children.forEach(children, function (child) {
-	    if (_react2['default'].isValidElement(child)) {
-	      if (func.call(context, child, index)) {
-	        returnChildren.push(child);
-	      }
-	      index++;
-	    }
-	  });
-	
-	  return returnChildren;
-	}
-	
-	exports['default'] = {
-	  map: mapValidComponents,
-	  forEach: forEachValidComponents,
-	  numberOf: numberOfValidComponents,
-	  find: find,
-	  findValidComponents: findValidComponents,
-	  hasValidComponent: hasValidComponent
-	};
-	module.exports = exports['default'];
-
-/***/ },
-/* 469 */
-/*!************************************************!*\
-  !*** ./~/react-bootstrap/lib/ButtonToolbar.js ***!
-  \************************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _extends = __webpack_require__(/*! babel-runtime/helpers/extends */ 409)['default'];
-	
-	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 425)['default'];
-	
-	exports.__esModule = true;
-	
-	var _react = __webpack_require__(/*! react */ 214);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _classnames = __webpack_require__(/*! classnames */ 426);
-	
-	var _classnames2 = _interopRequireDefault(_classnames);
-	
-	var _utilsBootstrapUtils = __webpack_require__(/*! ./utils/bootstrapUtils */ 442);
-	
-	var _utilsBootstrapUtils2 = _interopRequireDefault(_utilsBootstrapUtils);
-	
-	var _Button = __webpack_require__(/*! ./Button */ 441);
-	
-	var _Button2 = _interopRequireDefault(_Button);
-	
-	var ButtonToolbar = _react2['default'].createClass({
-	  displayName: 'ButtonToolbar',
-	
-	  propTypes: {
-	    bsSize: _Button2['default'].propTypes.bsSize
-	  },
-	
-	  getDefaultProps: function getDefaultProps() {
-	    return {
-	      bsClass: 'btn-toolbar'
-	    };
-	  },
-	
-	  render: function render() {
-	    var classes = _utilsBootstrapUtils2['default'].getClassSet(this.props);
-	
-	    return _react2['default'].createElement(
-	      'div',
-	      _extends({}, this.props, {
-	        role: 'toolbar',
-	        className: _classnames2['default'](this.props.className, classes) }),
-	      this.props.children
-	    );
-	  }
-	});
-	
-	exports['default'] = ButtonToolbar;
-	module.exports = exports['default'];
-
-/***/ },
-/* 470 */
-/*!**********************************************!*\
-  !*** ./~/react-bootstrap/lib/ButtonGroup.js ***!
-  \**********************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _extends = __webpack_require__(/*! babel-runtime/helpers/extends */ 409)['default'];
-	
-	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 425)['default'];
-	
-	exports.__esModule = true;
-	
-	var _react = __webpack_require__(/*! react */ 214);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _classnames = __webpack_require__(/*! classnames */ 426);
-	
-	var _classnames2 = _interopRequireDefault(_classnames);
-	
-	var _utilsBootstrapUtils = __webpack_require__(/*! ./utils/bootstrapUtils */ 442);
-	
-	var _utilsBootstrapUtils2 = _interopRequireDefault(_utilsBootstrapUtils);
-	
-	var _reactPropTypesLibAll = __webpack_require__(/*! react-prop-types/lib/all */ 471);
-	
-	var _reactPropTypesLibAll2 = _interopRequireDefault(_reactPropTypesLibAll);
-	
-	var _Button = __webpack_require__(/*! ./Button */ 441);
-	
-	var _Button2 = _interopRequireDefault(_Button);
-	
-	var ButtonGroup = _react2['default'].createClass({
-	  displayName: 'ButtonGroup',
-	
-	  propTypes: {
-	    vertical: _react2['default'].PropTypes.bool,
-	    justified: _react2['default'].PropTypes.bool,
-	    /**
-	     * Display block buttons, only useful when used with the "vertical" prop.
-	     * @type {bool}
-	     */
-	    block: _reactPropTypesLibAll2['default'](_react2['default'].PropTypes.bool, function (props) {
-	      if (props.block && !props.vertical) {
-	        return new Error('The block property requires the vertical property to be set to have any effect');
-	      }
-	    })
-	  },
-	
-	  getDefaultProps: function getDefaultProps() {
-	    return {
-	      block: false,
-	      justified: false,
-	      vertical: false
-	    };
-	  },
-	
-	  render: function render() {
-	    var classes = _utilsBootstrapUtils2['default'].getClassSet(this.props);
-	
-	    classes[_utilsBootstrapUtils2['default'].prefix(this.props)] = !this.props.vertical;
-	    classes[_utilsBootstrapUtils2['default'].prefix(this.props, 'vertical')] = this.props.vertical;
-	    classes[_utilsBootstrapUtils2['default'].prefix(this.props, 'justified')] = this.props.justified;
-	
-	    // this is annoying, since the class is `btn-block` not `btn-group-block`
-	    classes[_utilsBootstrapUtils2['default'].prefix(_Button2['default'].defaultProps, 'block')] = this.props.block;
-	
-	    return _react2['default'].createElement(
-	      'div',
-	      _extends({}, this.props, {
-	        className: _classnames2['default'](this.props.className, classes) }),
-	      this.props.children
-	    );
-	  }
-	});
-	
-	exports['default'] = _utilsBootstrapUtils.bsClass('btn-group', ButtonGroup);
-	module.exports = exports['default'];
-
-/***/ },
-/* 471 */
-/*!***************************************!*\
-  !*** ./~/react-prop-types/lib/all.js ***!
-  \***************************************/
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	exports.__esModule = true;
-	exports['default'] = all;
-	
-	function all() {
-	  for (var _len = arguments.length, propTypes = Array(_len), _key = 0; _key < _len; _key++) {
-	    propTypes[_key] = arguments[_key];
-	  }
-	
-	  if (propTypes === undefined) {
-	    throw new Error('No validations provided');
-	  }
-	
-	  if (propTypes.some(function (propType) {
-	    return typeof propType !== 'function';
-	  })) {
-	    throw new Error('Invalid arguments, must be functions');
-	  }
-	
-	  if (propTypes.length === 0) {
-	    throw new Error('No validations provided');
-	  }
-	
-	  return function validate(props, propName, componentName) {
-	    for (var i = 0; i < propTypes.length; i++) {
-	      var result = propTypes[i](props, propName, componentName);
-	
-	      if (result !== undefined && result !== null) {
-	        return result;
-	      }
-	    }
-	  };
-	}
-	
-	module.exports = exports['default'];
-
-/***/ },
-/* 472 */
 /*!****************************!*\
   !*** ./~/moment/moment.js ***!
   \****************************/
@@ -35428,7 +34252,7 @@
 	                module && module.exports) {
 	            try {
 	                oldLocale = globalLocale._abbr;
-	                __webpack_require__(/*! ./locale */ 474)("./" + name);
+	                __webpack_require__(/*! ./locale */ 463)("./" + name);
 	                // because defineLocale currently also sets the global locale, we
 	                // want to undo that for lazy loaded locales
 	                locale_locales__getSetGlobalLocale(oldLocale);
@@ -38765,10 +37589,10 @@
 	    return _moment;
 	
 	}));
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../webpack/buildin/module.js */ 473)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../webpack/buildin/module.js */ 462)(module)))
 
 /***/ },
-/* 473 */
+/* 462 */
 /*!***********************************!*\
   !*** (webpack)/buildin/module.js ***!
   \***********************************/
@@ -38787,207 +37611,207 @@
 
 
 /***/ },
-/* 474 */
+/* 463 */
 /*!**********************************!*\
   !*** ./~/moment/locale ^\.\/.*$ ***!
   \**********************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./af": 475,
-		"./af.js": 475,
-		"./ar": 476,
-		"./ar-ma": 477,
-		"./ar-ma.js": 477,
-		"./ar-sa": 478,
-		"./ar-sa.js": 478,
-		"./ar-tn": 479,
-		"./ar-tn.js": 479,
-		"./ar.js": 476,
-		"./az": 480,
-		"./az.js": 480,
-		"./be": 481,
-		"./be.js": 481,
-		"./bg": 482,
-		"./bg.js": 482,
-		"./bn": 483,
-		"./bn.js": 483,
-		"./bo": 484,
-		"./bo.js": 484,
-		"./br": 485,
-		"./br.js": 485,
-		"./bs": 486,
-		"./bs.js": 486,
-		"./ca": 487,
-		"./ca.js": 487,
-		"./cs": 488,
-		"./cs.js": 488,
-		"./cv": 489,
-		"./cv.js": 489,
-		"./cy": 490,
-		"./cy.js": 490,
-		"./da": 491,
-		"./da.js": 491,
-		"./de": 492,
-		"./de-at": 493,
-		"./de-at.js": 493,
-		"./de.js": 492,
-		"./dv": 494,
-		"./dv.js": 494,
-		"./el": 495,
-		"./el.js": 495,
-		"./en-au": 496,
-		"./en-au.js": 496,
-		"./en-ca": 497,
-		"./en-ca.js": 497,
-		"./en-gb": 498,
-		"./en-gb.js": 498,
-		"./en-ie": 499,
-		"./en-ie.js": 499,
-		"./en-nz": 500,
-		"./en-nz.js": 500,
-		"./eo": 501,
-		"./eo.js": 501,
-		"./es": 502,
-		"./es.js": 502,
-		"./et": 503,
-		"./et.js": 503,
-		"./eu": 504,
-		"./eu.js": 504,
-		"./fa": 505,
-		"./fa.js": 505,
-		"./fi": 506,
-		"./fi.js": 506,
-		"./fo": 507,
-		"./fo.js": 507,
-		"./fr": 508,
-		"./fr-ca": 509,
-		"./fr-ca.js": 509,
-		"./fr-ch": 510,
-		"./fr-ch.js": 510,
-		"./fr.js": 508,
-		"./fy": 511,
-		"./fy.js": 511,
-		"./gd": 512,
-		"./gd.js": 512,
-		"./gl": 513,
-		"./gl.js": 513,
-		"./he": 514,
-		"./he.js": 514,
-		"./hi": 515,
-		"./hi.js": 515,
-		"./hr": 516,
-		"./hr.js": 516,
-		"./hu": 517,
-		"./hu.js": 517,
-		"./hy-am": 518,
-		"./hy-am.js": 518,
-		"./id": 519,
-		"./id.js": 519,
-		"./is": 520,
-		"./is.js": 520,
-		"./it": 521,
-		"./it.js": 521,
-		"./ja": 522,
-		"./ja.js": 522,
-		"./jv": 523,
-		"./jv.js": 523,
-		"./ka": 524,
-		"./ka.js": 524,
-		"./kk": 525,
-		"./kk.js": 525,
-		"./km": 526,
-		"./km.js": 526,
-		"./ko": 527,
-		"./ko.js": 527,
-		"./lb": 528,
-		"./lb.js": 528,
-		"./lo": 529,
-		"./lo.js": 529,
-		"./lt": 530,
-		"./lt.js": 530,
-		"./lv": 531,
-		"./lv.js": 531,
-		"./me": 532,
-		"./me.js": 532,
-		"./mk": 533,
-		"./mk.js": 533,
-		"./ml": 534,
-		"./ml.js": 534,
-		"./mr": 535,
-		"./mr.js": 535,
-		"./ms": 536,
-		"./ms-my": 537,
-		"./ms-my.js": 537,
-		"./ms.js": 536,
-		"./my": 538,
-		"./my.js": 538,
-		"./nb": 539,
-		"./nb.js": 539,
-		"./ne": 540,
-		"./ne.js": 540,
-		"./nl": 541,
-		"./nl.js": 541,
-		"./nn": 542,
-		"./nn.js": 542,
-		"./pa-in": 543,
-		"./pa-in.js": 543,
-		"./pl": 544,
-		"./pl.js": 544,
-		"./pt": 545,
-		"./pt-br": 546,
-		"./pt-br.js": 546,
-		"./pt.js": 545,
-		"./ro": 547,
-		"./ro.js": 547,
-		"./ru": 548,
-		"./ru.js": 548,
-		"./se": 549,
-		"./se.js": 549,
-		"./si": 550,
-		"./si.js": 550,
-		"./sk": 551,
-		"./sk.js": 551,
-		"./sl": 552,
-		"./sl.js": 552,
-		"./sq": 553,
-		"./sq.js": 553,
-		"./sr": 554,
-		"./sr-cyrl": 555,
-		"./sr-cyrl.js": 555,
-		"./sr.js": 554,
-		"./sv": 556,
-		"./sv.js": 556,
-		"./sw": 557,
-		"./sw.js": 557,
-		"./ta": 558,
-		"./ta.js": 558,
-		"./te": 559,
-		"./te.js": 559,
-		"./th": 560,
-		"./th.js": 560,
-		"./tl-ph": 561,
-		"./tl-ph.js": 561,
-		"./tlh": 562,
-		"./tlh.js": 562,
-		"./tr": 563,
-		"./tr.js": 563,
-		"./tzl": 564,
-		"./tzl.js": 564,
-		"./tzm": 565,
-		"./tzm-latn": 566,
-		"./tzm-latn.js": 566,
-		"./tzm.js": 565,
-		"./uk": 567,
-		"./uk.js": 567,
-		"./uz": 568,
-		"./uz.js": 568,
-		"./vi": 569,
-		"./vi.js": 569,
-		"./zh-cn": 570,
-		"./zh-cn.js": 570,
-		"./zh-tw": 571,
-		"./zh-tw.js": 571
+		"./af": 464,
+		"./af.js": 464,
+		"./ar": 465,
+		"./ar-ma": 466,
+		"./ar-ma.js": 466,
+		"./ar-sa": 467,
+		"./ar-sa.js": 467,
+		"./ar-tn": 468,
+		"./ar-tn.js": 468,
+		"./ar.js": 465,
+		"./az": 469,
+		"./az.js": 469,
+		"./be": 470,
+		"./be.js": 470,
+		"./bg": 471,
+		"./bg.js": 471,
+		"./bn": 472,
+		"./bn.js": 472,
+		"./bo": 473,
+		"./bo.js": 473,
+		"./br": 474,
+		"./br.js": 474,
+		"./bs": 475,
+		"./bs.js": 475,
+		"./ca": 476,
+		"./ca.js": 476,
+		"./cs": 477,
+		"./cs.js": 477,
+		"./cv": 478,
+		"./cv.js": 478,
+		"./cy": 479,
+		"./cy.js": 479,
+		"./da": 480,
+		"./da.js": 480,
+		"./de": 481,
+		"./de-at": 482,
+		"./de-at.js": 482,
+		"./de.js": 481,
+		"./dv": 483,
+		"./dv.js": 483,
+		"./el": 484,
+		"./el.js": 484,
+		"./en-au": 485,
+		"./en-au.js": 485,
+		"./en-ca": 486,
+		"./en-ca.js": 486,
+		"./en-gb": 487,
+		"./en-gb.js": 487,
+		"./en-ie": 488,
+		"./en-ie.js": 488,
+		"./en-nz": 489,
+		"./en-nz.js": 489,
+		"./eo": 490,
+		"./eo.js": 490,
+		"./es": 491,
+		"./es.js": 491,
+		"./et": 492,
+		"./et.js": 492,
+		"./eu": 493,
+		"./eu.js": 493,
+		"./fa": 494,
+		"./fa.js": 494,
+		"./fi": 495,
+		"./fi.js": 495,
+		"./fo": 496,
+		"./fo.js": 496,
+		"./fr": 497,
+		"./fr-ca": 498,
+		"./fr-ca.js": 498,
+		"./fr-ch": 499,
+		"./fr-ch.js": 499,
+		"./fr.js": 497,
+		"./fy": 500,
+		"./fy.js": 500,
+		"./gd": 501,
+		"./gd.js": 501,
+		"./gl": 502,
+		"./gl.js": 502,
+		"./he": 503,
+		"./he.js": 503,
+		"./hi": 504,
+		"./hi.js": 504,
+		"./hr": 505,
+		"./hr.js": 505,
+		"./hu": 506,
+		"./hu.js": 506,
+		"./hy-am": 507,
+		"./hy-am.js": 507,
+		"./id": 508,
+		"./id.js": 508,
+		"./is": 509,
+		"./is.js": 509,
+		"./it": 510,
+		"./it.js": 510,
+		"./ja": 511,
+		"./ja.js": 511,
+		"./jv": 512,
+		"./jv.js": 512,
+		"./ka": 513,
+		"./ka.js": 513,
+		"./kk": 514,
+		"./kk.js": 514,
+		"./km": 515,
+		"./km.js": 515,
+		"./ko": 516,
+		"./ko.js": 516,
+		"./lb": 517,
+		"./lb.js": 517,
+		"./lo": 518,
+		"./lo.js": 518,
+		"./lt": 519,
+		"./lt.js": 519,
+		"./lv": 520,
+		"./lv.js": 520,
+		"./me": 521,
+		"./me.js": 521,
+		"./mk": 522,
+		"./mk.js": 522,
+		"./ml": 523,
+		"./ml.js": 523,
+		"./mr": 524,
+		"./mr.js": 524,
+		"./ms": 525,
+		"./ms-my": 526,
+		"./ms-my.js": 526,
+		"./ms.js": 525,
+		"./my": 527,
+		"./my.js": 527,
+		"./nb": 528,
+		"./nb.js": 528,
+		"./ne": 529,
+		"./ne.js": 529,
+		"./nl": 530,
+		"./nl.js": 530,
+		"./nn": 531,
+		"./nn.js": 531,
+		"./pa-in": 532,
+		"./pa-in.js": 532,
+		"./pl": 533,
+		"./pl.js": 533,
+		"./pt": 534,
+		"./pt-br": 535,
+		"./pt-br.js": 535,
+		"./pt.js": 534,
+		"./ro": 536,
+		"./ro.js": 536,
+		"./ru": 537,
+		"./ru.js": 537,
+		"./se": 538,
+		"./se.js": 538,
+		"./si": 539,
+		"./si.js": 539,
+		"./sk": 540,
+		"./sk.js": 540,
+		"./sl": 541,
+		"./sl.js": 541,
+		"./sq": 542,
+		"./sq.js": 542,
+		"./sr": 543,
+		"./sr-cyrl": 544,
+		"./sr-cyrl.js": 544,
+		"./sr.js": 543,
+		"./sv": 545,
+		"./sv.js": 545,
+		"./sw": 546,
+		"./sw.js": 546,
+		"./ta": 547,
+		"./ta.js": 547,
+		"./te": 548,
+		"./te.js": 548,
+		"./th": 549,
+		"./th.js": 549,
+		"./tl-ph": 550,
+		"./tl-ph.js": 550,
+		"./tlh": 551,
+		"./tlh.js": 551,
+		"./tr": 552,
+		"./tr.js": 552,
+		"./tzl": 553,
+		"./tzl.js": 553,
+		"./tzm": 554,
+		"./tzm-latn": 555,
+		"./tzm-latn.js": 555,
+		"./tzm.js": 554,
+		"./uk": 556,
+		"./uk.js": 556,
+		"./uz": 557,
+		"./uz.js": 557,
+		"./vi": 558,
+		"./vi.js": 558,
+		"./zh-cn": 559,
+		"./zh-cn.js": 559,
+		"./zh-tw": 560,
+		"./zh-tw.js": 560
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -39000,11 +37824,11 @@
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 474;
+	webpackContext.id = 463;
 
 
 /***/ },
-/* 475 */
+/* 464 */
 /*!*******************************!*\
   !*** ./~/moment/locale/af.js ***!
   \*******************************/
@@ -39015,7 +37839,7 @@
 	//! author : Werner Mollentze : https://github.com/wernerm
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -39084,7 +37908,7 @@
 	}));
 
 /***/ },
-/* 476 */
+/* 465 */
 /*!*******************************!*\
   !*** ./~/moment/locale/ar.js ***!
   \*******************************/
@@ -39097,7 +37921,7 @@
 	//! Native plural forms: forabi https://github.com/forabi
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -39227,7 +38051,7 @@
 	}));
 
 /***/ },
-/* 477 */
+/* 466 */
 /*!**********************************!*\
   !*** ./~/moment/locale/ar-ma.js ***!
   \**********************************/
@@ -39239,7 +38063,7 @@
 	//! author : Abdel Said : https://github.com/abdelsaid
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -39293,7 +38117,7 @@
 	}));
 
 /***/ },
-/* 478 */
+/* 467 */
 /*!**********************************!*\
   !*** ./~/moment/locale/ar-sa.js ***!
   \**********************************/
@@ -39304,7 +38128,7 @@
 	//! author : Suhail Alkowaileet : https://github.com/xsoh
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -39403,7 +38227,7 @@
 	}));
 
 /***/ },
-/* 479 */
+/* 468 */
 /*!**********************************!*\
   !*** ./~/moment/locale/ar-tn.js ***!
   \**********************************/
@@ -39413,7 +38237,7 @@
 	//! locale  : Tunisian Arabic (ar-tn)
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -39467,7 +38291,7 @@
 	}));
 
 /***/ },
-/* 480 */
+/* 469 */
 /*!*******************************!*\
   !*** ./~/moment/locale/az.js ***!
   \*******************************/
@@ -39478,7 +38302,7 @@
 	//! author : topchiyev : https://github.com/topchiyev
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -39578,7 +38402,7 @@
 	}));
 
 /***/ },
-/* 481 */
+/* 470 */
 /*!*******************************!*\
   !*** ./~/moment/locale/be.js ***!
   \*******************************/
@@ -39591,7 +38415,7 @@
 	//! Author : Menelion Elensúle : https://github.com/Oire
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -39719,7 +38543,7 @@
 	}));
 
 /***/ },
-/* 482 */
+/* 471 */
 /*!*******************************!*\
   !*** ./~/moment/locale/bg.js ***!
   \*******************************/
@@ -39730,7 +38554,7 @@
 	//! author : Krasen Borisov : https://github.com/kraz
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -39816,7 +38640,7 @@
 	}));
 
 /***/ },
-/* 483 */
+/* 472 */
 /*!*******************************!*\
   !*** ./~/moment/locale/bn.js ***!
   \*******************************/
@@ -39827,7 +38651,7 @@
 	//! author : Kaushik Gandhi : https://github.com/kaushikgandhi
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -39942,7 +38766,7 @@
 	}));
 
 /***/ },
-/* 484 */
+/* 473 */
 /*!*******************************!*\
   !*** ./~/moment/locale/bo.js ***!
   \*******************************/
@@ -39953,7 +38777,7 @@
 	//! author : Thupten N. Chakrishar : https://github.com/vajradog
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -40068,7 +38892,7 @@
 	}));
 
 /***/ },
-/* 485 */
+/* 474 */
 /*!*******************************!*\
   !*** ./~/moment/locale/br.js ***!
   \*******************************/
@@ -40079,7 +38903,7 @@
 	//! author : Jean-Baptiste Le Duigou : https://github.com/jbleduigou
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -40182,7 +39006,7 @@
 	}));
 
 /***/ },
-/* 486 */
+/* 475 */
 /*!*******************************!*\
   !*** ./~/moment/locale/bs.js ***!
   \*******************************/
@@ -40194,7 +39018,7 @@
 	//! based on (hr) translation by Bojan Marković
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -40330,7 +39154,7 @@
 	}));
 
 /***/ },
-/* 487 */
+/* 476 */
 /*!*******************************!*\
   !*** ./~/moment/locale/ca.js ***!
   \*******************************/
@@ -40341,7 +39165,7 @@
 	//! author : Juan G. Hurtado : https://github.com/juanghurtado
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -40416,7 +39240,7 @@
 	}));
 
 /***/ },
-/* 488 */
+/* 477 */
 /*!*******************************!*\
   !*** ./~/moment/locale/cs.js ***!
   \*******************************/
@@ -40427,7 +39251,7 @@
 	//! author : petrbela : https://github.com/petrbela
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -40594,7 +39418,7 @@
 	}));
 
 /***/ },
-/* 489 */
+/* 478 */
 /*!*******************************!*\
   !*** ./~/moment/locale/cv.js ***!
   \*******************************/
@@ -40605,7 +39429,7 @@
 	//! author : Anatoly Mironov : https://github.com/mirontoli
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -40664,7 +39488,7 @@
 	}));
 
 /***/ },
-/* 490 */
+/* 479 */
 /*!*******************************!*\
   !*** ./~/moment/locale/cy.js ***!
   \*******************************/
@@ -40675,7 +39499,7 @@
 	//! author : Robert Allen
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -40750,7 +39574,7 @@
 	}));
 
 /***/ },
-/* 491 */
+/* 480 */
 /*!*******************************!*\
   !*** ./~/moment/locale/da.js ***!
   \*******************************/
@@ -40761,7 +39585,7 @@
 	//! author : Ulrik Nielsen : https://github.com/mrbase
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -40817,7 +39641,7 @@
 	}));
 
 /***/ },
-/* 492 */
+/* 481 */
 /*!*******************************!*\
   !*** ./~/moment/locale/de.js ***!
   \*******************************/
@@ -40830,7 +39654,7 @@
 	//! author : Mikolaj Dadela : https://github.com/mik01aj
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -40900,7 +39724,7 @@
 	}));
 
 /***/ },
-/* 493 */
+/* 482 */
 /*!**********************************!*\
   !*** ./~/moment/locale/de-at.js ***!
   \**********************************/
@@ -40914,7 +39738,7 @@
 	//! author : Mikolaj Dadela : https://github.com/mik01aj
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -40984,7 +39808,7 @@
 	}));
 
 /***/ },
-/* 494 */
+/* 483 */
 /*!*******************************!*\
   !*** ./~/moment/locale/dv.js ***!
   \*******************************/
@@ -40995,7 +39819,7 @@
 	//! author : Jawish Hameed : https://github.com/jawish
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -41090,7 +39914,7 @@
 	}));
 
 /***/ },
-/* 495 */
+/* 484 */
 /*!*******************************!*\
   !*** ./~/moment/locale/el.js ***!
   \*******************************/
@@ -41101,7 +39925,7 @@
 	//! author : Aggelos Karalias : https://github.com/mehiel
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -41195,7 +40019,7 @@
 	}));
 
 /***/ },
-/* 496 */
+/* 485 */
 /*!**********************************!*\
   !*** ./~/moment/locale/en-au.js ***!
   \**********************************/
@@ -41205,7 +40029,7 @@
 	//! locale : australian english (en-au)
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -41268,7 +40092,7 @@
 	}));
 
 /***/ },
-/* 497 */
+/* 486 */
 /*!**********************************!*\
   !*** ./~/moment/locale/en-ca.js ***!
   \**********************************/
@@ -41279,7 +40103,7 @@
 	//! author : Jonathan Abourbih : https://github.com/jonbca
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -41338,7 +40162,7 @@
 	}));
 
 /***/ },
-/* 498 */
+/* 487 */
 /*!**********************************!*\
   !*** ./~/moment/locale/en-gb.js ***!
   \**********************************/
@@ -41349,7 +40173,7 @@
 	//! author : Chris Gedrim : https://github.com/chrisgedrim
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -41412,7 +40236,7 @@
 	}));
 
 /***/ },
-/* 499 */
+/* 488 */
 /*!**********************************!*\
   !*** ./~/moment/locale/en-ie.js ***!
   \**********************************/
@@ -41423,7 +40247,7 @@
 	//! author : Chris Cartlidge : https://github.com/chriscartlidge
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -41486,7 +40310,7 @@
 	}));
 
 /***/ },
-/* 500 */
+/* 489 */
 /*!**********************************!*\
   !*** ./~/moment/locale/en-nz.js ***!
   \**********************************/
@@ -41496,7 +40320,7 @@
 	//! locale : New Zealand english (en-nz)
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -41559,7 +40383,7 @@
 	}));
 
 /***/ },
-/* 501 */
+/* 490 */
 /*!*******************************!*\
   !*** ./~/moment/locale/eo.js ***!
   \*******************************/
@@ -41572,7 +40396,7 @@
 	//!          Se ne, bonvolu korekti kaj avizi min por ke mi povas lerni!
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -41639,7 +40463,7 @@
 	}));
 
 /***/ },
-/* 502 */
+/* 491 */
 /*!*******************************!*\
   !*** ./~/moment/locale/es.js ***!
   \*******************************/
@@ -41650,7 +40474,7 @@
 	//! author : Julio Napurí : https://github.com/julionc
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -41725,7 +40549,7 @@
 	}));
 
 /***/ },
-/* 503 */
+/* 492 */
 /*!*******************************!*\
   !*** ./~/moment/locale/et.js ***!
   \*******************************/
@@ -41737,7 +40561,7 @@
 	//! improvements : Illimar Tambek : https://github.com/ragulka
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -41812,7 +40636,7 @@
 	}));
 
 /***/ },
-/* 504 */
+/* 493 */
 /*!*******************************!*\
   !*** ./~/moment/locale/eu.js ***!
   \*******************************/
@@ -41823,7 +40647,7 @@
 	//! author : Eneko Illarramendi : https://github.com/eillarra
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -41883,7 +40707,7 @@
 	}));
 
 /***/ },
-/* 505 */
+/* 494 */
 /*!*******************************!*\
   !*** ./~/moment/locale/fa.js ***!
   \*******************************/
@@ -41894,7 +40718,7 @@
 	//! author : Ebrahim Byagowi : https://github.com/ebraminio
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -41995,7 +40819,7 @@
 	}));
 
 /***/ },
-/* 506 */
+/* 495 */
 /*!*******************************!*\
   !*** ./~/moment/locale/fi.js ***!
   \*******************************/
@@ -42006,7 +40830,7 @@
 	//! author : Tarmo Aidantausta : https://github.com/bleadof
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -42109,7 +40933,7 @@
 	}));
 
 /***/ },
-/* 507 */
+/* 496 */
 /*!*******************************!*\
   !*** ./~/moment/locale/fo.js ***!
   \*******************************/
@@ -42120,7 +40944,7 @@
 	//! author : Ragnar Johannesen : https://github.com/ragnar123
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -42176,7 +41000,7 @@
 	}));
 
 /***/ },
-/* 508 */
+/* 497 */
 /*!*******************************!*\
   !*** ./~/moment/locale/fr.js ***!
   \*******************************/
@@ -42187,7 +41011,7 @@
 	//! author : John Fischer : https://github.com/jfroffice
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -42245,7 +41069,7 @@
 	}));
 
 /***/ },
-/* 509 */
+/* 498 */
 /*!**********************************!*\
   !*** ./~/moment/locale/fr-ca.js ***!
   \**********************************/
@@ -42256,7 +41080,7 @@
 	//! author : Jonathan Abourbih : https://github.com/jonbca
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -42310,7 +41134,7 @@
 	}));
 
 /***/ },
-/* 510 */
+/* 499 */
 /*!**********************************!*\
   !*** ./~/moment/locale/fr-ch.js ***!
   \**********************************/
@@ -42321,7 +41145,7 @@
 	//! author : Gaspard Bucher : https://github.com/gaspard
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -42379,7 +41203,7 @@
 	}));
 
 /***/ },
-/* 511 */
+/* 500 */
 /*!*******************************!*\
   !*** ./~/moment/locale/fy.js ***!
   \*******************************/
@@ -42390,7 +41214,7 @@
 	//! author : Robin van der Vliet : https://github.com/robin0van0der0v
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -42457,7 +41281,7 @@
 	}));
 
 /***/ },
-/* 512 */
+/* 501 */
 /*!*******************************!*\
   !*** ./~/moment/locale/gd.js ***!
   \*******************************/
@@ -42468,7 +41292,7 @@
 	//! author : Jon Ashdown : https://github.com/jonashdown
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -42540,7 +41364,7 @@
 	}));
 
 /***/ },
-/* 513 */
+/* 502 */
 /*!*******************************!*\
   !*** ./~/moment/locale/gl.js ***!
   \*******************************/
@@ -42551,7 +41375,7 @@
 	//! author : Juan G. Hurtado : https://github.com/juanghurtado
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -42622,7 +41446,7 @@
 	}));
 
 /***/ },
-/* 514 */
+/* 503 */
 /*!*******************************!*\
   !*** ./~/moment/locale/he.js ***!
   \*******************************/
@@ -42635,7 +41459,7 @@
 	//! author : Tal Ater : https://github.com/TalAter
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -42728,7 +41552,7 @@
 	}));
 
 /***/ },
-/* 515 */
+/* 504 */
 /*!*******************************!*\
   !*** ./~/moment/locale/hi.js ***!
   \*******************************/
@@ -42739,7 +41563,7 @@
 	//! author : Mayank Singhal : https://github.com/mayanksinghal
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -42858,7 +41682,7 @@
 	}));
 
 /***/ },
-/* 516 */
+/* 505 */
 /*!*******************************!*\
   !*** ./~/moment/locale/hr.js ***!
   \*******************************/
@@ -42869,7 +41693,7 @@
 	//! author : Bojan Marković : https://github.com/bmarkovic
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -43008,7 +41832,7 @@
 	}));
 
 /***/ },
-/* 517 */
+/* 506 */
 /*!*******************************!*\
   !*** ./~/moment/locale/hu.js ***!
   \*******************************/
@@ -43019,7 +41843,7 @@
 	//! author : Adam Brunner : https://github.com/adambrunner
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -43124,7 +41948,7 @@
 	}));
 
 /***/ },
-/* 518 */
+/* 507 */
 /*!**********************************!*\
   !*** ./~/moment/locale/hy-am.js ***!
   \**********************************/
@@ -43135,7 +41959,7 @@
 	//! author : Armendarabyan : https://github.com/armendarabyan
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -43226,7 +42050,7 @@
 	}));
 
 /***/ },
-/* 519 */
+/* 508 */
 /*!*******************************!*\
   !*** ./~/moment/locale/id.js ***!
   \*******************************/
@@ -43238,7 +42062,7 @@
 	//! reference: http://id.wikisource.org/wiki/Pedoman_Umum_Ejaan_Bahasa_Indonesia_yang_Disempurnakan
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -43316,7 +42140,7 @@
 	}));
 
 /***/ },
-/* 520 */
+/* 509 */
 /*!*******************************!*\
   !*** ./~/moment/locale/is.js ***!
   \*******************************/
@@ -43327,7 +42151,7 @@
 	//! author : Hinrik Örn Sigurðsson : https://github.com/hinrik
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -43450,7 +42274,7 @@
 	}));
 
 /***/ },
-/* 521 */
+/* 510 */
 /*!*******************************!*\
   !*** ./~/moment/locale/it.js ***!
   \*******************************/
@@ -43462,7 +42286,7 @@
 	//! author: Mattia Larentis: https://github.com/nostalgiaz
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -43527,7 +42351,7 @@
 	}));
 
 /***/ },
-/* 522 */
+/* 511 */
 /*!*******************************!*\
   !*** ./~/moment/locale/ja.js ***!
   \*******************************/
@@ -43538,7 +42362,7 @@
 	//! author : LI Long : https://github.com/baryon
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -43610,7 +42434,7 @@
 	}));
 
 /***/ },
-/* 523 */
+/* 512 */
 /*!*******************************!*\
   !*** ./~/moment/locale/jv.js ***!
   \*******************************/
@@ -43622,7 +42446,7 @@
 	//! reference: http://jv.wikipedia.org/wiki/Basa_Jawa
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -43700,7 +42524,7 @@
 	}));
 
 /***/ },
-/* 524 */
+/* 513 */
 /*!*******************************!*\
   !*** ./~/moment/locale/ka.js ***!
   \*******************************/
@@ -43711,7 +42535,7 @@
 	//! author : Irakli Janiashvili : https://github.com/irakli-janiashvili
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -43796,7 +42620,7 @@
 	}));
 
 /***/ },
-/* 525 */
+/* 514 */
 /*!*******************************!*\
   !*** ./~/moment/locale/kk.js ***!
   \*******************************/
@@ -43807,7 +42631,7 @@
 	//! authors : Nurlan Rakhimzhanov : https://github.com/nurlan
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -43890,7 +42714,7 @@
 	}));
 
 /***/ },
-/* 526 */
+/* 515 */
 /*!*******************************!*\
   !*** ./~/moment/locale/km.js ***!
   \*******************************/
@@ -43901,7 +42725,7 @@
 	//! author : Kruy Vanna : https://github.com/kruyvanna
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -43955,7 +42779,7 @@
 	}));
 
 /***/ },
-/* 527 */
+/* 516 */
 /*!*******************************!*\
   !*** ./~/moment/locale/ko.js ***!
   \*******************************/
@@ -43970,7 +42794,7 @@
 	//! - Jeeeyul Lee <jeeeyul@gmail.com>
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -44030,7 +42854,7 @@
 	}));
 
 /***/ },
-/* 528 */
+/* 517 */
 /*!*******************************!*\
   !*** ./~/moment/locale/lb.js ***!
   \*******************************/
@@ -44041,7 +42865,7 @@
 	//! author : mweimerskirch : https://github.com/mweimerskirch, David Raison : https://github.com/kwisatz
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -44171,7 +42995,7 @@
 	}));
 
 /***/ },
-/* 529 */
+/* 518 */
 /*!*******************************!*\
   !*** ./~/moment/locale/lo.js ***!
   \*******************************/
@@ -44182,7 +43006,7 @@
 	//! author : Ryan Hart : https://github.com/ryanhart2
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -44247,7 +43071,7 @@
 	}));
 
 /***/ },
-/* 530 */
+/* 519 */
 /*!*******************************!*\
   !*** ./~/moment/locale/lt.js ***!
   \*******************************/
@@ -44258,7 +43082,7 @@
 	//! author : Mindaugas Mozūras : https://github.com/mmozuras
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -44369,7 +43193,7 @@
 	}));
 
 /***/ },
-/* 531 */
+/* 520 */
 /*!*******************************!*\
   !*** ./~/moment/locale/lv.js ***!
   \*******************************/
@@ -44381,7 +43205,7 @@
 	//! author : Jānis Elmeris : https://github.com/JanisE
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -44472,7 +43296,7 @@
 	}));
 
 /***/ },
-/* 532 */
+/* 521 */
 /*!*******************************!*\
   !*** ./~/moment/locale/me.js ***!
   \*******************************/
@@ -44483,7 +43307,7 @@
 	//! author : Miodrag Nikač <miodrag@restartit.me> : https://github.com/miodragnikac
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -44588,7 +43412,7 @@
 	}));
 
 /***/ },
-/* 533 */
+/* 522 */
 /*!*******************************!*\
   !*** ./~/moment/locale/mk.js ***!
   \*******************************/
@@ -44599,7 +43423,7 @@
 	//! author : Borislav Mickov : https://github.com/B0k0
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -44685,7 +43509,7 @@
 	}));
 
 /***/ },
-/* 534 */
+/* 523 */
 /*!*******************************!*\
   !*** ./~/moment/locale/ml.js ***!
   \*******************************/
@@ -44696,7 +43520,7 @@
 	//! author : Floyd Pink : https://github.com/floydpink
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -44772,7 +43596,7 @@
 	}));
 
 /***/ },
-/* 535 */
+/* 524 */
 /*!*******************************!*\
   !*** ./~/moment/locale/mr.js ***!
   \*******************************/
@@ -44784,7 +43608,7 @@
 	//! author : Vivek Athalye : https://github.com/vnathalye
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -44937,7 +43761,7 @@
 	}));
 
 /***/ },
-/* 536 */
+/* 525 */
 /*!*******************************!*\
   !*** ./~/moment/locale/ms.js ***!
   \*******************************/
@@ -44948,7 +43772,7 @@
 	//! author : Weldan Jamili : https://github.com/weldan
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -45026,7 +43850,7 @@
 	}));
 
 /***/ },
-/* 537 */
+/* 526 */
 /*!**********************************!*\
   !*** ./~/moment/locale/ms-my.js ***!
   \**********************************/
@@ -45037,7 +43861,7 @@
 	//! author : Weldan Jamili : https://github.com/weldan
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -45115,7 +43939,7 @@
 	}));
 
 /***/ },
-/* 538 */
+/* 527 */
 /*!*******************************!*\
   !*** ./~/moment/locale/my.js ***!
   \*******************************/
@@ -45126,7 +43950,7 @@
 	//! author : Squar team, mysquar.com
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -45215,7 +44039,7 @@
 	}));
 
 /***/ },
-/* 539 */
+/* 528 */
 /*!*******************************!*\
   !*** ./~/moment/locale/nb.js ***!
   \*******************************/
@@ -45227,7 +44051,7 @@
 	//!           Sigurd Gartmann : https://github.com/sigurdga
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -45283,7 +44107,7 @@
 	}));
 
 /***/ },
-/* 540 */
+/* 529 */
 /*!*******************************!*\
   !*** ./~/moment/locale/ne.js ***!
   \*******************************/
@@ -45294,7 +44118,7 @@
 	//! author : suvash : https://github.com/suvash
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -45411,7 +44235,7 @@
 	}));
 
 /***/ },
-/* 541 */
+/* 530 */
 /*!*******************************!*\
   !*** ./~/moment/locale/nl.js ***!
   \*******************************/
@@ -45422,7 +44246,7 @@
 	//! author : Joris Röling : https://github.com/jjupiter
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -45489,7 +44313,7 @@
 	}));
 
 /***/ },
-/* 542 */
+/* 531 */
 /*!*******************************!*\
   !*** ./~/moment/locale/nn.js ***!
   \*******************************/
@@ -45500,7 +44324,7 @@
 	//! author : https://github.com/mechuwind
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -45556,7 +44380,7 @@
 	}));
 
 /***/ },
-/* 543 */
+/* 532 */
 /*!**********************************!*\
   !*** ./~/moment/locale/pa-in.js ***!
   \**********************************/
@@ -45567,7 +44391,7 @@
 	//! author : Harpreet Singh : https://github.com/harpreetkhalsagtbit
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -45687,7 +44511,7 @@
 	}));
 
 /***/ },
-/* 544 */
+/* 533 */
 /*!*******************************!*\
   !*** ./~/moment/locale/pl.js ***!
   \*******************************/
@@ -45698,7 +44522,7 @@
 	//! author : Rafal Hirsz : https://github.com/evoL
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -45799,7 +44623,7 @@
 	}));
 
 /***/ },
-/* 545 */
+/* 534 */
 /*!*******************************!*\
   !*** ./~/moment/locale/pt.js ***!
   \*******************************/
@@ -45810,7 +44634,7 @@
 	//! author : Jefferson : https://github.com/jalex79
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -45870,7 +44694,7 @@
 	}));
 
 /***/ },
-/* 546 */
+/* 535 */
 /*!**********************************!*\
   !*** ./~/moment/locale/pt-br.js ***!
   \**********************************/
@@ -45881,7 +44705,7 @@
 	//! author : Caio Ribeiro Pereira : https://github.com/caio-ribeiro-pereira
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -45937,7 +44761,7 @@
 	}));
 
 /***/ },
-/* 547 */
+/* 536 */
 /*!*******************************!*\
   !*** ./~/moment/locale/ro.js ***!
   \*******************************/
@@ -45949,7 +44773,7 @@
 	//! author : Valentin Agachi : https://github.com/avaly
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -46018,7 +44842,7 @@
 	}));
 
 /***/ },
-/* 548 */
+/* 537 */
 /*!*******************************!*\
   !*** ./~/moment/locale/ru.js ***!
   \*******************************/
@@ -46031,7 +44855,7 @@
 	//! author : Коренберг Марк : https://github.com/socketpair
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -46193,7 +45017,7 @@
 	}));
 
 /***/ },
-/* 549 */
+/* 538 */
 /*!*******************************!*\
   !*** ./~/moment/locale/se.js ***!
   \*******************************/
@@ -46204,7 +45028,7 @@
 	//! authors : Bård Rolstad Henriksen : https://github.com/karamell
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -46261,7 +45085,7 @@
 	}));
 
 /***/ },
-/* 550 */
+/* 539 */
 /*!*******************************!*\
   !*** ./~/moment/locale/si.js ***!
   \*******************************/
@@ -46272,7 +45096,7 @@
 	//! author : Sampath Sitinamaluwa : https://github.com/sampathsris
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -46338,7 +45162,7 @@
 	}));
 
 /***/ },
-/* 551 */
+/* 540 */
 /*!*******************************!*\
   !*** ./~/moment/locale/sk.js ***!
   \*******************************/
@@ -46350,7 +45174,7 @@
 	//! based on work of petrbela : https://github.com/petrbela
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -46495,7 +45319,7 @@
 	}));
 
 /***/ },
-/* 552 */
+/* 541 */
 /*!*******************************!*\
   !*** ./~/moment/locale/sl.js ***!
   \*******************************/
@@ -46506,7 +45330,7 @@
 	//! author : Robert Sedovšek : https://github.com/sedovsek
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -46662,7 +45486,7 @@
 	}));
 
 /***/ },
-/* 553 */
+/* 542 */
 /*!*******************************!*\
   !*** ./~/moment/locale/sq.js ***!
   \*******************************/
@@ -46675,7 +45499,7 @@
 	//! author : Oerd Cukalla : https://github.com/oerd (fixes)
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -46738,7 +45562,7 @@
 	}));
 
 /***/ },
-/* 554 */
+/* 543 */
 /*!*******************************!*\
   !*** ./~/moment/locale/sr.js ***!
   \*******************************/
@@ -46749,7 +45573,7 @@
 	//! author : Milan Janačković<milanjanackovic@gmail.com> : https://github.com/milan-j
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -46853,7 +45677,7 @@
 	}));
 
 /***/ },
-/* 555 */
+/* 544 */
 /*!************************************!*\
   !*** ./~/moment/locale/sr-cyrl.js ***!
   \************************************/
@@ -46864,7 +45688,7 @@
 	//! author : Milan Janačković<milanjanackovic@gmail.com> : https://github.com/milan-j
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -46968,7 +45792,7 @@
 	}));
 
 /***/ },
-/* 556 */
+/* 545 */
 /*!*******************************!*\
   !*** ./~/moment/locale/sv.js ***!
   \*******************************/
@@ -46979,7 +45803,7 @@
 	//! author : Jens Alm : https://github.com/ulmus
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -47042,7 +45866,7 @@
 	}));
 
 /***/ },
-/* 557 */
+/* 546 */
 /*!*******************************!*\
   !*** ./~/moment/locale/sw.js ***!
   \*******************************/
@@ -47053,7 +45877,7 @@
 	//! author : Fahad Kassim : https://github.com/fadsel
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -47107,7 +45931,7 @@
 	}));
 
 /***/ },
-/* 558 */
+/* 547 */
 /*!*******************************!*\
   !*** ./~/moment/locale/ta.js ***!
   \*******************************/
@@ -47118,7 +45942,7 @@
 	//! author : Arjunkumar Krishnamoorthy : https://github.com/tk120404
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -47243,7 +46067,7 @@
 	}));
 
 /***/ },
-/* 559 */
+/* 548 */
 /*!*******************************!*\
   !*** ./~/moment/locale/te.js ***!
   \*******************************/
@@ -47254,7 +46078,7 @@
 	//! author : Krishna Chaitanya Thota : https://github.com/kcthota
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -47338,7 +46162,7 @@
 	}));
 
 /***/ },
-/* 560 */
+/* 549 */
 /*!*******************************!*\
   !*** ./~/moment/locale/th.js ***!
   \*******************************/
@@ -47349,7 +46173,7 @@
 	//! author : Kridsada Thanabulpong : https://github.com/sirn
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -47410,7 +46234,7 @@
 	}));
 
 /***/ },
-/* 561 */
+/* 550 */
 /*!**********************************!*\
   !*** ./~/moment/locale/tl-ph.js ***!
   \**********************************/
@@ -47421,7 +46245,7 @@
 	//! author : Dan Hagman
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -47479,7 +46303,7 @@
 	}));
 
 /***/ },
-/* 562 */
+/* 551 */
 /*!********************************!*\
   !*** ./~/moment/locale/tlh.js ***!
   \********************************/
@@ -47490,7 +46314,7 @@
 	//! author : Dominika Kruk : https://github.com/amaranthrose
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -47605,7 +46429,7 @@
 	}));
 
 /***/ },
-/* 563 */
+/* 552 */
 /*!*******************************!*\
   !*** ./~/moment/locale/tr.js ***!
   \*******************************/
@@ -47617,7 +46441,7 @@
 	//!           Burak Yiğit Kaya: https://github.com/BYK
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -47702,7 +46526,7 @@
 	}));
 
 /***/ },
-/* 564 */
+/* 553 */
 /*!********************************!*\
   !*** ./~/moment/locale/tzl.js ***!
   \********************************/
@@ -47713,7 +46537,7 @@
 	//! author : Robin van der Vliet : https://github.com/robin0van0der0v with the help of Iustì Canun
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -47800,7 +46624,7 @@
 	}));
 
 /***/ },
-/* 565 */
+/* 554 */
 /*!********************************!*\
   !*** ./~/moment/locale/tzm.js ***!
   \********************************/
@@ -47811,7 +46635,7 @@
 	//! author : Abdel Said : https://github.com/abdelsaid
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -47865,7 +46689,7 @@
 	}));
 
 /***/ },
-/* 566 */
+/* 555 */
 /*!*************************************!*\
   !*** ./~/moment/locale/tzm-latn.js ***!
   \*************************************/
@@ -47876,7 +46700,7 @@
 	//! author : Abdel Said : https://github.com/abdelsaid
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -47930,7 +46754,7 @@
 	}));
 
 /***/ },
-/* 567 */
+/* 556 */
 /*!*******************************!*\
   !*** ./~/moment/locale/uk.js ***!
   \*******************************/
@@ -47942,7 +46766,7 @@
 	//! Author : Menelion Elensúle : https://github.com/Oire
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -48083,7 +46907,7 @@
 	}));
 
 /***/ },
-/* 568 */
+/* 557 */
 /*!*******************************!*\
   !*** ./~/moment/locale/uz.js ***!
   \*******************************/
@@ -48094,7 +46918,7 @@
 	//! author : Sardor Muminov : https://github.com/muminoff
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -48148,7 +46972,7 @@
 	}));
 
 /***/ },
-/* 569 */
+/* 558 */
 /*!*******************************!*\
   !*** ./~/moment/locale/vi.js ***!
   \*******************************/
@@ -48159,7 +46983,7 @@
 	//! author : Bang Nguyen : https://github.com/bangnk
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -48232,7 +47056,7 @@
 	}));
 
 /***/ },
-/* 570 */
+/* 559 */
 /*!**********************************!*\
   !*** ./~/moment/locale/zh-cn.js ***!
   \**********************************/
@@ -48244,7 +47068,7 @@
 	//! author : Zeno Zeng : https://github.com/zenozeng
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -48366,7 +47190,7 @@
 	}));
 
 /***/ },
-/* 571 */
+/* 560 */
 /*!**********************************!*\
   !*** ./~/moment/locale/zh-tw.js ***!
   \**********************************/
@@ -48377,7 +47201,7 @@
 	//! author : Ben : https://github.com/ben-lin
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(/*! ../moment */ 472)) :
+	    true ? factory(__webpack_require__(/*! ../moment */ 461)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -48474,7 +47298,1683 @@
 	}));
 
 /***/ },
+/* 561 */
+/*!****************************************************************!*\
+  !*** ./~/moment-duration-format/lib/moment-duration-format.js ***!
+  \****************************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/*! Moment Duration Format v1.3.0
+	 *  https://github.com/jsmreese/moment-duration-format 
+	 *  Date: 2014-07-15
+	 *
+	 *  Duration format plugin function for the Moment.js library
+	 *  http://momentjs.com/
+	 *
+	 *  Copyright 2014 John Madhavan-Reese
+	 *  Released under the MIT license
+	 */
+	
+	(function (root, undefined) {
+	
+		// repeatZero(qty)
+		// returns "0" repeated qty times
+		function repeatZero(qty) {
+			var result = "";
+			
+			// exit early
+			// if qty is 0 or a negative number
+			// or doesn't coerce to an integer
+			qty = parseInt(qty, 10);
+			if (!qty || qty < 1) { return result; }
+			
+			while (qty) {
+				result += "0";
+				qty -= 1;
+			}
+			
+			return result;
+		}
+		
+		// padZero(str, len [, isRight])
+		// pads a string with zeros up to a specified length
+		// will not pad a string if its length is aready
+		// greater than or equal to the specified length
+		// default output pads with zeros on the left
+		// set isRight to `true` to pad with zeros on the right
+		function padZero(str, len, isRight) {
+			if (str == null) { str = ""; }
+			str = "" + str;
+			
+			return (isRight ? str : "") + repeatZero(len - str.length) + (isRight ? "" : str);
+		}
+		
+		// isArray
+		function isArray(array) {
+			return Object.prototype.toString.call(array) === "[object Array]";
+		}
+		
+		// isObject
+		function isObject(obj) {
+			return Object.prototype.toString.call(obj) === "[object Object]";
+		}
+		
+		// findLast
+		function findLast(array, callback) {
+			var index = array.length;
+	
+			while (index -= 1) {
+				if (callback(array[index])) { return array[index]; }
+			}
+		}
+	
+		// find
+		function find(array, callback) {
+			var index = 0,
+				max = array.length,
+				match;
+				
+			if (typeof callback !== "function") {
+				match = callback;
+				callback = function (item) {
+					return item === match;
+				};
+			}
+	
+			while (index < max) {
+				if (callback(array[index])) { return array[index]; }
+				index += 1;
+			}
+		}
+		
+		// each
+		function each(array, callback) {
+			var index = 0,
+				max = array.length;
+				
+			if (!array || !max) { return; }
+	
+			while (index < max) {
+				if (callback(array[index], index) === false) { return; }
+				index += 1;
+			}
+		}
+		
+		// map
+		function map(array, callback) {
+			var index = 0,
+				max = array.length,
+				ret = [];
+	
+			if (!array || !max) { return ret; }
+					
+			while (index < max) {
+				ret[index] = callback(array[index], index);
+				index += 1;
+			}
+			
+			return ret;
+		}
+		
+		// pluck
+		function pluck(array, prop) {
+			return map(array, function (item) {
+				return item[prop];
+			});
+		}
+		
+		// compact
+		function compact(array) {
+			var ret = [];
+			
+			each(array, function (item) {
+				if (item) { ret.push(item); }
+			});
+			
+			return ret;
+		}
+		
+		// unique
+		function unique(array) {
+			var ret = [];
+			
+			each(array, function (_a) {
+				if (!find(ret, _a)) { ret.push(_a); }
+			});
+			
+			return ret;
+		}
+		
+		// intersection
+		function intersection(a, b) {
+			var ret = [];
+			
+			each(a, function (_a) {
+				each(b, function (_b) {
+					if (_a === _b) { ret.push(_a); }
+				});
+			});
+			
+			return unique(ret);
+		}
+		
+		// rest
+		function rest(array, callback) {
+			var ret = [];
+			
+			each(array, function (item, index) {
+				if (!callback(item)) {
+					ret = array.slice(index);
+					return false;
+				}
+			});
+			
+			return ret;
+		}
+	
+		// initial
+		function initial(array, callback) {
+			var reversed = array.slice().reverse();
+			
+			return rest(reversed, callback).reverse();
+		}
+		
+		// extend
+		function extend(a, b) {
+			for (var key in b) {
+				if (b.hasOwnProperty(key)) { a[key] = b[key]; }
+			}
+			
+			return a;
+		}
+				
+		// define internal moment reference
+		var moment;
+	
+		if (true) {
+			try { moment = __webpack_require__(/*! moment */ 461); } 
+			catch (e) {}
+		} 
+		
+		if (!moment && root.moment) {
+			moment = root.moment;
+		}
+		
+		if (!moment) {
+			throw "Moment Duration Format cannot find Moment.js";
+		}
+		
+		// moment.duration.format([template] [, precision] [, settings])
+		moment.duration.fn.format = function () {
+	
+			var tokenizer, tokens, types, typeMap, momentTypes, foundFirst, trimIndex,
+				args = [].slice.call(arguments),
+				settings = extend({}, this.format.defaults),
+				// keep a shadow copy of this moment for calculating remainders
+				remainder = moment.duration(this);
+	
+			// add a reference to this duration object to the settings for use
+			// in a template function
+			settings.duration = this;
+	
+			// parse arguments
+			each(args, function (arg) {
+				if (typeof arg === "string" || typeof arg === "function") {
+					settings.template = arg;
+					return;
+				}
+	
+				if (typeof arg === "number") {
+					settings.precision = arg;
+					return;
+				}
+	
+				if (isObject(arg)) {
+					extend(settings, arg);
+				}
+			});
+	
+			// types
+			types = settings.types = (isArray(settings.types) ? settings.types : settings.types.split(" "));
+	
+			// template
+			if (typeof settings.template === "function") {
+				settings.template = settings.template.apply(settings);
+			}
+	
+			// tokenizer regexp
+			tokenizer = new RegExp(map(types, function (type) {
+				return settings[type].source;
+			}).join("|"), "g");
+	
+			// token type map function
+			typeMap = function (token) {
+				return find(types, function (type) {
+					return settings[type].test(token);
+				});
+			};
+	
+			// tokens array
+			tokens = map(settings.template.match(tokenizer), function (token, index) {
+				var type = typeMap(token),
+					length = token.length;
+	
+				return {
+					index: index,
+					length: length,
+	
+					// replace escaped tokens with the non-escaped token text
+					token: (type === "escape" ? token.replace(settings.escape, "$1") : token),
+	
+					// ignore type on non-moment tokens
+					type: ((type === "escape" || type === "general") ? null : type)
+	
+					// calculate base value for all moment tokens
+					//baseValue: ((type === "escape" || type === "general") ? null : this.as(type))
+				};
+			}, this);
+	
+			// unique moment token types in the template (in order of descending magnitude)
+			momentTypes = intersection(types, unique(compact(pluck(tokens, "type"))));
+	
+			// exit early if there are no momentTypes
+			if (!momentTypes.length) {
+				return pluck(tokens, "token").join("");
+			}
+	
+			// calculate values for each token type in the template
+			each(momentTypes, function (momentType, index) {
+				var value, wholeValue, decimalValue, isLeast, isMost;
+	
+				// calculate integer and decimal value portions
+				value = remainder.as(momentType);
+				wholeValue = (value > 0 ? Math.floor(value) : Math.ceil(value));
+				decimalValue = value - wholeValue;
+	
+				// is this the least-significant moment token found?
+				isLeast = ((index + 1) === momentTypes.length);
+	
+				// is this the most-significant moment token found?
+				isMost = (!index);
+	
+				// update tokens array
+				// using this algorithm to not assume anything about
+				// the order or frequency of any tokens
+				each(tokens, function (token) {
+					if (token.type === momentType) {
+						extend(token, {
+							value: value,
+							wholeValue: wholeValue,
+							decimalValue: decimalValue,
+							isLeast: isLeast,
+							isMost: isMost
+						});
+	
+						if (isMost) {
+							// note the length of the most-significant moment token:
+							// if it is greater than one and forceLength is not set, default forceLength to `true`
+							if (settings.forceLength == null && token.length > 1) {
+								settings.forceLength = true;
+							}
+	
+							// rationale is this:
+							// if the template is "h:mm:ss" and the moment value is 5 minutes, the user-friendly output is "5:00", not "05:00"
+							// shouldn't pad the `minutes` token even though it has length of two
+							// if the template is "hh:mm:ss", the user clearly wanted everything padded so we should output "05:00"
+							// if the user wanted the full padded output, they can set `{ trim: false }` to get "00:05:00"
+						}
+					}
+				});
+	
+				// update remainder
+				remainder.subtract(wholeValue, momentType);
+			});
+		
+			// trim tokens array
+			if (settings.trim) {
+				tokens = (settings.trim === "left" ? rest : initial)(tokens, function (token) {
+					// return `true` if:
+					// the token is not the least moment token (don't trim the least moment token)
+					// the token is a moment token that does not have a value (don't trim moment tokens that have a whole value)
+					return !(token.isLeast || (token.type != null && token.wholeValue));
+				});
+			}
+			
+			
+			// build output
+	
+			// the first moment token can have special handling
+			foundFirst = false;
+	
+			// run the map in reverse order if trimming from the right
+			if (settings.trim === "right") {
+				tokens.reverse();
+			}
+	
+			tokens = map(tokens, function (token) {
+				var val,
+					decVal;
+	
+				if (!token.type) {
+					// if it is not a moment token, use the token as its own value
+					return token.token;
+				}
+	
+				// apply negative precision formatting to the least-significant moment token
+				if (token.isLeast && (settings.precision < 0)) {
+					val = (Math.floor(token.wholeValue * Math.pow(10, settings.precision)) * Math.pow(10, -settings.precision)).toString();
+				} else {
+					val = token.wholeValue.toString();
+				}
+				
+				// remove negative sign from the beginning
+				val = val.replace(/^\-/, "");
+	
+				// apply token length formatting
+				// special handling for the first moment token that is not the most significant in a trimmed template
+				if (token.length > 1 && (foundFirst || token.isMost || settings.forceLength)) {
+					val = padZero(val, token.length);
+				}
+	
+				// add decimal value if precision > 0
+				if (token.isLeast && (settings.precision > 0)) {
+					decVal = token.decimalValue.toString().replace(/^\-/, "").split(/\.|e\-/);
+					switch (decVal.length) {
+						case 1:
+							val += "." + padZero(decVal[0], settings.precision, true).slice(0, settings.precision);
+							break;
+							
+						case 2:
+							val += "." + padZero(decVal[1], settings.precision, true).slice(0, settings.precision);		
+							break;
+							
+						case 3:
+							val += "." + padZero(repeatZero((+decVal[2]) - 1) + (decVal[0] || "0") + decVal[1], settings.precision, true).slice(0, settings.precision);		
+							break;
+						
+						default:
+							throw "Moment Duration Format: unable to parse token decimal value.";
+					}
+				}
+				
+				// add a negative sign if the value is negative and token is most significant
+				if (token.isMost && token.value < 0) {
+					val = "-" + val;
+				}
+	
+				foundFirst = true;
+	
+				return val;
+			});
+	
+			// undo the reverse if trimming from the right
+			if (settings.trim === "right") {
+				tokens.reverse();
+			}
+	
+			return tokens.join("");
+		};
+	
+		moment.duration.fn.format.defaults = {
+			// token definitions
+			escape: /\[(.+?)\]/,
+			years: /[Yy]+/,
+			months: /M+/,
+			weeks: /[Ww]+/,
+			days: /[Dd]+/,
+			hours: /[Hh]+/,
+			minutes: /m+/,
+			seconds: /s+/,
+			milliseconds: /S+/,
+			general: /.+?/,
+	
+			// token type names
+			// in order of descending magnitude
+			// can be a space-separated token name list or an array of token names
+			types: "escape years months weeks days hours minutes seconds milliseconds general",
+	
+			// format options
+	
+			// trim
+			// "left" - template tokens are trimmed from the left until the first moment token that has a value >= 1
+			// "right" - template tokens are trimmed from the right until the first moment token that has a value >= 1
+			// (the final moment token is not trimmed, regardless of value)
+			// `false` - template tokens are not trimmed
+			trim: "left",
+	
+			// precision
+			// number of decimal digits to include after (to the right of) the decimal point (positive integer)
+			// or the number of digits to truncate to 0 before (to the left of) the decimal point (negative integer)
+			precision: 0,
+	
+			// force first moment token with a value to render at full length even when template is trimmed and first moment token has length of 1
+			forceLength: null,
+	
+			// template used to format duration
+			// may be a function or a string
+			// template functions are executed with the `this` binding of the settings object
+			// so that template strings may be dynamically generated based on the duration object
+			// (accessible via `this.duration`)
+			// or any of the other settings
+			template: function () {
+				var types = this.types,
+					dur = this.duration,
+					lastType = findLast(types, function (type) {
+						return dur._data[type];
+					});
+	
+				// default template strings for each duration dimension type
+				switch (lastType) {
+					case "seconds":
+						return "h:mm:ss";
+					case "minutes":
+						return "d[d] h:mm";
+					case "hours":
+						return "d[d] h[h]";
+					case "days":
+						return "M[m] d[d]";
+					case "weeks":
+						return "y[y] w[w]";
+					case "months":
+						return "y[y] M[m]";
+					case "years":
+						return "y[y]";
+					default:
+						return "y[y] M[m] d[d] h:mm:ss";
+				}
+			}
+		};
+	
+	})(this);
+
+
+/***/ },
+/* 562 */
+/*!****************************************!*\
+  !*** ./src/components/ActiveTask.less ***!
+  \****************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(/*! !./../../~/css-loader!./../../~/autoprefixer-loader!./../../~/less-loader!./ActiveTask.less */ 563);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(/*! ./../../~/style-loader/addStyles.js */ 565)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/autoprefixer-loader/index.js!./../../node_modules/less-loader/index.js!./ActiveTask.less", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/autoprefixer-loader/index.js!./../../node_modules/less-loader/index.js!./ActiveTask.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 563 */
+/*!***********************************************************************************************!*\
+  !*** ./~/css-loader!./~/autoprefixer-loader!./~/less-loader!./src/components/ActiveTask.less ***!
+  \***********************************************************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(/*! ./../../~/css-loader/lib/css-base.js */ 564)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, ".ActiveTask__container {\n  visibility: hidden;\n}\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 564 */
+/*!**************************************!*\
+  !*** ./~/css-loader/lib/css-base.js ***!
+  \**************************************/
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+	
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+	
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ },
+/* 565 */
+/*!*************************************!*\
+  !*** ./~/style-loader/addStyles.js ***!
+  \*************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	var stylesInDom = {},
+		memoize = function(fn) {
+			var memo;
+			return function () {
+				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+				return memo;
+			};
+		},
+		isOldIE = memoize(function() {
+			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
+		}),
+		getHeadElement = memoize(function () {
+			return document.head || document.getElementsByTagName("head")[0];
+		}),
+		singletonElement = null,
+		singletonCounter = 0,
+		styleElementsInsertedAtTop = [];
+	
+	module.exports = function(list, options) {
+		if(true) {
+			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+		}
+	
+		options = options || {};
+		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+		// tags it will allow on a page
+		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+	
+		// By default, add <style> tags to the bottom of <head>.
+		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+	
+		var styles = listToStyles(list);
+		addStylesToDom(styles, options);
+	
+		return function update(newList) {
+			var mayRemove = [];
+			for(var i = 0; i < styles.length; i++) {
+				var item = styles[i];
+				var domStyle = stylesInDom[item.id];
+				domStyle.refs--;
+				mayRemove.push(domStyle);
+			}
+			if(newList) {
+				var newStyles = listToStyles(newList);
+				addStylesToDom(newStyles, options);
+			}
+			for(var i = 0; i < mayRemove.length; i++) {
+				var domStyle = mayRemove[i];
+				if(domStyle.refs === 0) {
+					for(var j = 0; j < domStyle.parts.length; j++)
+						domStyle.parts[j]();
+					delete stylesInDom[domStyle.id];
+				}
+			}
+		};
+	}
+	
+	function addStylesToDom(styles, options) {
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			if(domStyle) {
+				domStyle.refs++;
+				for(var j = 0; j < domStyle.parts.length; j++) {
+					domStyle.parts[j](item.parts[j]);
+				}
+				for(; j < item.parts.length; j++) {
+					domStyle.parts.push(addStyle(item.parts[j], options));
+				}
+			} else {
+				var parts = [];
+				for(var j = 0; j < item.parts.length; j++) {
+					parts.push(addStyle(item.parts[j], options));
+				}
+				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+			}
+		}
+	}
+	
+	function listToStyles(list) {
+		var styles = [];
+		var newStyles = {};
+		for(var i = 0; i < list.length; i++) {
+			var item = list[i];
+			var id = item[0];
+			var css = item[1];
+			var media = item[2];
+			var sourceMap = item[3];
+			var part = {css: css, media: media, sourceMap: sourceMap};
+			if(!newStyles[id])
+				styles.push(newStyles[id] = {id: id, parts: [part]});
+			else
+				newStyles[id].parts.push(part);
+		}
+		return styles;
+	}
+	
+	function insertStyleElement(options, styleElement) {
+		var head = getHeadElement();
+		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+		if (options.insertAt === "top") {
+			if(!lastStyleElementInsertedAtTop) {
+				head.insertBefore(styleElement, head.firstChild);
+			} else if(lastStyleElementInsertedAtTop.nextSibling) {
+				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+			} else {
+				head.appendChild(styleElement);
+			}
+			styleElementsInsertedAtTop.push(styleElement);
+		} else if (options.insertAt === "bottom") {
+			head.appendChild(styleElement);
+		} else {
+			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+		}
+	}
+	
+	function removeStyleElement(styleElement) {
+		styleElement.parentNode.removeChild(styleElement);
+		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+		if(idx >= 0) {
+			styleElementsInsertedAtTop.splice(idx, 1);
+		}
+	}
+	
+	function createStyleElement(options) {
+		var styleElement = document.createElement("style");
+		styleElement.type = "text/css";
+		insertStyleElement(options, styleElement);
+		return styleElement;
+	}
+	
+	function createLinkElement(options) {
+		var linkElement = document.createElement("link");
+		linkElement.rel = "stylesheet";
+		insertStyleElement(options, linkElement);
+		return linkElement;
+	}
+	
+	function addStyle(obj, options) {
+		var styleElement, update, remove;
+	
+		if (options.singleton) {
+			var styleIndex = singletonCounter++;
+			styleElement = singletonElement || (singletonElement = createStyleElement(options));
+			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+		} else if(obj.sourceMap &&
+			typeof URL === "function" &&
+			typeof URL.createObjectURL === "function" &&
+			typeof URL.revokeObjectURL === "function" &&
+			typeof Blob === "function" &&
+			typeof btoa === "function") {
+			styleElement = createLinkElement(options);
+			update = updateLink.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+				if(styleElement.href)
+					URL.revokeObjectURL(styleElement.href);
+			};
+		} else {
+			styleElement = createStyleElement(options);
+			update = applyToTag.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+			};
+		}
+	
+		update(obj);
+	
+		return function updateStyle(newObj) {
+			if(newObj) {
+				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+					return;
+				update(obj = newObj);
+			} else {
+				remove();
+			}
+		};
+	}
+	
+	var replaceText = (function () {
+		var textStore = [];
+	
+		return function (index, replacement) {
+			textStore[index] = replacement;
+			return textStore.filter(Boolean).join('\n');
+		};
+	})();
+	
+	function applyToSingletonTag(styleElement, index, remove, obj) {
+		var css = remove ? "" : obj.css;
+	
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = replaceText(index, css);
+		} else {
+			var cssNode = document.createTextNode(css);
+			var childNodes = styleElement.childNodes;
+			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+			if (childNodes.length) {
+				styleElement.insertBefore(cssNode, childNodes[index]);
+			} else {
+				styleElement.appendChild(cssNode);
+			}
+		}
+	}
+	
+	function applyToTag(styleElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+		var sourceMap = obj.sourceMap;
+	
+		if(media) {
+			styleElement.setAttribute("media", media)
+		}
+	
+		if(styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			while(styleElement.firstChild) {
+				styleElement.removeChild(styleElement.firstChild);
+			}
+			styleElement.appendChild(document.createTextNode(css));
+		}
+	}
+	
+	function updateLink(linkElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+		var sourceMap = obj.sourceMap;
+	
+		if(sourceMap) {
+			// http://stackoverflow.com/a/26603875
+			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+		}
+	
+		var blob = new Blob([css], { type: "text/css" });
+	
+		var oldSrc = linkElement.href;
+	
+		linkElement.href = URL.createObjectURL(blob);
+	
+		if(oldSrc)
+			URL.revokeObjectURL(oldSrc);
+	}
+
+
+/***/ },
+/* 566 */
+/*!**************************************!*\
+  !*** ./src/components/TasksList.jsx ***!
+  \**************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/* REACT HOT LOADER */ if (false) { (function () { var ReactHotAPI = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-api/modules/index.js"), RootInstanceProvider = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/RootInstanceProvider.js"), ReactMount = require("react/lib/ReactMount"), React = require("react"); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _react = __webpack_require__(/*! react */ 214);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactBootstrapLibListGroup = __webpack_require__(/*! react-bootstrap/lib/ListGroup */ 567);
+	
+	var _reactBootstrapLibListGroup2 = _interopRequireDefault(_reactBootstrapLibListGroup);
+	
+	var _reactBootstrapLibListGroupItem = __webpack_require__(/*! react-bootstrap/lib/ListGroupItem */ 568);
+	
+	var _reactBootstrapLibListGroupItem2 = _interopRequireDefault(_reactBootstrapLibListGroupItem);
+	
+	var _reactBootstrapLibGrid = __webpack_require__(/*! react-bootstrap/lib/Grid */ 408);
+	
+	var _reactBootstrapLibGrid2 = _interopRequireDefault(_reactBootstrapLibGrid);
+	
+	var _reactBootstrapLibRow = __webpack_require__(/*! react-bootstrap/lib/Row */ 429);
+	
+	var _reactBootstrapLibRow2 = _interopRequireDefault(_reactBootstrapLibRow);
+	
+	var _reactBootstrapLibCol = __webpack_require__(/*! react-bootstrap/lib/Col */ 430);
+	
+	var _reactBootstrapLibCol2 = _interopRequireDefault(_reactBootstrapLibCol);
+	
+	var _reactBootstrapLibButton = __webpack_require__(/*! react-bootstrap/lib/Button */ 441);
+	
+	var _reactBootstrapLibButton2 = _interopRequireDefault(_reactBootstrapLibButton);
+	
+	var _reactBootstrapLibButtonToolbar = __webpack_require__(/*! react-bootstrap/lib/ButtonToolbar */ 570);
+	
+	var _reactBootstrapLibButtonToolbar2 = _interopRequireDefault(_reactBootstrapLibButtonToolbar);
+	
+	var _reactBootstrapLibButtonGroup = __webpack_require__(/*! react-bootstrap/lib/ButtonGroup */ 571);
+	
+	var _reactBootstrapLibButtonGroup2 = _interopRequireDefault(_reactBootstrapLibButtonGroup);
+	
+	var _moment = __webpack_require__(/*! moment */ 461);
+	
+	var _moment2 = _interopRequireDefault(_moment);
+	
+	__webpack_require__(/*! moment-duration-format */ 561);
+	
+	__webpack_require__(/*! ./TasksList.less */ 573);
+	
+	var TasksList = (function (_React$Component) {
+	    _inherits(TasksList, _React$Component);
+	
+	    function TasksList() {
+	        var _this = this;
+	
+	        _classCallCheck(this, TasksList);
+	
+	        _get(Object.getPrototypeOf(TasksList.prototype), 'constructor', this).apply(this, arguments);
+	
+	        this.handleStartStopClikc = function (task) {
+	            if (task.isActive) {
+	                _this.props.onStopTask(task.id);
+	            } else {
+	                _this.props.onStartTask(task.id);
+	            }
+	        };
+	
+	        this.formList = function () {
+	            return _this.props.tasks.map(function (task, ind) {
+	                return _react2['default'].createElement(
+	                    _reactBootstrapLibListGroupItem2['default'],
+	                    { key: ind, className: 'TasksList__list-group-item' },
+	                    _react2['default'].createElement(
+	                        _reactBootstrapLibGrid2['default'],
+	                        { fluid: true },
+	                        _react2['default'].createElement(
+	                            _reactBootstrapLibRow2['default'],
+	                            null,
+	                            _react2['default'].createElement(
+	                                _reactBootstrapLibCol2['default'],
+	                                { xs: 4 },
+	                                task.name
+	                            ),
+	                            _react2['default'].createElement(
+	                                _reactBootstrapLibCol2['default'],
+	                                { xs: 4 },
+	                                _moment2['default'].duration(task.spentTime).format({
+	                                    template: 'HH:mm:ss',
+	                                    trim: false
+	                                })
+	                            ),
+	                            _react2['default'].createElement(
+	                                _reactBootstrapLibCol2['default'],
+	                                { xs: 4 },
+	                                _react2['default'].createElement(
+	                                    _reactBootstrapLibButtonToolbar2['default'],
+	                                    null,
+	                                    _react2['default'].createElement(
+	                                        _reactBootstrapLibButtonGroup2['default'],
+	                                        { bsSize: 'xsmall' },
+	                                        _react2['default'].createElement(
+	                                            _reactBootstrapLibButton2['default'],
+	                                            { onClick: _this.handleStartStopClikc.bind(_this, task),
+	                                                bsStyle: task.isActive ? 'info' : 'default' },
+	                                            task.isActive ? 'Stop' : 'Start'
+	                                        ),
+	                                        _react2['default'].createElement(
+	                                            _reactBootstrapLibButton2['default'],
+	                                            { onClick: _this.props.onClearTimer.bind(_this, task.id) },
+	                                            'Clear'
+	                                        ),
+	                                        _react2['default'].createElement(
+	                                            _reactBootstrapLibButton2['default'],
+	                                            { onClick: _this.props.onDeleteTask.bind(_this, task.id) },
+	                                            'Delete'
+	                                        )
+	                                    )
+	                                )
+	                            )
+	                        )
+	                    )
+	                );
+	            });
+	        };
+	    }
+	
+	    _createClass(TasksList, [{
+	        key: 'render',
+	        value: function render() {
+	            return _react2['default'].createElement(
+	                _reactBootstrapLibGrid2['default'],
+	                { fluid: true },
+	                _react2['default'].createElement(
+	                    _reactBootstrapLibRow2['default'],
+	                    null,
+	                    _react2['default'].createElement(
+	                        _reactBootstrapLibCol2['default'],
+	                        { xs: 12, xsOffset: 0,
+	                            sm: 10, smOffset: 1,
+	                            md: 10, mdOffset: 1 },
+	                        _react2['default'].createElement(
+	                            _reactBootstrapLibListGroup2['default'],
+	                            null,
+	                            this.props.tasks.length ? _react2['default'].createElement(
+	                                _reactBootstrapLibListGroupItem2['default'],
+	                                null,
+	                                _react2['default'].createElement(
+	                                    _reactBootstrapLibGrid2['default'],
+	                                    { fluid: true },
+	                                    _react2['default'].createElement(
+	                                        _reactBootstrapLibRow2['default'],
+	                                        null,
+	                                        _react2['default'].createElement(
+	                                            _reactBootstrapLibCol2['default'],
+	                                            { xs: 4 },
+	                                            'Task name'
+	                                        ),
+	                                        _react2['default'].createElement(
+	                                            _reactBootstrapLibCol2['default'],
+	                                            { xs: 4 },
+	                                            'Spent time'
+	                                        ),
+	                                        _react2['default'].createElement(
+	                                            _reactBootstrapLibCol2['default'],
+	                                            { xs: 4 },
+	                                            'Controls'
+	                                        )
+	                                    )
+	                                )
+	                            ) : null,
+	                            this.formList()
+	                        )
+	                    ),
+	                    _react2['default'].createElement(_reactBootstrapLibCol2['default'], { xs: 0, sm: 1, md: 1 })
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return TasksList;
+	})(_react2['default'].Component);
+	
+	exports['default'] = TasksList;
+	module.exports = exports['default'];
+
+	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "TasksList.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
+
+/***/ },
+/* 567 */
+/*!********************************************!*\
+  !*** ./~/react-bootstrap/lib/ListGroup.js ***!
+  \********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _inherits = __webpack_require__(/*! babel-runtime/helpers/inherits */ 444)['default'];
+	
+	var _classCallCheck = __webpack_require__(/*! babel-runtime/helpers/class-call-check */ 451)['default'];
+	
+	var _extends = __webpack_require__(/*! babel-runtime/helpers/extends */ 409)['default'];
+	
+	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 425)['default'];
+	
+	exports.__esModule = true;
+	
+	var _react = __webpack_require__(/*! react */ 214);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _ListGroupItem = __webpack_require__(/*! ./ListGroupItem */ 568);
+	
+	var _ListGroupItem2 = _interopRequireDefault(_ListGroupItem);
+	
+	var _classnames = __webpack_require__(/*! classnames */ 426);
+	
+	var _classnames2 = _interopRequireDefault(_classnames);
+	
+	var _utilsValidComponentChildren = __webpack_require__(/*! ./utils/ValidComponentChildren */ 569);
+	
+	var _utilsValidComponentChildren2 = _interopRequireDefault(_utilsValidComponentChildren);
+	
+	var ListGroup = (function (_React$Component) {
+	  _inherits(ListGroup, _React$Component);
+	
+	  function ListGroup() {
+	    _classCallCheck(this, ListGroup);
+	
+	    _React$Component.apply(this, arguments);
+	  }
+	
+	  ListGroup.prototype.render = function render() {
+	    var _this = this;
+	
+	    var items = _utilsValidComponentChildren2['default'].map(this.props.children, function (item, index) {
+	      return _react.cloneElement(item, { key: item.key ? item.key : index });
+	    });
+	
+	    if (this.areCustomChildren(items)) {
+	      var Component = this.props.componentClass;
+	      return _react2['default'].createElement(
+	        Component,
+	        _extends({}, this.props, {
+	          className: _classnames2['default'](this.props.className, 'list-group') }),
+	        items
+	      );
+	    }
+	
+	    var shouldRenderDiv = false;
+	
+	    if (!this.props.children) {
+	      shouldRenderDiv = true;
+	    } else {
+	      _utilsValidComponentChildren2['default'].forEach(this.props.children, function (child) {
+	        if (_this.isAnchorOrButton(child.props)) {
+	          shouldRenderDiv = true;
+	        }
+	      });
+	    }
+	
+	    return shouldRenderDiv ? this.renderDiv(items) : this.renderUL(items);
+	  };
+	
+	  ListGroup.prototype.isAnchorOrButton = function isAnchorOrButton(props) {
+	    return props.href || props.onClick;
+	  };
+	
+	  ListGroup.prototype.areCustomChildren = function areCustomChildren(children) {
+	    var customChildren = false;
+	
+	    _utilsValidComponentChildren2['default'].forEach(children, function (child) {
+	      if (child.type !== _ListGroupItem2['default']) {
+	        customChildren = true;
+	      }
+	    }, this);
+	
+	    return customChildren;
+	  };
+	
+	  ListGroup.prototype.renderUL = function renderUL(items) {
+	    var listItems = _utilsValidComponentChildren2['default'].map(items, function (item) {
+	      return _react.cloneElement(item, { listItem: true });
+	    });
+	
+	    return _react2['default'].createElement(
+	      'ul',
+	      _extends({}, this.props, {
+	        className: _classnames2['default'](this.props.className, 'list-group') }),
+	      listItems
+	    );
+	  };
+	
+	  ListGroup.prototype.renderDiv = function renderDiv(items) {
+	    return _react2['default'].createElement(
+	      'div',
+	      _extends({}, this.props, {
+	        className: _classnames2['default'](this.props.className, 'list-group') }),
+	      items
+	    );
+	  };
+	
+	  return ListGroup;
+	})(_react2['default'].Component);
+	
+	ListGroup.defaultProps = {
+	  componentClass: 'div'
+	};
+	
+	ListGroup.propTypes = {
+	  className: _react2['default'].PropTypes.string,
+	  /**
+	   * The element for ListGroup if children are
+	   * user-defined custom components.
+	   * @type {("ul"|"div")}
+	   */
+	  componentClass: _react2['default'].PropTypes.oneOf(['ul', 'div']),
+	  id: _react2['default'].PropTypes.oneOfType([_react2['default'].PropTypes.string, _react2['default'].PropTypes.number])
+	};
+	
+	exports['default'] = ListGroup;
+	module.exports = exports['default'];
+
+/***/ },
+/* 568 */
+/*!************************************************!*\
+  !*** ./~/react-bootstrap/lib/ListGroupItem.js ***!
+  \************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _inherits = __webpack_require__(/*! babel-runtime/helpers/inherits */ 444)['default'];
+	
+	var _classCallCheck = __webpack_require__(/*! babel-runtime/helpers/class-call-check */ 451)['default'];
+	
+	var _extends = __webpack_require__(/*! babel-runtime/helpers/extends */ 409)['default'];
+	
+	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 425)['default'];
+	
+	exports.__esModule = true;
+	
+	var _react = __webpack_require__(/*! react */ 214);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _utilsBootstrapUtils = __webpack_require__(/*! ./utils/bootstrapUtils */ 442);
+	
+	var _utilsBootstrapUtils2 = _interopRequireDefault(_utilsBootstrapUtils);
+	
+	var _styleMaps = __webpack_require__(/*! ./styleMaps */ 435);
+	
+	var _classnames = __webpack_require__(/*! classnames */ 426);
+	
+	var _classnames2 = _interopRequireDefault(_classnames);
+	
+	var ListGroupItem = (function (_React$Component) {
+	  _inherits(ListGroupItem, _React$Component);
+	
+	  function ListGroupItem() {
+	    _classCallCheck(this, ListGroupItem);
+	
+	    _React$Component.apply(this, arguments);
+	  }
+	
+	  ListGroupItem.prototype.render = function render() {
+	    var classes = _utilsBootstrapUtils2['default'].getClassSet(this.props);
+	
+	    classes.active = this.props.active;
+	    classes.disabled = this.props.disabled;
+	
+	    if (this.props.href) {
+	      return this.renderAnchor(classes);
+	    } else if (this.props.onClick) {
+	      return this.renderButton(classes);
+	    } else if (this.props.listItem) {
+	      return this.renderLi(classes);
+	    }
+	
+	    return this.renderSpan(classes);
+	  };
+	
+	  ListGroupItem.prototype.renderLi = function renderLi(classes) {
+	    return _react2['default'].createElement(
+	      'li',
+	      _extends({}, this.props, { className: _classnames2['default'](this.props.className, classes) }),
+	      this.props.header ? this.renderStructuredContent() : this.props.children
+	    );
+	  };
+	
+	  ListGroupItem.prototype.renderAnchor = function renderAnchor(classes) {
+	    return _react2['default'].createElement(
+	      'a',
+	      _extends({}, this.props, {
+	        className: _classnames2['default'](this.props.className, classes)
+	      }),
+	      this.props.header ? this.renderStructuredContent() : this.props.children
+	    );
+	  };
+	
+	  ListGroupItem.prototype.renderButton = function renderButton(classes) {
+	    return _react2['default'].createElement(
+	      'button',
+	      _extends({
+	        type: 'button'
+	      }, this.props, {
+	        className: _classnames2['default'](this.props.className, classes) }),
+	      this.props.header ? this.renderStructuredContent() : this.props.children
+	    );
+	  };
+	
+	  ListGroupItem.prototype.renderSpan = function renderSpan(classes) {
+	    return _react2['default'].createElement(
+	      'span',
+	      _extends({}, this.props, { className: _classnames2['default'](this.props.className, classes) }),
+	      this.props.header ? this.renderStructuredContent() : this.props.children
+	    );
+	  };
+	
+	  ListGroupItem.prototype.renderStructuredContent = function renderStructuredContent() {
+	    var header = undefined;
+	    var headingClass = _utilsBootstrapUtils2['default'].prefix(this.props, 'heading');
+	
+	    if (_react2['default'].isValidElement(this.props.header)) {
+	      header = _react.cloneElement(this.props.header, {
+	        key: 'header',
+	        className: _classnames2['default'](this.props.header.props.className, headingClass)
+	      });
+	    } else {
+	      header = _react2['default'].createElement(
+	        'h4',
+	        { key: 'header', className: headingClass },
+	        this.props.header
+	      );
+	    }
+	
+	    var content = _react2['default'].createElement(
+	      'p',
+	      { key: 'content', className: _utilsBootstrapUtils2['default'].prefix(this.props, 'text') },
+	      this.props.children
+	    );
+	
+	    return [header, content];
+	  };
+	
+	  return ListGroupItem;
+	})(_react2['default'].Component);
+	
+	ListGroupItem.propTypes = {
+	  className: _react2['default'].PropTypes.string,
+	  active: _react2['default'].PropTypes.any,
+	  disabled: _react2['default'].PropTypes.any,
+	  header: _react2['default'].PropTypes.node,
+	  listItem: _react2['default'].PropTypes.bool,
+	  onClick: _react2['default'].PropTypes.func,
+	  eventKey: _react2['default'].PropTypes.any,
+	  href: _react2['default'].PropTypes.string,
+	  target: _react2['default'].PropTypes.string
+	};
+	
+	ListGroupItem.defaultTypes = {
+	  listItem: false
+	};
+	
+	exports['default'] = _utilsBootstrapUtils.bsStyles(_styleMaps.State.values(), _utilsBootstrapUtils.bsClass('list-group-item', ListGroupItem));
+	module.exports = exports['default'];
+
+/***/ },
+/* 569 */
+/*!***************************************************************!*\
+  !*** ./~/react-bootstrap/lib/utils/ValidComponentChildren.js ***!
+  \***************************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 425)['default'];
+	
+	exports.__esModule = true;
+	
+	var _react = __webpack_require__(/*! react */ 214);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	/**
+	 * Maps children that are typically specified as `props.children`,
+	 * but only iterates over children that are "valid components".
+	 *
+	 * The mapFunction provided index will be normalised to the components mapped,
+	 * so an invalid component would not increase the index.
+	 *
+	 * @param {?*} children Children tree container.
+	 * @param {function(*, int)} mapFunction.
+	 * @param {*} mapContext Context for mapFunction.
+	 * @return {object} Object containing the ordered map of results.
+	 */
+	function mapValidComponents(children, func, context) {
+	  var index = 0;
+	
+	  return _react2['default'].Children.map(children, function (child) {
+	    if (_react2['default'].isValidElement(child)) {
+	      var lastIndex = index;
+	      index++;
+	      return func.call(context, child, lastIndex);
+	    }
+	
+	    return child;
+	  });
+	}
+	
+	/**
+	 * Iterates through children that are typically specified as `props.children`,
+	 * but only iterates over children that are "valid components".
+	 *
+	 * The provided forEachFunc(child, index) will be called for each
+	 * leaf child with the index reflecting the position relative to "valid components".
+	 *
+	 * @param {?*} children Children tree container.
+	 * @param {function(*, int)} forEachFunc.
+	 * @param {*} forEachContext Context for forEachContext.
+	 */
+	function forEachValidComponents(children, func, context) {
+	  var index = 0;
+	
+	  return _react2['default'].Children.forEach(children, function (child) {
+	    if (_react2['default'].isValidElement(child)) {
+	      func.call(context, child, index);
+	      index++;
+	    }
+	  });
+	}
+	
+	/**
+	 * Count the number of "valid components" in the Children container.
+	 *
+	 * @param {?*} children Children tree container.
+	 * @returns {number}
+	 */
+	function numberOfValidComponents(children) {
+	  var count = 0;
+	
+	  _react2['default'].Children.forEach(children, function (child) {
+	    if (_react2['default'].isValidElement(child)) {
+	      count++;
+	    }
+	  });
+	
+	  return count;
+	}
+	
+	/**
+	 * Determine if the Child container has one or more "valid components".
+	 *
+	 * @param {?*} children Children tree container.
+	 * @returns {boolean}
+	 */
+	function hasValidComponent(children) {
+	  var hasValid = false;
+	
+	  _react2['default'].Children.forEach(children, function (child) {
+	    if (!hasValid && _react2['default'].isValidElement(child)) {
+	      hasValid = true;
+	    }
+	  });
+	
+	  return hasValid;
+	}
+	
+	function find(children, finder) {
+	  var child = undefined;
+	
+	  forEachValidComponents(children, function (c, idx) {
+	    if (!child && finder(c, idx, children)) {
+	      child = c;
+	    }
+	  });
+	
+	  return child;
+	}
+	
+	/**
+	 * Finds children that are typically specified as `props.children`,
+	 * but only iterates over children that are "valid components".
+	 *
+	 * The provided forEachFunc(child, index) will be called for each
+	 * leaf child with the index reflecting the position relative to "valid components".
+	 *
+	 * @param {?*} children Children tree container.
+	 * @param {function(*, int)} findFunc.
+	 * @param {*} findContext Context for findContext.
+	 * @returns {array} of children that meet the findFunc return statement
+	 */
+	function findValidComponents(children, func, context) {
+	  var index = 0;
+	  var returnChildren = [];
+	
+	  _react2['default'].Children.forEach(children, function (child) {
+	    if (_react2['default'].isValidElement(child)) {
+	      if (func.call(context, child, index)) {
+	        returnChildren.push(child);
+	      }
+	      index++;
+	    }
+	  });
+	
+	  return returnChildren;
+	}
+	
+	exports['default'] = {
+	  map: mapValidComponents,
+	  forEach: forEachValidComponents,
+	  numberOf: numberOfValidComponents,
+	  find: find,
+	  findValidComponents: findValidComponents,
+	  hasValidComponent: hasValidComponent
+	};
+	module.exports = exports['default'];
+
+/***/ },
+/* 570 */
+/*!************************************************!*\
+  !*** ./~/react-bootstrap/lib/ButtonToolbar.js ***!
+  \************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _extends = __webpack_require__(/*! babel-runtime/helpers/extends */ 409)['default'];
+	
+	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 425)['default'];
+	
+	exports.__esModule = true;
+	
+	var _react = __webpack_require__(/*! react */ 214);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _classnames = __webpack_require__(/*! classnames */ 426);
+	
+	var _classnames2 = _interopRequireDefault(_classnames);
+	
+	var _utilsBootstrapUtils = __webpack_require__(/*! ./utils/bootstrapUtils */ 442);
+	
+	var _utilsBootstrapUtils2 = _interopRequireDefault(_utilsBootstrapUtils);
+	
+	var _Button = __webpack_require__(/*! ./Button */ 441);
+	
+	var _Button2 = _interopRequireDefault(_Button);
+	
+	var ButtonToolbar = _react2['default'].createClass({
+	  displayName: 'ButtonToolbar',
+	
+	  propTypes: {
+	    bsSize: _Button2['default'].propTypes.bsSize
+	  },
+	
+	  getDefaultProps: function getDefaultProps() {
+	    return {
+	      bsClass: 'btn-toolbar'
+	    };
+	  },
+	
+	  render: function render() {
+	    var classes = _utilsBootstrapUtils2['default'].getClassSet(this.props);
+	
+	    return _react2['default'].createElement(
+	      'div',
+	      _extends({}, this.props, {
+	        role: 'toolbar',
+	        className: _classnames2['default'](this.props.className, classes) }),
+	      this.props.children
+	    );
+	  }
+	});
+	
+	exports['default'] = ButtonToolbar;
+	module.exports = exports['default'];
+
+/***/ },
+/* 571 */
+/*!**********************************************!*\
+  !*** ./~/react-bootstrap/lib/ButtonGroup.js ***!
+  \**********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _extends = __webpack_require__(/*! babel-runtime/helpers/extends */ 409)['default'];
+	
+	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 425)['default'];
+	
+	exports.__esModule = true;
+	
+	var _react = __webpack_require__(/*! react */ 214);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _classnames = __webpack_require__(/*! classnames */ 426);
+	
+	var _classnames2 = _interopRequireDefault(_classnames);
+	
+	var _utilsBootstrapUtils = __webpack_require__(/*! ./utils/bootstrapUtils */ 442);
+	
+	var _utilsBootstrapUtils2 = _interopRequireDefault(_utilsBootstrapUtils);
+	
+	var _reactPropTypesLibAll = __webpack_require__(/*! react-prop-types/lib/all */ 572);
+	
+	var _reactPropTypesLibAll2 = _interopRequireDefault(_reactPropTypesLibAll);
+	
+	var _Button = __webpack_require__(/*! ./Button */ 441);
+	
+	var _Button2 = _interopRequireDefault(_Button);
+	
+	var ButtonGroup = _react2['default'].createClass({
+	  displayName: 'ButtonGroup',
+	
+	  propTypes: {
+	    vertical: _react2['default'].PropTypes.bool,
+	    justified: _react2['default'].PropTypes.bool,
+	    /**
+	     * Display block buttons, only useful when used with the "vertical" prop.
+	     * @type {bool}
+	     */
+	    block: _reactPropTypesLibAll2['default'](_react2['default'].PropTypes.bool, function (props) {
+	      if (props.block && !props.vertical) {
+	        return new Error('The block property requires the vertical property to be set to have any effect');
+	      }
+	    })
+	  },
+	
+	  getDefaultProps: function getDefaultProps() {
+	    return {
+	      block: false,
+	      justified: false,
+	      vertical: false
+	    };
+	  },
+	
+	  render: function render() {
+	    var classes = _utilsBootstrapUtils2['default'].getClassSet(this.props);
+	
+	    classes[_utilsBootstrapUtils2['default'].prefix(this.props)] = !this.props.vertical;
+	    classes[_utilsBootstrapUtils2['default'].prefix(this.props, 'vertical')] = this.props.vertical;
+	    classes[_utilsBootstrapUtils2['default'].prefix(this.props, 'justified')] = this.props.justified;
+	
+	    // this is annoying, since the class is `btn-block` not `btn-group-block`
+	    classes[_utilsBootstrapUtils2['default'].prefix(_Button2['default'].defaultProps, 'block')] = this.props.block;
+	
+	    return _react2['default'].createElement(
+	      'div',
+	      _extends({}, this.props, {
+	        className: _classnames2['default'](this.props.className, classes) }),
+	      this.props.children
+	    );
+	  }
+	});
+	
+	exports['default'] = _utilsBootstrapUtils.bsClass('btn-group', ButtonGroup);
+	module.exports = exports['default'];
+
+/***/ },
 /* 572 */
+/*!***************************************!*\
+  !*** ./~/react-prop-types/lib/all.js ***!
+  \***************************************/
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	exports.__esModule = true;
+	exports['default'] = all;
+	
+	function all() {
+	  for (var _len = arguments.length, propTypes = Array(_len), _key = 0; _key < _len; _key++) {
+	    propTypes[_key] = arguments[_key];
+	  }
+	
+	  if (propTypes === undefined) {
+	    throw new Error('No validations provided');
+	  }
+	
+	  if (propTypes.some(function (propType) {
+	    return typeof propType !== 'function';
+	  })) {
+	    throw new Error('Invalid arguments, must be functions');
+	  }
+	
+	  if (propTypes.length === 0) {
+	    throw new Error('No validations provided');
+	  }
+	
+	  return function validate(props, propName, componentName) {
+	    for (var i = 0; i < propTypes.length; i++) {
+	      var result = propTypes[i](props, propName, componentName);
+	
+	      if (result !== undefined && result !== null) {
+	        return result;
+	      }
+	    }
+	  };
+	}
+	
+	module.exports = exports['default'];
+
+/***/ },
+/* 573 */
 /*!***************************************!*\
   !*** ./src/components/TasksList.less ***!
   \***************************************/
@@ -48483,10 +48983,10 @@
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(/*! !./../../~/css-loader!./../../~/autoprefixer-loader!./../../~/less-loader!./TasksList.less */ 573);
+	var content = __webpack_require__(/*! !./../../~/css-loader!./../../~/autoprefixer-loader!./../../~/less-loader!./TasksList.less */ 574);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(/*! ./../../~/style-loader/addStyles.js */ 464)(content, {});
+	var update = __webpack_require__(/*! ./../../~/style-loader/addStyles.js */ 565)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -48503,13 +49003,13 @@
 	}
 
 /***/ },
-/* 573 */
+/* 574 */
 /*!**********************************************************************************************!*\
   !*** ./~/css-loader!./~/autoprefixer-loader!./~/less-loader!./src/components/TasksList.less ***!
   \**********************************************************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(/*! ./../../~/css-loader/lib/css-base.js */ 463)();
+	exports = module.exports = __webpack_require__(/*! ./../../~/css-loader/lib/css-base.js */ 564)();
 	// imports
 	
 	
@@ -48520,7 +49020,7 @@
 
 
 /***/ },
-/* 574 */
+/* 575 */
 /*!**********************!*\
   !*** ./src/Timer.js ***!
   \**********************/
@@ -48533,12 +49033,12 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var Timer = (function () {
-	    function Timer() {
+	    function Timer(accumulatedTime) {
 	        _classCallCheck(this, Timer);
 	
 	        this.isPlaying = false;
 	        this.timeStamp = 0;
-	        this.accumulatedTime = 0;
+	        this.accumulatedTime = accumulatedTime || 0;
 	    }
 	
 	    _createClass(Timer, [{
@@ -48580,7 +49080,7 @@
 	module.exports = Timer;
 
 /***/ },
-/* 575 */
+/* 576 */
 /*!*****************************************!*\
   !*** ./src/components/Registration.jsx ***!
   \*****************************************/
@@ -48630,7 +49130,7 @@
 	
 	var _reactRouter = __webpack_require__(/*! react-router */ 192);
 	
-	var _validatorsJs = __webpack_require__(/*! ../validators.js */ 576);
+	var _validatorsJs = __webpack_require__(/*! ../validators.js */ 577);
 	
 	var Registration = (function (_React$Component) {
 	    _inherits(Registration, _React$Component);
@@ -48702,6 +49202,10 @@
 	            });
 	
 	            _this.setState(newState);
+	        };
+	
+	        this.shouldComponentUpdate = function (nextProps, nextState) {
+	            return JSON.stringify(_this.state) !== JSON.stringify(nextState);
 	        };
 	    }
 	
@@ -48806,7 +49310,7 @@
 	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "Registration.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
 
 /***/ },
-/* 576 */
+/* 577 */
 /*!***************************!*\
   !*** ./src/validators.js ***!
   \***************************/

@@ -12,4 +12,4 @@ module.exports = {
             status   : task.status
         };
     }
-}
+};
