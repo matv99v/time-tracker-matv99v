@@ -156,7 +156,9 @@ export default class Registration extends React.Component {
                                     name  = 'sex' />
 
                             <Col className = 'text-center' >
-                                <Link to = {this.state.isFormValid ? '/tracker' : '/'} >
+                                <Link to = {this.state.isFormValid
+                                    ? 'time-tracker-matv99v/public/tracker'
+                                    : 'time-tracker-matv99v/public'} >
                                     <Button bsStyle = 'success' onClick={this.handleSubmitForm}>
                                         Submit
                                     </Button>
