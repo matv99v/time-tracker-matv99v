@@ -4,10 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test_mocha": "mocha --timeout 60000 --reporter spec --ui qunit tests/*.js",
     "webpack": "webpack --watch -d",
     "webpack-devserver": "webpack-dev-server --debug --hot --devtool eval-source-map --output-pathinfo --watch --colors --inline --content-base public --port 8050 --host 0.0.0.0",
+    "test_mocha": "mocha --timeout 60000 --reporter spec --ui qunit tests/*.js",
     "lint": "eslint src tests",
+    "test_istanbul": "./node_modules/.bin/istanbul cover node_modules/.bin/_mocha -- --timeout 60000 --ui qunit --reporter spec tests/*.js",
+    "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
     "test": "npm run lint && npm run test_mocha"
   },
   "author": "",
