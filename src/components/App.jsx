@@ -70,27 +70,32 @@ export default class App extends React.Component {
     };
 
     handleClearTimer = (taskId) => {
-        const newState = JSON.parse(JSON.stringify(this.state));
-        newState.tasks.forEach( (task) => {
-            if (task.id === taskId) {
-                this.timersStorage[taskId].clear();
-                task.spentTime = this.timersStorage[taskId].getSpentTime();
-            }
-        });
+        if (confirm('Are you sure want to clear time?')) {
+            const newState = JSON.parse(JSON.stringify(this.state));
+            newState.tasks.forEach( (task) => {
+                if (task.id === taskId) {
+                    this.timersStorage[taskId].clear();
+                    task.spentTime = this.timersStorage[taskId].getSpentTime();
+                }
+            });
 
-        this.setState(newState);
+            this.setState(newState);
+        }
     };
 
     handleDeleteTask = (taskId) => {
-        const newState = JSON.parse(JSON.stringify(this.state));
-        newState.tasks = this.state.tasks.filter( (task) => task.id !== taskId );
+        if (confirm('Are you sure want to delete task?')) {
+            const newState = JSON.parse(JSON.stringify(this.state));
+            newState.tasks = this.state.tasks.filter( (task) => task.id !== taskId );
 
-        if (newState.activeTaskId === taskId) {
-            clearInterval(this.interval);
-            newState.activeTaskId = null;
-            this.setState(newState);
+            if (newState.activeTaskId === taskId) {
+                clearInterval(this.interval);
+                newState.activeTaskId = null;
+                this.setState(newState);
+            }
+            else this.setState(newState);
         }
-        else this.setState(newState);
+
     };
 
     initTimerInterval = () => {
@@ -106,8 +111,30 @@ export default class App extends React.Component {
 
     };
 
+    getGeneralTime = () => {
+        return this.state.tasks.reduce((sum, task) => sum + task.spentTime, 0);
+    };
+
     componentWillUnmount = () => {
         clearInterval(this.interval);
+        window.removeEventListener('beforeunload', this.hanldeWindowClose);
+    };
+
+    componentWillMount = () => {
+        const restoredState = JSON.parse(localStorage.getItem('timer'));
+        // TODO: create timers instance for each restored timer
+        // if (restoredState) {
+        //     this.setState(restoredState);
+        // }
+    };
+
+    componentDidMount = () => {
+        window.addEventListener('beforeunload', this.hanldeWindowClose);
+    };
+
+    hanldeWindowClose = (e) => {
+        e.preventDefault();
+        localStorage.setItem('timer', JSON.stringify(this.state));
     };
 
     shouldComponentUpdate = (nextProps, nextState) => {
@@ -117,11 +144,12 @@ export default class App extends React.Component {
     render() {
         return (
             <div >
-                <Header />
                 <CreateTask onSubmit   = { this.handleNewTaskSubmit } />
-
-                <ActiveTask activeTask      = { this.state.tasks.find( (task) => task.id === this.state.activeTaskId )}
+                <Header
+                    generalTime = {this.getGeneralTime()}
+                    isVisible   = {this.state.tasks.length}
                 />
+
 
                 <TasksList tasks           = {this.state.tasks}
                            onStartTask     = {this.handleStartTask}

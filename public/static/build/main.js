@@ -75,7 +75,8 @@
 	    _reactRouter.Router,
 	    { history: _reactRouter.browserHistory },
 	    _react2['default'].createElement(_reactRouter.Route, { path: 'time-tracker-matv99v/public/', component: _componentsRegistrationJsx2['default'] }),
-	    _react2['default'].createElement(_reactRouter.Route, { path: '/tracker', component: _componentsAppJsx2['default'] })
+	    _react2['default'].createElement(_reactRouter.Route, { path: '/tracker', component: _componentsAppJsx2['default'] }),
+	    _react2['default'].createElement(_reactRouter.Route, { path: '/', component: _componentsAppJsx2['default'] })
 	), document.getElementById('main-content'));
 
 /***/ },
@@ -31324,28 +31325,32 @@
 	        };
 	
 	        this.handleClearTimer = function (taskId) {
-	            var newState = JSON.parse(JSON.stringify(_this.state));
-	            newState.tasks.forEach(function (task) {
-	                if (task.id === taskId) {
-	                    _this.timersStorage[taskId].clear();
-	                    task.spentTime = _this.timersStorage[taskId].getSpentTime();
-	                }
-	            });
+	            if (confirm('Are you sure want to clear time?')) {
+	                var newState = JSON.parse(JSON.stringify(_this.state));
+	                newState.tasks.forEach(function (task) {
+	                    if (task.id === taskId) {
+	                        _this.timersStorage[taskId].clear();
+	                        task.spentTime = _this.timersStorage[taskId].getSpentTime();
+	                    }
+	                });
 	
-	            _this.setState(newState);
+	                _this.setState(newState);
+	            }
 	        };
 	
 	        this.handleDeleteTask = function (taskId) {
-	            var newState = JSON.parse(JSON.stringify(_this.state));
-	            newState.tasks = _this.state.tasks.filter(function (task) {
-	                return task.id !== taskId;
-	            });
+	            if (confirm('Are you sure want to delete task?')) {
+	                var newState = JSON.parse(JSON.stringify(_this.state));
+	                newState.tasks = _this.state.tasks.filter(function (task) {
+	                    return task.id !== taskId;
+	                });
 	
-	            if (newState.activeTaskId === taskId) {
-	                clearInterval(_this.interval);
-	                newState.activeTaskId = null;
-	                _this.setState(newState);
-	            } else _this.setState(newState);
+	                if (newState.activeTaskId === taskId) {
+	                    clearInterval(_this.interval);
+	                    newState.activeTaskId = null;
+	                    _this.setState(newState);
+	                } else _this.setState(newState);
+	            }
 	        };
 	
 	        this.initTimerInterval = function () {
@@ -31360,8 +31365,32 @@
 	            }, 1000);
 	        };
 	
+	        this.getGeneralTime = function () {
+	            return _this.state.tasks.reduce(function (sum, task) {
+	                return sum + task.spentTime;
+	            }, 0);
+	        };
+	
 	        this.componentWillUnmount = function () {
 	            clearInterval(_this.interval);
+	            window.removeEventListener('beforeunload', _this.hanldeWindowClose);
+	        };
+	
+	        this.componentWillMount = function () {
+	            var restoredState = JSON.parse(localStorage.getItem('timer'));
+	            // TODO: create timers instance for each restored timer
+	            // if (restoredState) {
+	            //     this.setState(restoredState);
+	            // }
+	        };
+	
+	        this.componentDidMount = function () {
+	            window.addEventListener('beforeunload', _this.hanldeWindowClose);
+	        };
+	
+	        this.hanldeWindowClose = function (e) {
+	            e.preventDefault();
+	            localStorage.setItem('timer', JSON.stringify(_this.state));
 	        };
 	
 	        this.shouldComponentUpdate = function (nextProps, nextState) {
@@ -31372,16 +31401,13 @@
 	    _createClass(App, [{
 	        key: 'render',
 	        value: function render() {
-	            var _this2 = this;
-	
 	            return _react2['default'].createElement(
 	                'div',
 	                null,
-	                _react2['default'].createElement(_HeaderJsx2['default'], null),
 	                _react2['default'].createElement(_CreateTaskJsx2['default'], { onSubmit: this.handleNewTaskSubmit }),
-	                _react2['default'].createElement(_ActiveTaskJsx2['default'], { activeTask: this.state.tasks.find(function (task) {
-	                        return task.id === _this2.state.activeTaskId;
-	                    })
+	                _react2['default'].createElement(_HeaderJsx2['default'], {
+	                    generalTime: this.getGeneralTime(),
+	                    isVisible: this.state.tasks.length
 	                }),
 	                _react2['default'].createElement(_TasksListJsx2['default'], { tasks: this.state.tasks,
 	                    onStartTask: this.handleStartTask,
@@ -31446,13 +31472,30 @@
 	
 	var _UserSectionJsx2 = _interopRequireDefault(_UserSectionJsx);
 	
+	var _moment = __webpack_require__(/*! moment */ 462);
+	
+	var _moment2 = _interopRequireDefault(_moment);
+	
+	__webpack_require__(/*! moment-duration-format */ 562);
+	
+	__webpack_require__(/*! ./Header.less */ 579);
+	
 	var Header = (function (_React$Component) {
 	    _inherits(Header, _React$Component);
 	
 	    function Header() {
+	        var _this = this;
+	
 	        _classCallCheck(this, Header);
 	
 	        _get(Object.getPrototypeOf(Header.prototype), 'constructor', this).apply(this, arguments);
+	
+	        this.formatTime = function () {
+	            return _moment2['default'].duration(_this.props.generalTime).format({
+	                template: 'HH:mm:ss',
+	                trim: false
+	            });
+	        };
 	    }
 	
 	    _createClass(Header, [{
@@ -31460,31 +31503,22 @@
 	        value: function render() {
 	            return _react2['default'].createElement(
 	                _reactBootstrapLibGrid2['default'],
-	                { fluid: true },
+	                { fluid: true, className: this.props.isVisible ? 'Header__container__visible' : 'Header__container__hidden'
+	                },
 	                _react2['default'].createElement(
 	                    _reactBootstrapLibRow2['default'],
 	                    null,
 	                    _react2['default'].createElement(
 	                        _reactBootstrapLibCol2['default'],
-	                        { md: 9, mdOffset: 1,
-	                            sm: 8, smOffset: 1,
-	                            xs: 8, xsOffset: 1 },
+	                        null,
 	                        _react2['default'].createElement(
 	                            'h1',
 	                            { className: 'text-center' },
-	                            'Time tracker'
+	                            'General time ',
+	                            this.formatTime(),
+	                            ' '
 	                        )
-	                    ),
-	                    _react2['default'].createElement(
-	                        _reactBootstrapLibCol2['default'],
-	                        { md: 1, sm: 2, xs: 2 },
-	                        _react2['default'].createElement(
-	                            'h2',
-	                            { className: 'text-center' },
-	                            _react2['default'].createElement(_UserSectionJsx2['default'], null)
-	                        )
-	                    ),
-	                    _react2['default'].createElement(_reactBootstrapLibCol2['default'], { md: 1, sm: 1, xs: 1 })
+	                    )
 	                )
 	            );
 	        }
@@ -32714,7 +32748,8 @@
 	        this.handleInputChange = function () {
 	
 	            var inputValue = _this.refs.newTaskNameInput.getValue();
-	            var reg = /^[a-z0-9][a-z0-9 ]*$/i;
+	            // const reg = /^[a-z0-9][a-z0-9 ]*$/i;
+	            var reg = /[a-z0-9-]*$/i;
 	
 	            if (reg.test(inputValue)) {
 	                _this.setState({
@@ -32739,7 +32774,7 @@
 	                    onClick: this.handleSubmitClick,
 	                    disabled: !this.state.isValid,
 	                    bsStyle: this.state.isValid ? 'success' : 'danger' },
-	                this.state.isValid ? 'Create' : 'letters or digits only'
+	                this.state.isValid ? 'Create' : 'Invalid input'
 	            );
 	
 	            return _react2['default'].createElement(
@@ -49482,7 +49517,7 @@
 	
 	        email: {
 	            matchTests: [{
-	                regExp: /^[a-z0-9._-]+@[a-z0-9.-]+\.[a-z0-9.-]{2,}$/ig,
+	                regExp: /^[a-z0-9_-]+@[a-z0-9.-]+\.[a-z0-9.-]{2,}$/ig,
 	                errMsg: 'Wrong email format'
 	            }],
 	            carrier: 'email',
@@ -49601,6 +49636,52 @@
 	}
 	
 	module.exports = { validateRegistrationData: validateRegistrationData };
+
+/***/ },
+/* 579 */
+/*!************************************!*\
+  !*** ./src/components/Header.less ***!
+  \************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(/*! !./../../~/css-loader!./../../~/autoprefixer-loader!./../../~/less-loader!./Header.less */ 580);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(/*! ./../../~/style-loader/addStyles.js */ 566)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/autoprefixer-loader/index.js!./../../node_modules/less-loader/index.js!./Header.less", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/autoprefixer-loader/index.js!./../../node_modules/less-loader/index.js!./Header.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 580 */
+/*!*******************************************************************************************!*\
+  !*** ./~/css-loader!./~/autoprefixer-loader!./~/less-loader!./src/components/Header.less ***!
+  \*******************************************************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(/*! ./../../~/css-loader/lib/css-base.js */ 565)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, ".Header__container__visible {\n  visibility: visible;\n}\n.Header__container__hidden {\n  visibility: hidden;\n}\n", ""]);
+	
+	// exports
+
 
 /***/ }
 /******/ ]);

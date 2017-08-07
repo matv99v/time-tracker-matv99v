@@ -26,7 +26,8 @@ export default class CreateTask extends React.Component {
     handleInputChange = () => {
 
         const inputValue = this.refs.newTaskNameInput.getValue();
-        const reg = /^[a-z0-9][a-z0-9 ]*$/i;
+        // const reg = /^[a-z0-9][a-z0-9 ]*$/i;
+        const reg = /[a-z0-9-]*$/i;
 
         if (reg.test(inputValue)) {
             this.setState({
@@ -47,7 +48,7 @@ export default class CreateTask extends React.Component {
                                         onClick   = {this.handleSubmitClick}
                                         disabled  = {!this.state.isValid}
                                         bsStyle   = {this.state.isValid ? 'success' : 'danger'} >
-                                    {this.state.isValid ? 'Create' : 'letters or digits only'}
+                                    {this.state.isValid ? 'Create' : 'Invalid input'}
                                 </Button>;
 
         return (
