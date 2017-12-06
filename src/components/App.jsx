@@ -3,6 +3,7 @@ import Header     from './Header.jsx';
 import CreateTask from './CreateTask.jsx';
 import ActiveTask from './ActiveTask.jsx';
 import TasksList  from './TasksList.jsx';
+import Reminder  from './Reminder.jsx';
 
 import Timer      from '../Timer.js';
 
@@ -15,22 +16,26 @@ export default class App extends React.Component {
     };
 
     timersStorage = {
-        addTimer    : (id) => this.timersStorage[id] = new Timer(),
+        addTimer    : (id, startTime = 0) => this.timersStorage[id] = new Timer(startTime),
         deleteTimer : (id) => delete this.timersStorage[id]
     };
 
-    handleNewTaskSubmit = (taskName) => {
-        const initTaskState = {
+    handleNewTaskSubmit = (taskName, spentTime) => {
+        const taskState = this.getTaskState(taskName, spentTime);
+        const newState = JSON.parse(JSON.stringify(this.state));
+
+        newState.tasks.push(taskState);
+        this.timersStorage.addTimer(taskState.id);
+        this.setState(newState);
+    };
+
+    getTaskState = (taskName, spentTime = 0) => {
+        return {
             name     : taskName,
-            spentTime: 0,
+            spentTime: spentTime,
             isActive : false,
             id       : Date.now()
         };
-        const newState = JSON.parse(JSON.stringify(this.state));
-
-        newState.tasks.push(initTaskState);
-        this.timersStorage.addTimer(initTaskState.id);
-        this.setState(newState);
     };
 
     handleStartTask = (taskId) => {
@@ -117,34 +122,66 @@ export default class App extends React.Component {
 
     componentWillUnmount = () => {
         clearInterval(this.interval);
-        window.removeEventListener('beforeunload', this.hanldeWindowClose);
+        // window.removeEventListener('beforeunload', this.hanldeWindowClose);
     };
 
     componentWillMount = () => {
         const restoredState = JSON.parse(localStorage.getItem('timer'));
-        // TODO: create timers instance for each restored timer
-        // if (restoredState) {
-        //     this.setState(restoredState);
+        console.log('restoredState', restoredState);
+
+        if (restoredState && restoredState.tasks.length) {
+            let activeTask = null;
+
+            restoredState.tasks.forEach(task => {
+                this.timersStorage.addTimer(task.id, task.spentTime);
+                if (task.isActive) activeTask = task;
+            });
+
+            this.setState(restoredState);
+
+            if (activeTask) {
+                this.handleStartTask(activeTask.id);
+            }
+        }
+    };
+
+    // componentDidMount = () => {
+    //     console.log('beforeunload');
+    //     window.addEventListener('beforeunload', this.hanldeWindowClose);
+    // };
+
+    // hanldeWindowClose = (e) => {
+        // e.preventDefault();
+        // if (!JSON.parse(localStorage.getItem('timer')).tasks.length) {
         // }
-    };
-
-    componentDidMount = () => {
-        window.addEventListener('beforeunload', this.hanldeWindowClose);
-    };
-
-    hanldeWindowClose = (e) => {
-        e.preventDefault();
-        localStorage.setItem('timer', JSON.stringify(this.state));
-    };
+        // debugger;
+        // const test = JSON.parse(localStorage.getItem('timer').tasks.length);
+        // if (test) {
+        //     localStorage.setItem('timer', JSON.stringify(this.state));
+        // }
+    // };
 
     shouldComponentUpdate = (nextProps, nextState) => {
         return JSON.stringify(this.state) !== JSON.stringify(nextState);
     };
 
+    componentDidUpdate = (prevProps, prevState) => {
+        if (this.state.tasks.length) {
+            localStorage.setItem('timer', JSON.stringify(this.state));
+        }
+    };
+
+    stopActiveTaskHandler = () => {
+        console.log('stopActiveTaskHandler');
+        this.handleStopTask(this.state.activeTaskId);
+    };
+
+
     render() {
         return (
-            <div >
-                <CreateTask onSubmit   = { this.handleNewTaskSubmit } />
+            <div>
+                <Reminder stopActiveTask = { this.stopActiveTaskHandler } />
+                <CreateTask onSubmit = { this.handleNewTaskSubmit } />
                 <Header
                     generalTime = {this.getGeneralTime()}
                     isVisible   = {this.state.tasks.length}

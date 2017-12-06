@@ -22,11 +22,7 @@ export default class Header extends React.Component {
             <Grid fluid className = {this.props.isVisible ? 'Header__container__visible' : 'Header__container__hidden'}
             >
                 <Row >
-
-                    <Col>
-                        <h1 className='text-center'>General time {this.formatTime()} </h1>
-                    </Col>
-
+                    <h1 className='text-center'>General time {this.formatTime()} </h1>
                 </Row>
             </Grid>
 
