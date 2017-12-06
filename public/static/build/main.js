@@ -31218,9 +31218,11 @@
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	var _get = function get(_x3, _x4, _x5) { var _again = true; _function: while (_again) { var object = _x3, property = _x4, receiver = _x5; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x3 = parent; _x4 = property; _x5 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { var object = _x2, property = _x3, receiver = _x4; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
@@ -31250,9 +31252,17 @@
 	
 	var _ReminderJsx2 = _interopRequireDefault(_ReminderJsx);
 	
+	var _ModalDialogJsx = __webpack_require__(/*! ./ModalDialog.jsx */ 658);
+	
+	var _ModalDialogJsx2 = _interopRequireDefault(_ModalDialogJsx);
+	
 	var _TimerJs = __webpack_require__(/*! ../Timer.js */ 655);
 	
 	var _TimerJs2 = _interopRequireDefault(_TimerJs);
+	
+	var _tabTitlerJs = __webpack_require__(/*! ../tabTitler.js */ 654);
+	
+	var _tabTitlerJs2 = _interopRequireDefault(_tabTitlerJs);
 	
 	var App = (function (_React$Component) {
 	    _inherits(App, _React$Component);
@@ -31264,10 +31274,15 @@
 	
 	        _get(Object.getPrototypeOf(App.prototype), 'constructor', this).apply(this, arguments);
 	
-	        this.interval = null;
 	        this.state = {
 	            tasks: [],
-	            activeTaskId: null
+	            activeTaskId: null,
+	            remindTime: 1000 * 5,
+	            absenceTime: 1000 * 5,
+	            activationTimeStamp: Date.now(),
+	            areYouHereTimeStamp: null,
+	            isWatcherActive: false,
+	            areYouHereModal: false
 	        };
 	        this.timersStorage = {
 	            addTimer: function addTimer(id) {
@@ -31279,32 +31294,24 @@
 	            }
 	        };
 	
-	        this.handleNewTaskSubmit = function (taskName, spentTime) {
-	            var taskState = _this.getTaskState(taskName, spentTime);
-	            var newState = JSON.parse(JSON.stringify(_this.state));
-	
-	            newState.tasks.push(taskState);
-	            _this.timersStorage.addTimer(taskState.id);
-	            _this.setState(newState);
-	        };
-	
-	        this.getTaskState = function (taskName) {
-	            var spentTime = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
-	
-	            return {
+	        this.handleNewTaskSubmit = function (taskName) {
+	            var id = Date.now();
+	            var newTasks = [].concat(_toConsumableArray(_this.state.tasks), [{
 	                name: taskName,
-	                spentTime: spentTime,
+	                spentTime: 0,
 	                isActive: false,
-	                id: Date.now()
-	            };
+	                id: id
+	            }]);
+	            _this.timersStorage.addTimer(id);
+	            _this.setState({ tasks: newTasks });
 	        };
 	
 	        this.handleStartTask = function (taskId) {
-	            clearInterval(_this.interval);
-	            var newState = JSON.parse(JSON.stringify(_this.state));
-	            var prevActiveTaskId = newState.activeTaskId;
+	            clearInterval(_this.intervalId);
+	            var prevActiveTaskId = _this.state.activeTaskId;
+	            var newStateTasks = [].concat(_toConsumableArray(_this.state.tasks));
 	
-	            newState.tasks.forEach(function (task) {
+	            newStateTasks.forEach(function (task) {
 	                if (task.id === taskId) {
 	                    task.isActive = true;
 	                    _this.timersStorage[task.id].start();
@@ -31315,65 +31322,77 @@
 	                }
 	            });
 	
-	            newState.activeTaskId = taskId;
 	            _this.initTimerInterval();
-	            _this.setState(newState);
+	            _this.setState({ tasks: newStateTasks, activeTaskId: taskId });
 	        };
 	
 	        this.handleStopTask = function (taskId) {
-	            clearInterval(_this.interval);
-	            var newState = JSON.parse(JSON.stringify(_this.state));
-	            newState.activeTaskId = null;
-	
-	            newState.tasks.forEach(function (task) {
-	                if (task.id === taskId) {
-	                    task.isActive = false;
-	                    _this.timersStorage[taskId].stop();
-	                }
+	            clearInterval(_this.intervalId);
+	            var newStateTasks = [].concat(_toConsumableArray(_this.state.tasks));
+	            var targetTask = newStateTasks.find(function (task) {
+	                return task.id === taskId;
 	            });
-	
-	            _this.setState(newState);
+	            targetTask.isActive = false;
+	            _this.timersStorage[targetTask.id].stop();
+	            _this.setState({ tasks: newStateTasks, activeTaskId: null });
 	        };
 	
 	        this.handleClearTimer = function (taskId) {
 	            if (confirm('Are you sure want to clear time?')) {
-	                var newState = JSON.parse(JSON.stringify(_this.state));
-	                newState.tasks.forEach(function (task) {
-	                    if (task.id === taskId) {
-	                        _this.timersStorage[taskId].clear();
-	                        task.spentTime = _this.timersStorage[taskId].getSpentTime();
-	                    }
+	                var newStateTasks = [].concat(_toConsumableArray(_this.state.tasks));
+	                var targetTask = newStateTasks.find(function (task) {
+	                    return task.id === taskId;
 	                });
-	
-	                _this.setState(newState);
+	                targetTask.spentTime = _this.timersStorage[taskId].getSpentTime();
+	                _this.timersStorage[taskId].clear();
+	                _this.setState({ tasks: newStateTasks });
 	            }
 	        };
 	
 	        this.handleDeleteTask = function (taskId) {
 	            if (confirm('Are you sure want to delete task?')) {
-	                var newState = JSON.parse(JSON.stringify(_this.state));
-	                newState.tasks = _this.state.tasks.filter(function (task) {
+	                var newStateTasks = _this.state.tasks.filter(function (task) {
 	                    return task.id !== taskId;
 	                });
 	
-	                if (newState.activeTaskId === taskId) {
-	                    clearInterval(_this.interval);
-	                    newState.activeTaskId = null;
-	                    _this.setState(newState);
-	                } else _this.setState(newState);
+	                if (_this.state.activeTaskId === taskId) {
+	                    clearInterval(_this.intervalId);
+	                    _this.setState({ tasks: newStateTasks, activeTaskId: null });
+	                } else {
+	                    _this.setState({ tasks: newStateTasks });
+	                }
 	            }
 	        };
 	
+	        this.intervalId = null;
+	
 	        this.initTimerInterval = function () {
-	            _this.interval = setInterval(function () {
-	                var newState = JSON.parse(JSON.stringify(_this.state));
-	
-	                newState.tasks.forEach(function (task) {
-	                    if (task.isActive) task.spentTime = _this.timersStorage[task.id].getSpentTime();
+	            _this.intervalId = setInterval(function () {
+	                var newStateTasks = [].concat(_toConsumableArray(_this.state.tasks));
+	                var activeTask = newStateTasks.find(function (task) {
+	                    return task.isActive;
 	                });
+	                activeTask.spentTime = _this.timersStorage[activeTask.id].getSpentTime();
 	
-	                _this.setState(newState);
+	                _this.setState({ tasks: newStateTasks });
+	                _this.check();
 	            }, 1000);
+	        };
+	
+	        this.check = function () {
+	            function msToSec(ms) {
+	                return Math.floor(ms / 1000);
+	            }
+	
+	            var diffSec = msToSec(Date.now() - _this.state.activationTimeStamp);
+	            var remindSec = msToSec(_this.state.remindTime);
+	
+	            console.log(diffSec);
+	            if (!(diffSec % remindSec) && !_this.state.areYouHereModal) {
+	                console.log('start absence timer');
+	                _tabTitlerJs2['default'].startSprites();
+	                _this.setState({ areYouHereModal: true });
+	            }
 	        };
 	
 	        this.getGeneralTime = function () {
@@ -31383,43 +31402,27 @@
 	        };
 	
 	        this.componentWillUnmount = function () {
-	            clearInterval(_this.interval);
-	            // window.removeEventListener('beforeunload', this.hanldeWindowClose);
-	        };
-	
-	        this.componentWillMount = function () {
-	            var restoredState = JSON.parse(localStorage.getItem('timer'));
-	            console.log('restoredState', restoredState);
-	
-	            if (restoredState && restoredState.tasks.length) {
-	                var activeTask = null;
-	
-	                restoredState.tasks.forEach(function (task) {
-	                    _this.timersStorage.addTimer(task.id, task.spentTime);
-	                    if (task.isActive) activeTask = task;
-	                });
-	
-	                _this.setState(restoredState);
-	
-	                if (activeTask) {
-	                    _this.handleStartTask(activeTask.id);
-	                }
-	            }
-	        };
-	
-	        this.shouldComponentUpdate = function (nextProps, nextState) {
-	            return JSON.stringify(_this.state) !== JSON.stringify(nextState);
-	        };
-	
-	        this.componentDidUpdate = function (prevProps, prevState) {
-	            if (_this.state.tasks.length) {
-	                localStorage.setItem('timer', JSON.stringify(_this.state));
-	            }
+	            clearInterval(_this.intervalId);
 	        };
 	
 	        this.stopActiveTaskHandler = function () {
 	            console.log('stopActiveTaskHandler');
 	            _this.handleStopTask(_this.state.activeTaskId);
+	        };
+	
+	        this.toggleWatcherHandler = function () {
+	            _this.setState({ isWatcherActive: !_this.state.isWatcherActive });
+	            console.log('toggleWatcherHandler');
+	        };
+	
+	        this.confirmPresenceClickHandler = function () {
+	            console.log('confirmPresenceClickHandler, stop absence timer');
+	            _tabTitlerJs2['default'].stopSprites();
+	            _this.setState({ areYouHereModal: false });
+	        };
+	
+	        this.startAbsenceTimer = function () {
+	            console.log('startAbsenceTimer');
 	        };
 	    }
 	
@@ -31429,17 +31432,33 @@
 	            return _react2['default'].createElement(
 	                'div',
 	                null,
-	                _react2['default'].createElement(_ReminderJsx2['default'], { stopActiveTask: this.stopActiveTaskHandler }),
-	                _react2['default'].createElement(_CreateTaskJsx2['default'], { onSubmit: this.handleNewTaskSubmit }),
+	                _react2['default'].createElement(_ReminderJsx2['default'], {
+	                    stopActiveTask: this.stopActiveTaskHandler,
+	                    reminderTime: this.state.reminderTime,
+	                    absenceTime: this.state.absenceTime,
+	                    isWatcherActive: this.state.isWatcherActive,
+	                    toggleWatcher: this.toggleWatcherHandler
+	                }),
+	                _react2['default'].createElement(_CreateTaskJsx2['default'], {
+	                    onSubmit: this.handleNewTaskSubmit
+	                }),
 	                _react2['default'].createElement(_HeaderJsx2['default'], {
 	                    generalTime: this.getGeneralTime(),
 	                    isVisible: this.state.tasks.length
 	                }),
-	                _react2['default'].createElement(_TasksListJsx2['default'], { tasks: this.state.tasks,
+	                _react2['default'].createElement(_TasksListJsx2['default'], {
+	                    tasks: this.state.tasks,
 	                    onStartTask: this.handleStartTask,
 	                    onStopTask: this.handleStopTask,
 	                    onClearTimer: this.handleClearTimer,
 	                    onDeleteTask: this.handleDeleteTask
+	                }),
+	                _react2['default'].createElement(_ModalDialogJsx2['default'], {
+	                    isVisible: this.state.areYouHereModal,
+	                    header: 'Watcher',
+	                    body: 'Are you here?',
+	                    btnWording: 'yes',
+	                    clickYesCb: this.confirmPresenceClickHandler
 	                })
 	            );
 	        }
@@ -31450,22 +31469,6 @@
 	
 	exports['default'] = App;
 	module.exports = exports['default'];
-
-	// componentDidMount = () => {
-	//     console.log('beforeunload');
-	//     window.addEventListener('beforeunload', this.hanldeWindowClose);
-	// };
-
-	// hanldeWindowClose = (e) => {
-	// e.preventDefault();
-	// if (!JSON.parse(localStorage.getItem('timer')).tasks.length) {
-	// }
-	// debugger;
-	// const test = JSON.parse(localStorage.getItem('timer').tasks.length);
-	// if (test) {
-	//     localStorage.setItem('timer', JSON.stringify(this.state));
-	// }
-	// };
 
 	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "App.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
 
@@ -49332,87 +49335,30 @@
 	
 	var _reactBootstrapLibButton2 = _interopRequireDefault(_reactBootstrapLibButton);
 	
-	var _reactBootstrapLibModal = __webpack_require__(/*! react-bootstrap/lib/Modal */ 579);
-	
-	var _reactBootstrapLibModal2 = _interopRequireDefault(_reactBootstrapLibModal);
-	
-	var _tabTitlerJs = __webpack_require__(/*! ../tabTitler.js */ 654);
-	
-	var _tabTitlerJs2 = _interopRequireDefault(_tabTitlerJs);
-	
 	var Reminder = (function (_React$Component) {
 	    _inherits(Reminder, _React$Component);
 	
 	    function Reminder() {
-	        var _this = this;
-	
 	        _classCallCheck(this, Reminder);
 	
 	        _get(Object.getPrototypeOf(Reminder.prototype), 'constructor', this).apply(this, arguments);
 	
 	        this.state = {
-	            reminderTime: 1000 * 60 * 30, // minutes
-	            absenceTime: 1000 * 60 * 10, // minutes
-	            isWatcherActive: false,
-	            isReminderVisible: false,
-	            isAway: false
-	        };
-	        this.remindIntervalId = null;
-	
-	        this.startInterval = function () {
-	            console.log('set new interval');
-	
-	            var tick = function tick() {
-	                _tabTitlerJs2['default'].startTitleSprites();
-	                _this.startAbsenceTimer();
-	                _this.setState({
-	                    isReminderVisible: true
-	                });
-	            };
-	
-	            _this.remindIntervalId = setTimeout(tick, _this.state.reminderTime);
-	        };
-	
-	        this.stopInterval = function () {
-	            console.log('delete interval');
-	            clearTimeout(_this.remindIntervalId);
-	        };
-	
-	        this.handleReminderWatcherClick = function () {
-	            var newState = { isWatcherActive: !_this.state.isWatcherActive };
-	            _this.setState(newState);
-	            if (!newState.isWatcherActive) {
-	                _this.stopInterval();
-	            } else {
-	                _this.startInterval();
-	            }
+	            // isWatcherActive: false,
+	            // isReminderVisible: false,
+	            // isAway: false
 	        };
 	
 	        this.confirmPresenceClickHandler = function () {
 	            console.log('confirmPresenceClickHandler');
-	            _tabTitlerJs2['default'].stopTitleSprites();
-	            _this.setState({ isReminderVisible: false });
-	            _this.startInterval();
 	        };
 	
 	        this.startAbsenceTimer = function () {
-	            _this.absenceTimerId = setTimeout(function () {
-	                console.log('you are away');
-	                _this.props.stopActiveTask();
-	                _this.setState({
-	                    isReminderVisible: false,
-	                    isAway: true
-	                });
-	            }, _this.state.absenceTime);
+	            console.log('startAbsenceTimer');
 	        };
 	
 	        this.iAmHereClickHandler = function () {
-	            _this.setState({
-	                isAway: false
-	            });
-	
-	            _tabTitlerJs2['default'].stopTitleSprites();
-	            _this.startInterval();
+	            console.log('iAmHereClickHandler');
 	        };
 	    }
 	
@@ -49437,71 +49383,12 @@
 	                    ),
 	                    _react2['default'].createElement(
 	                        _reactBootstrapLibButton2['default'],
-	                        { onClick: this.handleReminderWatcherClick,
-	                            bsStyle: this.state.isWatcherActive ? 'info' : 'default',
+	                        {
+	                            onClick: this.props.toggleWatcher,
+	                            bsStyle: this.props.isWatcherActive ? 'info' : 'default',
 	                            bsSize: 'xsmall'
 	                        },
-	                        this.state.isWatcherActive ? 'On' : 'Off'
-	                    )
-	                ),
-	                _react2['default'].createElement(
-	                    _reactBootstrapLibModal2['default'],
-	                    { show: this.state.isReminderVisible, bsSize: 'sm' },
-	                    _react2['default'].createElement(
-	                        _reactBootstrapLibModal2['default'].Header,
-	                        { closeButton: true },
-	                        _react2['default'].createElement(
-	                            _reactBootstrapLibModal2['default'].Title,
-	                            null,
-	                            'Reminder'
-	                        )
-	                    ),
-	                    _react2['default'].createElement(
-	                        _reactBootstrapLibModal2['default'].Body,
-	                        null,
-	                        'Are you still working on active task?'
-	                    ),
-	                    _react2['default'].createElement(
-	                        _reactBootstrapLibModal2['default'].Footer,
-	                        null,
-	                        _react2['default'].createElement(
-	                            _reactBootstrapLibButton2['default'],
-	                            {
-	                                bsStyle: 'primary',
-	                                onClick: this.confirmPresenceClickHandler
-	                            },
-	                            'Yes'
-	                        )
-	                    )
-	                ),
-	                _react2['default'].createElement(
-	                    _reactBootstrapLibModal2['default'],
-	                    { show: this.state.isAway, bsSize: 'sm' },
-	                    _react2['default'].createElement(
-	                        _reactBootstrapLibModal2['default'].Header,
-	                        { closeButton: true },
-	                        _react2['default'].createElement(
-	                            _reactBootstrapLibModal2['default'].Title,
-	                            null,
-	                            'You are away!'
-	                        )
-	                    ),
-	                    _react2['default'].createElement(
-	                        _reactBootstrapLibModal2['default'].Body,
-	                        null,
-	                        'All timers have been stopped'
-	                    ),
-	                    _react2['default'].createElement(
-	                        _reactBootstrapLibModal2['default'].Footer,
-	                        null,
-	                        _react2['default'].createElement(
-	                            _reactBootstrapLibButton2['default'],
-	                            {
-	                                bsStyle: 'primary',
-	                                onClick: this.iAmHereClickHandler
-	                            },
-	                            'I am here'
-	                        )
+	                        this.props.isWatcherActive ? 'On' : 'Off'
 	                    )
 	                )
 	            );
@@ -53781,30 +53668,35 @@
 	'use strict';
 	
 	var changeTime = 250;
-	var titleSprites = ['>', '>>', '>>>', '>>>>', '>>>>>', '◕‿◕'];
+	var titleSprites = ['>', '>>', '>>>', '>>>>', '>>>>>'];
 	var i = 0;
 	var intervalId = null;
 	
-	var getNextSprite = function getNextSprite() {
+	function nextSprite() {
 	    var result = titleSprites[i];
 	    i = i === titleSprites.length - 1 ? 0 : ++i;
-	    return result;
-	};
+	    document.title = result;
+	}
 	
-	var startTitleSprites = function startTitleSprites() {
+	function firstSprite() {
+	    document.title = titleSprites[0];
+	}
+	
+	function startSprites() {
 	    if (!intervalId) {
 	        intervalId = setInterval(function () {
-	            document.title = getNextSprite();
+	            nextSprite();
 	        }, changeTime);
 	    }
-	};
+	}
 	
-	var stopTitleSprites = function stopTitleSprites() {
+	function stopSprites() {
 	    clearInterval(intervalId);
 	    intervalId = null;
-	};
+	    firstSprite();
+	}
 	
-	module.exports = { startTitleSprites: startTitleSprites, stopTitleSprites: stopTitleSprites };
+	module.exports = { startSprites: startSprites, stopSprites: stopSprites };
 
 /***/ },
 /* 655 */
@@ -54239,6 +54131,96 @@
 	}
 	
 	module.exports = { validateRegistrationData: validateRegistrationData };
+
+/***/ },
+/* 658 */
+/*!****************************************!*\
+  !*** ./src/components/ModalDialog.jsx ***!
+  \****************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/* REACT HOT LOADER */ if (false) { (function () { var ReactHotAPI = require("/home/matv99v/Koding/Projects/time-tracker/time-tracker-matv99v/node_modules/react-hot-api/modules/index.js"), RootInstanceProvider = require("/home/matv99v/Koding/Projects/time-tracker/time-tracker-matv99v/node_modules/react-hot-loader/RootInstanceProvider.js"), ReactMount = require("react/lib/ReactMount"), React = require("react"); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _react = __webpack_require__(/*! react */ 214);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactBootstrapLibModal = __webpack_require__(/*! react-bootstrap/lib/Modal */ 579);
+	
+	var _reactBootstrapLibModal2 = _interopRequireDefault(_reactBootstrapLibModal);
+	
+	var _reactBootstrapLibButton = __webpack_require__(/*! react-bootstrap/lib/Button */ 546);
+	
+	var _reactBootstrapLibButton2 = _interopRequireDefault(_reactBootstrapLibButton);
+	
+	var ModalDialog = (function (_React$Component) {
+	    _inherits(ModalDialog, _React$Component);
+	
+	    function ModalDialog() {
+	        _classCallCheck(this, ModalDialog);
+	
+	        _get(Object.getPrototypeOf(ModalDialog.prototype), 'constructor', this).apply(this, arguments);
+	    }
+	
+	    _createClass(ModalDialog, [{
+	        key: 'render',
+	        value: function render() {
+	            return _react2['default'].createElement(
+	                _reactBootstrapLibModal2['default'],
+	                { show: this.props.isVisible, bsSize: 'sm' },
+	                _react2['default'].createElement(
+	                    _reactBootstrapLibModal2['default'].Header,
+	                    null,
+	                    _react2['default'].createElement(
+	                        _reactBootstrapLibModal2['default'].Title,
+	                        null,
+	                        this.props.header
+	                    )
+	                ),
+	                _react2['default'].createElement(
+	                    _reactBootstrapLibModal2['default'].Body,
+	                    null,
+	                    this.props.body
+	                ),
+	                _react2['default'].createElement(
+	                    _reactBootstrapLibModal2['default'].Footer,
+	                    null,
+	                    _react2['default'].createElement(
+	                        _reactBootstrapLibButton2['default'],
+	                        {
+	                            bsStyle: 'primary',
+	                            onClick: this.props.clickYesCb
+	                        },
+	                        this.props.btnWording
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return ModalDialog;
+	})(_react2['default'].Component);
+	
+	exports['default'] = ModalDialog;
+	module.exports = exports['default'];
+
+	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "ModalDialog.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
 
 /***/ }
 /******/ ]);

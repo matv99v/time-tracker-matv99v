@@ -1,25 +1,30 @@
 const changeTime = 250;
-const titleSprites = ['>', '>>', '>>>', '>>>>', '>>>>>', '◕‿◕'];
+const titleSprites = ['>', '>>', '>>>', '>>>>', '>>>>>'];
 let i = 0;
 let intervalId = null;
 
-const getNextSprite = () => {
+function nextSprite() {
     const result = titleSprites[i];
     i = i === titleSprites.length - 1 ? 0 : ++i;
-    return result;
-};
+    document.title = result;
+}
 
-const startTitleSprites = () => {
+function firstSprite() {
+    document.title = titleSprites[0];
+}
+
+function startSprites() {
     if (!intervalId) {
         intervalId = setInterval(() => {
-            document.title = getNextSprite();
+            nextSprite();
         }, changeTime);
     }
-};
+}
 
-const stopTitleSprites = () => {
+function stopSprites() {
     clearInterval(intervalId);
     intervalId = null;
-};
+    firstSprite();
+}
 
-module.exports = {startTitleSprites, stopTitleSprites};
+module.exports = {startSprites, stopSprites};
