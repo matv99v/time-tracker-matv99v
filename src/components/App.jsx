@@ -14,8 +14,8 @@ export default class App extends React.Component {
     state = {
         tasks              : [],
         activeTaskId       : null,
-        remindTime         : (1000 * 5),
-        absenceTime        : (1000 * 5),
+        remindTime         : (1000 * 60) * 30,
+        absenceTime        : (1000 * 60),
         activationTimeStamp: Date.now(),
         areYouHereTimeStamp: null,
         isWatcherActive    : false,

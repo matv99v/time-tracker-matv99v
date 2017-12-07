@@ -67,7 +67,7 @@
 	
 	var _componentsAppJsx2 = _interopRequireDefault(_componentsAppJsx);
 	
-	var _componentsRegistrationJsx = __webpack_require__(/*! ./components/Registration.jsx */ 656);
+	var _componentsRegistrationJsx = __webpack_require__(/*! ./components/Registration.jsx */ 657);
 	
 	var _componentsRegistrationJsx2 = _interopRequireDefault(_componentsRegistrationJsx);
 	
@@ -31252,7 +31252,7 @@
 	
 	var _ReminderJsx2 = _interopRequireDefault(_ReminderJsx);
 	
-	var _ModalDialogJsx = __webpack_require__(/*! ./ModalDialog.jsx */ 658);
+	var _ModalDialogJsx = __webpack_require__(/*! ./ModalDialog.jsx */ 579);
 	
 	var _ModalDialogJsx2 = _interopRequireDefault(_ModalDialogJsx);
 	
@@ -31260,7 +31260,7 @@
 	
 	var _TimerJs2 = _interopRequireDefault(_TimerJs);
 	
-	var _tabTitlerJs = __webpack_require__(/*! ../tabTitler.js */ 654);
+	var _tabTitlerJs = __webpack_require__(/*! ../tabTitler.js */ 656);
 	
 	var _tabTitlerJs2 = _interopRequireDefault(_tabTitlerJs);
 	
@@ -31277,8 +31277,8 @@
 	        this.state = {
 	            tasks: [],
 	            activeTaskId: null,
-	            remindTime: 1000 * 5,
-	            absenceTime: 1000 * 5,
+	            remindTime: 1000 * 60 * 30,
+	            absenceTime: 1000 * 60,
 	            activationTimeStamp: Date.now(),
 	            areYouHereTimeStamp: null,
 	            isWatcherActive: false,
@@ -49406,6 +49406,96 @@
 /***/ },
 /* 579 */
 /*!****************************************!*\
+  !*** ./src/components/ModalDialog.jsx ***!
+  \****************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/* REACT HOT LOADER */ if (false) { (function () { var ReactHotAPI = require("/home/matv99v/Koding/Projects/time-tracker/time-tracker-matv99v/node_modules/react-hot-api/modules/index.js"), RootInstanceProvider = require("/home/matv99v/Koding/Projects/time-tracker/time-tracker-matv99v/node_modules/react-hot-loader/RootInstanceProvider.js"), ReactMount = require("react/lib/ReactMount"), React = require("react"); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
+	
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _react = __webpack_require__(/*! react */ 214);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactBootstrapLibModal = __webpack_require__(/*! react-bootstrap/lib/Modal */ 580);
+	
+	var _reactBootstrapLibModal2 = _interopRequireDefault(_reactBootstrapLibModal);
+	
+	var _reactBootstrapLibButton = __webpack_require__(/*! react-bootstrap/lib/Button */ 546);
+	
+	var _reactBootstrapLibButton2 = _interopRequireDefault(_reactBootstrapLibButton);
+	
+	var ModalDialog = (function (_React$Component) {
+	    _inherits(ModalDialog, _React$Component);
+	
+	    function ModalDialog() {
+	        _classCallCheck(this, ModalDialog);
+	
+	        _get(Object.getPrototypeOf(ModalDialog.prototype), 'constructor', this).apply(this, arguments);
+	    }
+	
+	    _createClass(ModalDialog, [{
+	        key: 'render',
+	        value: function render() {
+	            return _react2['default'].createElement(
+	                _reactBootstrapLibModal2['default'],
+	                { show: this.props.isVisible, bsSize: 'sm' },
+	                _react2['default'].createElement(
+	                    _reactBootstrapLibModal2['default'].Header,
+	                    null,
+	                    _react2['default'].createElement(
+	                        _reactBootstrapLibModal2['default'].Title,
+	                        null,
+	                        this.props.header
+	                    )
+	                ),
+	                _react2['default'].createElement(
+	                    _reactBootstrapLibModal2['default'].Body,
+	                    null,
+	                    this.props.body
+	                ),
+	                _react2['default'].createElement(
+	                    _reactBootstrapLibModal2['default'].Footer,
+	                    null,
+	                    _react2['default'].createElement(
+	                        _reactBootstrapLibButton2['default'],
+	                        {
+	                            bsStyle: 'primary',
+	                            onClick: this.props.clickYesCb
+	                        },
+	                        this.props.btnWording
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return ModalDialog;
+	})(_react2['default'].Component);
+	
+	exports['default'] = ModalDialog;
+	module.exports = exports['default'];
+
+	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "ModalDialog.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
+
+/***/ },
+/* 580 */
+/*!****************************************!*\
   !*** ./~/react-bootstrap/lib/Modal.js ***!
   \****************************************/
 /***/ function(module, exports, __webpack_require__) {
@@ -49442,19 +49532,19 @@
 	
 	var _styleMaps = __webpack_require__(/*! ./styleMaps */ 435);
 	
-	var _domHelpersUtilScrollbarSize = __webpack_require__(/*! dom-helpers/util/scrollbarSize */ 580);
+	var _domHelpersUtilScrollbarSize = __webpack_require__(/*! dom-helpers/util/scrollbarSize */ 581);
 	
 	var _domHelpersUtilScrollbarSize2 = _interopRequireDefault(_domHelpersUtilScrollbarSize);
 	
-	var _domHelpersUtilInDOM = __webpack_require__(/*! dom-helpers/util/inDOM */ 581);
+	var _domHelpersUtilInDOM = __webpack_require__(/*! dom-helpers/util/inDOM */ 582);
 	
 	var _domHelpersUtilInDOM2 = _interopRequireDefault(_domHelpersUtilInDOM);
 	
-	var _domHelpersOwnerDocument = __webpack_require__(/*! dom-helpers/ownerDocument */ 582);
+	var _domHelpersOwnerDocument = __webpack_require__(/*! dom-helpers/ownerDocument */ 583);
 	
 	var _domHelpersOwnerDocument2 = _interopRequireDefault(_domHelpersOwnerDocument);
 	
-	var _domHelpersEvents = __webpack_require__(/*! dom-helpers/events */ 583);
+	var _domHelpersEvents = __webpack_require__(/*! dom-helpers/events */ 584);
 	
 	var _domHelpersEvents2 = _interopRequireDefault(_domHelpersEvents);
 	
@@ -49462,39 +49552,39 @@
 	
 	var _reactPropTypesLibElementType2 = _interopRequireDefault(_reactPropTypesLibElementType);
 	
-	var _Fade = __webpack_require__(/*! ./Fade */ 589);
+	var _Fade = __webpack_require__(/*! ./Fade */ 590);
 	
 	var _Fade2 = _interopRequireDefault(_Fade);
 	
-	var _ModalDialog = __webpack_require__(/*! ./ModalDialog */ 593);
+	var _ModalDialog = __webpack_require__(/*! ./ModalDialog */ 594);
 	
 	var _ModalDialog2 = _interopRequireDefault(_ModalDialog);
 	
-	var _ModalBody = __webpack_require__(/*! ./ModalBody */ 594);
+	var _ModalBody = __webpack_require__(/*! ./ModalBody */ 595);
 	
 	var _ModalBody2 = _interopRequireDefault(_ModalBody);
 	
-	var _ModalHeader = __webpack_require__(/*! ./ModalHeader */ 595);
+	var _ModalHeader = __webpack_require__(/*! ./ModalHeader */ 596);
 	
 	var _ModalHeader2 = _interopRequireDefault(_ModalHeader);
 	
-	var _ModalTitle = __webpack_require__(/*! ./ModalTitle */ 597);
+	var _ModalTitle = __webpack_require__(/*! ./ModalTitle */ 598);
 	
 	var _ModalTitle2 = _interopRequireDefault(_ModalTitle);
 	
-	var _ModalFooter = __webpack_require__(/*! ./ModalFooter */ 598);
+	var _ModalFooter = __webpack_require__(/*! ./ModalFooter */ 599);
 	
 	var _ModalFooter2 = _interopRequireDefault(_ModalFooter);
 	
-	var _reactOverlaysLibModal = __webpack_require__(/*! react-overlays/lib/Modal */ 599);
+	var _reactOverlaysLibModal = __webpack_require__(/*! react-overlays/lib/Modal */ 600);
 	
 	var _reactOverlaysLibModal2 = _interopRequireDefault(_reactOverlaysLibModal);
 	
-	var _reactOverlaysLibUtilsIsOverflowing = __webpack_require__(/*! react-overlays/lib/utils/isOverflowing */ 619);
+	var _reactOverlaysLibUtilsIsOverflowing = __webpack_require__(/*! react-overlays/lib/utils/isOverflowing */ 620);
 	
 	var _reactOverlaysLibUtilsIsOverflowing2 = _interopRequireDefault(_reactOverlaysLibUtilsIsOverflowing);
 	
-	var _lodashCompatObjectPick = __webpack_require__(/*! lodash-compat/object/pick */ 625);
+	var _lodashCompatObjectPick = __webpack_require__(/*! lodash-compat/object/pick */ 626);
 	
 	var _lodashCompatObjectPick2 = _interopRequireDefault(_lodashCompatObjectPick);
 	
@@ -49737,7 +49827,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 580 */
+/* 581 */
 /*!*********************************************!*\
   !*** ./~/dom-helpers/util/scrollbarSize.js ***!
   \*********************************************/
@@ -49745,7 +49835,7 @@
 
 	'use strict';
 	
-	var canUseDOM = __webpack_require__(/*! ./inDOM */ 581);
+	var canUseDOM = __webpack_require__(/*! ./inDOM */ 582);
 	
 	var size;
 	
@@ -49770,7 +49860,7 @@
 	};
 
 /***/ },
-/* 581 */
+/* 582 */
 /*!*************************************!*\
   !*** ./~/dom-helpers/util/inDOM.js ***!
   \*************************************/
@@ -49780,7 +49870,7 @@
 	module.exports = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
 
 /***/ },
-/* 582 */
+/* 583 */
 /*!****************************************!*\
   !*** ./~/dom-helpers/ownerDocument.js ***!
   \****************************************/
@@ -49798,28 +49888,28 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 583 */
+/* 584 */
 /*!***************************************!*\
   !*** ./~/dom-helpers/events/index.js ***!
   \***************************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var on = __webpack_require__(/*! ./on */ 584),
-	    off = __webpack_require__(/*! ./off */ 585),
-	    filter = __webpack_require__(/*! ./filter */ 586);
+	var on = __webpack_require__(/*! ./on */ 585),
+	    off = __webpack_require__(/*! ./off */ 586),
+	    filter = __webpack_require__(/*! ./filter */ 587);
 	
 	module.exports = { on: on, off: off, filter: filter };
 
 /***/ },
-/* 584 */
+/* 585 */
 /*!************************************!*\
   !*** ./~/dom-helpers/events/on.js ***!
   \************************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var canUseDOM = __webpack_require__(/*! ../util/inDOM */ 581);
+	var canUseDOM = __webpack_require__(/*! ../util/inDOM */ 582);
 	var on = function on() {};
 	
 	if (canUseDOM) {
@@ -49836,14 +49926,14 @@
 	module.exports = on;
 
 /***/ },
-/* 585 */
+/* 586 */
 /*!*************************************!*\
   !*** ./~/dom-helpers/events/off.js ***!
   \*************************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var canUseDOM = __webpack_require__(/*! ../util/inDOM */ 581);
+	var canUseDOM = __webpack_require__(/*! ../util/inDOM */ 582);
 	var off = function off() {};
 	
 	if (canUseDOM) {
@@ -49861,7 +49951,7 @@
 	module.exports = off;
 
 /***/ },
-/* 586 */
+/* 587 */
 /*!****************************************!*\
   !*** ./~/dom-helpers/events/filter.js ***!
   \****************************************/
@@ -49869,8 +49959,8 @@
 
 	'use strict';
 	
-	var contains = __webpack_require__(/*! ../query/contains */ 587),
-	    qsa = __webpack_require__(/*! ../query/querySelectorAll */ 588);
+	var contains = __webpack_require__(/*! ../query/contains */ 588),
+	    qsa = __webpack_require__(/*! ../query/querySelectorAll */ 589);
 	
 	module.exports = function (selector, handler) {
 	  return function (e) {
@@ -49885,14 +49975,14 @@
 	};
 
 /***/ },
-/* 587 */
+/* 588 */
 /*!*****************************************!*\
   !*** ./~/dom-helpers/query/contains.js ***!
   \*****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var canUseDOM = __webpack_require__(/*! ../util/inDOM */ 581);
+	var canUseDOM = __webpack_require__(/*! ../util/inDOM */ 582);
 	
 	var contains = (function () {
 	  var root = canUseDOM && document.documentElement;
@@ -49913,7 +50003,7 @@
 	module.exports = contains;
 
 /***/ },
-/* 588 */
+/* 589 */
 /*!*************************************************!*\
   !*** ./~/dom-helpers/query/querySelectorAll.js ***!
   \*************************************************/
@@ -49948,7 +50038,7 @@
 	};
 
 /***/ },
-/* 589 */
+/* 590 */
 /*!***************************************!*\
   !*** ./~/react-bootstrap/lib/Fade.js ***!
   \***************************************/
@@ -49974,11 +50064,11 @@
 	
 	var _classnames2 = _interopRequireDefault(_classnames);
 	
-	var _reactOverlaysLibTransition = __webpack_require__(/*! react-overlays/lib/Transition */ 590);
+	var _reactOverlaysLibTransition = __webpack_require__(/*! react-overlays/lib/Transition */ 591);
 	
 	var _reactOverlaysLibTransition2 = _interopRequireDefault(_reactOverlaysLibTransition);
 	
-	var _reactPropTypesLibDeprecated = __webpack_require__(/*! react-prop-types/lib/deprecated */ 592);
+	var _reactPropTypesLibDeprecated = __webpack_require__(/*! react-prop-types/lib/deprecated */ 593);
 	
 	var _reactPropTypesLibDeprecated2 = _interopRequireDefault(_reactPropTypesLibDeprecated);
 	
@@ -50079,7 +50169,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 590 */
+/* 591 */
 /*!********************************************!*\
   !*** ./~/react-overlays/lib/Transition.js ***!
   \********************************************/
@@ -50107,11 +50197,11 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _domHelpersTransitionProperties = __webpack_require__(/*! dom-helpers/transition/properties */ 591);
+	var _domHelpersTransitionProperties = __webpack_require__(/*! dom-helpers/transition/properties */ 592);
 	
 	var _domHelpersTransitionProperties2 = _interopRequireDefault(_domHelpersTransitionProperties);
 	
-	var _domHelpersEventsOn = __webpack_require__(/*! dom-helpers/events/on */ 584);
+	var _domHelpersEventsOn = __webpack_require__(/*! dom-helpers/events/on */ 585);
 	
 	var _domHelpersEventsOn2 = _interopRequireDefault(_domHelpersEventsOn);
 	
@@ -50434,14 +50524,14 @@
 	exports['default'] = Transition;
 
 /***/ },
-/* 591 */
+/* 592 */
 /*!************************************************!*\
   !*** ./~/dom-helpers/transition/properties.js ***!
   \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var canUseDOM = __webpack_require__(/*! ../util/inDOM */ 581);
+	var canUseDOM = __webpack_require__(/*! ../util/inDOM */ 582);
 	
 	var has = Object.prototype.hasOwnProperty,
 	    transform = 'transform',
@@ -50497,7 +50587,7 @@
 	}
 
 /***/ },
-/* 592 */
+/* 593 */
 /*!**********************************************!*\
   !*** ./~/react-prop-types/lib/deprecated.js ***!
   \**********************************************/
@@ -50527,7 +50617,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 593 */
+/* 594 */
 /*!**********************************************!*\
   !*** ./~/react-bootstrap/lib/ModalDialog.js ***!
   \**********************************************/
@@ -50602,7 +50692,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 594 */
+/* 595 */
 /*!********************************************!*\
   !*** ./~/react-bootstrap/lib/ModalBody.js ***!
   \********************************************/
@@ -50657,7 +50747,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 595 */
+/* 596 */
 /*!**********************************************!*\
   !*** ./~/react-bootstrap/lib/ModalHeader.js ***!
   \**********************************************/
@@ -50689,7 +50779,7 @@
 	
 	var _utilsBootstrapUtils2 = _interopRequireDefault(_utilsBootstrapUtils);
 	
-	var _utilsCreateChainedFunction = __webpack_require__(/*! ./utils/createChainedFunction */ 596);
+	var _utilsCreateChainedFunction = __webpack_require__(/*! ./utils/createChainedFunction */ 597);
 	
 	var _utilsCreateChainedFunction2 = _interopRequireDefault(_utilsCreateChainedFunction);
 	
@@ -50769,7 +50859,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 596 */
+/* 597 */
 /*!**************************************************************!*\
   !*** ./~/react-bootstrap/lib/utils/createChainedFunction.js ***!
   \**************************************************************/
@@ -50818,7 +50908,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 597 */
+/* 598 */
 /*!*********************************************!*\
   !*** ./~/react-bootstrap/lib/ModalTitle.js ***!
   \*********************************************/
@@ -50873,7 +50963,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 598 */
+/* 599 */
 /*!**********************************************!*\
   !*** ./~/react-bootstrap/lib/ModalFooter.js ***!
   \**********************************************/
@@ -50939,7 +51029,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 599 */
+/* 600 */
 /*!***************************************!*\
   !*** ./~/react-overlays/lib/Modal.js ***!
   \***************************************/
@@ -50964,47 +51054,47 @@
 	
 	var _warning2 = _interopRequireDefault(_warning);
 	
-	var _reactPropTypesLibMountable = __webpack_require__(/*! react-prop-types/lib/mountable */ 600);
+	var _reactPropTypesLibMountable = __webpack_require__(/*! react-prop-types/lib/mountable */ 601);
 	
 	var _reactPropTypesLibMountable2 = _interopRequireDefault(_reactPropTypesLibMountable);
 	
-	var _reactPropTypesLibElementType = __webpack_require__(/*! react-prop-types/lib/elementType */ 602);
+	var _reactPropTypesLibElementType = __webpack_require__(/*! react-prop-types/lib/elementType */ 603);
 	
 	var _reactPropTypesLibElementType2 = _interopRequireDefault(_reactPropTypesLibElementType);
 	
-	var _Portal = __webpack_require__(/*! ./Portal */ 603);
+	var _Portal = __webpack_require__(/*! ./Portal */ 604);
 	
 	var _Portal2 = _interopRequireDefault(_Portal);
 	
-	var _ModalManager = __webpack_require__(/*! ./ModalManager */ 606);
+	var _ModalManager = __webpack_require__(/*! ./ModalManager */ 607);
 	
 	var _ModalManager2 = _interopRequireDefault(_ModalManager);
 	
-	var _utilsOwnerDocument = __webpack_require__(/*! ./utils/ownerDocument */ 604);
+	var _utilsOwnerDocument = __webpack_require__(/*! ./utils/ownerDocument */ 605);
 	
 	var _utilsOwnerDocument2 = _interopRequireDefault(_utilsOwnerDocument);
 	
-	var _utilsAddEventListener = __webpack_require__(/*! ./utils/addEventListener */ 622);
+	var _utilsAddEventListener = __webpack_require__(/*! ./utils/addEventListener */ 623);
 	
 	var _utilsAddEventListener2 = _interopRequireDefault(_utilsAddEventListener);
 	
-	var _utilsAddFocusListener = __webpack_require__(/*! ./utils/addFocusListener */ 623);
+	var _utilsAddFocusListener = __webpack_require__(/*! ./utils/addFocusListener */ 624);
 	
 	var _utilsAddFocusListener2 = _interopRequireDefault(_utilsAddFocusListener);
 	
-	var _domHelpersUtilInDOM = __webpack_require__(/*! dom-helpers/util/inDOM */ 581);
+	var _domHelpersUtilInDOM = __webpack_require__(/*! dom-helpers/util/inDOM */ 582);
 	
 	var _domHelpersUtilInDOM2 = _interopRequireDefault(_domHelpersUtilInDOM);
 	
-	var _domHelpersActiveElement = __webpack_require__(/*! dom-helpers/activeElement */ 624);
+	var _domHelpersActiveElement = __webpack_require__(/*! dom-helpers/activeElement */ 625);
 	
 	var _domHelpersActiveElement2 = _interopRequireDefault(_domHelpersActiveElement);
 	
-	var _domHelpersQueryContains = __webpack_require__(/*! dom-helpers/query/contains */ 587);
+	var _domHelpersQueryContains = __webpack_require__(/*! dom-helpers/query/contains */ 588);
 	
 	var _domHelpersQueryContains2 = _interopRequireDefault(_domHelpersQueryContains);
 	
-	var _utilsGetContainer = __webpack_require__(/*! ./utils/getContainer */ 605);
+	var _utilsGetContainer = __webpack_require__(/*! ./utils/getContainer */ 606);
 	
 	var _utilsGetContainer2 = _interopRequireDefault(_utilsGetContainer);
 	
@@ -51456,7 +51546,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 600 */
+/* 601 */
 /*!**************************************************************!*\
   !*** ./~/react-overlays/~/react-prop-types/lib/mountable.js ***!
   \**************************************************************/
@@ -51466,7 +51556,7 @@
 	
 	exports.__esModule = true;
 	
-	var _common = __webpack_require__(/*! ./common */ 601);
+	var _common = __webpack_require__(/*! ./common */ 602);
 	
 	/**
 	 * Checks whether a prop provides a DOM element
@@ -51491,7 +51581,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 601 */
+/* 602 */
 /*!***********************************************************!*\
   !*** ./~/react-overlays/~/react-prop-types/lib/common.js ***!
   \***********************************************************/
@@ -51533,7 +51623,7 @@
 	}
 
 /***/ },
-/* 602 */
+/* 603 */
 /*!****************************************************************!*\
   !*** ./~/react-overlays/~/react-prop-types/lib/elementType.js ***!
   \****************************************************************/
@@ -51549,7 +51639,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _common = __webpack_require__(/*! ./common */ 601);
+	var _common = __webpack_require__(/*! ./common */ 602);
 	
 	/**
 	 * Checks whether a prop provides a type of element.
@@ -51582,7 +51672,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 603 */
+/* 604 */
 /*!****************************************!*\
   !*** ./~/react-overlays/lib/Portal.js ***!
   \****************************************/
@@ -51602,15 +51692,15 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _reactPropTypesLibMountable = __webpack_require__(/*! react-prop-types/lib/mountable */ 600);
+	var _reactPropTypesLibMountable = __webpack_require__(/*! react-prop-types/lib/mountable */ 601);
 	
 	var _reactPropTypesLibMountable2 = _interopRequireDefault(_reactPropTypesLibMountable);
 	
-	var _utilsOwnerDocument = __webpack_require__(/*! ./utils/ownerDocument */ 604);
+	var _utilsOwnerDocument = __webpack_require__(/*! ./utils/ownerDocument */ 605);
 	
 	var _utilsOwnerDocument2 = _interopRequireDefault(_utilsOwnerDocument);
 	
-	var _utilsGetContainer = __webpack_require__(/*! ./utils/getContainer */ 605);
+	var _utilsGetContainer = __webpack_require__(/*! ./utils/getContainer */ 606);
 	
 	var _utilsGetContainer2 = _interopRequireDefault(_utilsGetContainer);
 	
@@ -51720,7 +51810,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 604 */
+/* 605 */
 /*!*****************************************************!*\
   !*** ./~/react-overlays/lib/utils/ownerDocument.js ***!
   \*****************************************************/
@@ -51736,7 +51826,7 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _domHelpersOwnerDocument = __webpack_require__(/*! dom-helpers/ownerDocument */ 582);
+	var _domHelpersOwnerDocument = __webpack_require__(/*! dom-helpers/ownerDocument */ 583);
 	
 	var _domHelpersOwnerDocument2 = _interopRequireDefault(_domHelpersOwnerDocument);
 	
@@ -51747,7 +51837,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 605 */
+/* 606 */
 /*!****************************************************!*\
   !*** ./~/react-overlays/lib/utils/getContainer.js ***!
   \****************************************************/
@@ -51772,7 +51862,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 606 */
+/* 607 */
 /*!**********************************************!*\
   !*** ./~/react-overlays/lib/ModalManager.js ***!
   \**********************************************/
@@ -51786,23 +51876,23 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _domHelpersStyle = __webpack_require__(/*! dom-helpers/style */ 607);
+	var _domHelpersStyle = __webpack_require__(/*! dom-helpers/style */ 608);
 	
 	var _domHelpersStyle2 = _interopRequireDefault(_domHelpersStyle);
 	
-	var _domHelpersClass = __webpack_require__(/*! dom-helpers/class */ 615);
+	var _domHelpersClass = __webpack_require__(/*! dom-helpers/class */ 616);
 	
 	var _domHelpersClass2 = _interopRequireDefault(_domHelpersClass);
 	
-	var _domHelpersUtilScrollbarSize = __webpack_require__(/*! dom-helpers/util/scrollbarSize */ 580);
+	var _domHelpersUtilScrollbarSize = __webpack_require__(/*! dom-helpers/util/scrollbarSize */ 581);
 	
 	var _domHelpersUtilScrollbarSize2 = _interopRequireDefault(_domHelpersUtilScrollbarSize);
 	
-	var _utilsIsOverflowing = __webpack_require__(/*! ./utils/isOverflowing */ 619);
+	var _utilsIsOverflowing = __webpack_require__(/*! ./utils/isOverflowing */ 620);
 	
 	var _utilsIsOverflowing2 = _interopRequireDefault(_utilsIsOverflowing);
 	
-	var _utilsManageAriaHidden = __webpack_require__(/*! ./utils/manageAriaHidden */ 621);
+	var _utilsManageAriaHidden = __webpack_require__(/*! ./utils/manageAriaHidden */ 622);
 	
 	function findIndexOf(arr, cb) {
 	  var idx = -1;
@@ -51936,7 +52026,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 607 */
+/* 608 */
 /*!**************************************!*\
   !*** ./~/dom-helpers/style/index.js ***!
   \**************************************/
@@ -51944,10 +52034,10 @@
 
 	'use strict';
 	
-	var camelize = __webpack_require__(/*! ../util/camelizeStyle */ 608),
-	    hyphenate = __webpack_require__(/*! ../util/hyphenateStyle */ 610),
-	    _getComputedStyle = __webpack_require__(/*! ./getComputedStyle */ 612),
-	    removeStyle = __webpack_require__(/*! ./removeStyle */ 614);
+	var camelize = __webpack_require__(/*! ../util/camelizeStyle */ 609),
+	    hyphenate = __webpack_require__(/*! ../util/hyphenateStyle */ 611),
+	    _getComputedStyle = __webpack_require__(/*! ./getComputedStyle */ 613),
+	    removeStyle = __webpack_require__(/*! ./removeStyle */ 615);
 	
 	var has = Object.prototype.hasOwnProperty;
 	
@@ -51968,7 +52058,7 @@
 	};
 
 /***/ },
-/* 608 */
+/* 609 */
 /*!*********************************************!*\
   !*** ./~/dom-helpers/util/camelizeStyle.js ***!
   \*********************************************/
@@ -51981,7 +52071,7 @@
 	 */
 	
 	'use strict';
-	var camelize = __webpack_require__(/*! ./camelize */ 609);
+	var camelize = __webpack_require__(/*! ./camelize */ 610);
 	var msPattern = /^-ms-/;
 	
 	module.exports = function camelizeStyleName(string) {
@@ -51989,7 +52079,7 @@
 	};
 
 /***/ },
-/* 609 */
+/* 610 */
 /*!****************************************!*\
   !*** ./~/dom-helpers/util/camelize.js ***!
   \****************************************/
@@ -52006,7 +52096,7 @@
 	};
 
 /***/ },
-/* 610 */
+/* 611 */
 /*!**********************************************!*\
   !*** ./~/dom-helpers/util/hyphenateStyle.js ***!
   \**********************************************/
@@ -52020,7 +52110,7 @@
 	
 	"use strict";
 	
-	var hyphenate = __webpack_require__(/*! ./hyphenate */ 611);
+	var hyphenate = __webpack_require__(/*! ./hyphenate */ 612);
 	var msPattern = /^ms-/;
 	
 	module.exports = function hyphenateStyleName(string) {
@@ -52028,7 +52118,7 @@
 	};
 
 /***/ },
-/* 611 */
+/* 612 */
 /*!*****************************************!*\
   !*** ./~/dom-helpers/util/hyphenate.js ***!
   \*****************************************/
@@ -52043,7 +52133,7 @@
 	};
 
 /***/ },
-/* 612 */
+/* 613 */
 /*!*************************************************!*\
   !*** ./~/dom-helpers/style/getComputedStyle.js ***!
   \*************************************************/
@@ -52051,9 +52141,9 @@
 
 	'use strict';
 	
-	var babelHelpers = __webpack_require__(/*! ../util/babelHelpers.js */ 613);
+	var babelHelpers = __webpack_require__(/*! ../util/babelHelpers.js */ 614);
 	
-	var _utilCamelizeStyle = __webpack_require__(/*! ../util/camelizeStyle */ 608);
+	var _utilCamelizeStyle = __webpack_require__(/*! ../util/camelizeStyle */ 609);
 	
 	var _utilCamelizeStyle2 = babelHelpers.interopRequireDefault(_utilCamelizeStyle);
 	
@@ -52099,7 +52189,7 @@
 	};
 
 /***/ },
-/* 613 */
+/* 614 */
 /*!********************************************!*\
   !*** ./~/dom-helpers/util/babelHelpers.js ***!
   \********************************************/
@@ -52138,7 +52228,7 @@
 	})
 
 /***/ },
-/* 614 */
+/* 615 */
 /*!********************************************!*\
   !*** ./~/dom-helpers/style/removeStyle.js ***!
   \********************************************/
@@ -52151,7 +52241,7 @@
 	};
 
 /***/ },
-/* 615 */
+/* 616 */
 /*!**************************************!*\
   !*** ./~/dom-helpers/class/index.js ***!
   \**************************************/
@@ -52160,27 +52250,27 @@
 	'use strict';
 	
 	module.exports = {
-	  addClass: __webpack_require__(/*! ./addClass */ 616),
-	  removeClass: __webpack_require__(/*! ./removeClass */ 618),
-	  hasClass: __webpack_require__(/*! ./hasClass */ 617)
+	  addClass: __webpack_require__(/*! ./addClass */ 617),
+	  removeClass: __webpack_require__(/*! ./removeClass */ 619),
+	  hasClass: __webpack_require__(/*! ./hasClass */ 618)
 	};
 
 /***/ },
-/* 616 */
+/* 617 */
 /*!*****************************************!*\
   !*** ./~/dom-helpers/class/addClass.js ***!
   \*****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var hasClass = __webpack_require__(/*! ./hasClass */ 617);
+	var hasClass = __webpack_require__(/*! ./hasClass */ 618);
 	
 	module.exports = function addClass(element, className) {
 	  if (element.classList) element.classList.add(className);else if (!hasClass(element)) element.className = element.className + ' ' + className;
 	};
 
 /***/ },
-/* 617 */
+/* 618 */
 /*!*****************************************!*\
   !*** ./~/dom-helpers/class/hasClass.js ***!
   \*****************************************/
@@ -52192,7 +52282,7 @@
 	};
 
 /***/ },
-/* 618 */
+/* 619 */
 /*!********************************************!*\
   !*** ./~/dom-helpers/class/removeClass.js ***!
   \********************************************/
@@ -52205,7 +52295,7 @@
 	};
 
 /***/ },
-/* 619 */
+/* 620 */
 /*!*****************************************************!*\
   !*** ./~/react-overlays/lib/utils/isOverflowing.js ***!
   \*****************************************************/
@@ -52218,11 +52308,11 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _domHelpersQueryIsWindow = __webpack_require__(/*! dom-helpers/query/isWindow */ 620);
+	var _domHelpersQueryIsWindow = __webpack_require__(/*! dom-helpers/query/isWindow */ 621);
 	
 	var _domHelpersQueryIsWindow2 = _interopRequireDefault(_domHelpersQueryIsWindow);
 	
-	var _domHelpersOwnerDocument = __webpack_require__(/*! dom-helpers/ownerDocument */ 582);
+	var _domHelpersOwnerDocument = __webpack_require__(/*! dom-helpers/ownerDocument */ 583);
 	
 	var _domHelpersOwnerDocument2 = _interopRequireDefault(_domHelpersOwnerDocument);
 	
@@ -52253,7 +52343,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 620 */
+/* 621 */
 /*!*****************************************!*\
   !*** ./~/dom-helpers/query/isWindow.js ***!
   \*****************************************/
@@ -52266,7 +52356,7 @@
 	};
 
 /***/ },
-/* 621 */
+/* 622 */
 /*!********************************************************!*\
   !*** ./~/react-overlays/lib/utils/manageAriaHidden.js ***!
   \********************************************************/
@@ -52321,7 +52411,7 @@
 	}
 
 /***/ },
-/* 622 */
+/* 623 */
 /*!********************************************************!*\
   !*** ./~/react-overlays/lib/utils/addEventListener.js ***!
   \********************************************************/
@@ -52333,11 +52423,11 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _domHelpersEventsOn = __webpack_require__(/*! dom-helpers/events/on */ 584);
+	var _domHelpersEventsOn = __webpack_require__(/*! dom-helpers/events/on */ 585);
 	
 	var _domHelpersEventsOn2 = _interopRequireDefault(_domHelpersEventsOn);
 	
-	var _domHelpersEventsOff = __webpack_require__(/*! dom-helpers/events/off */ 585);
+	var _domHelpersEventsOff = __webpack_require__(/*! dom-helpers/events/off */ 586);
 	
 	var _domHelpersEventsOff2 = _interopRequireDefault(_domHelpersEventsOff);
 	
@@ -52353,7 +52443,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 623 */
+/* 624 */
 /*!********************************************************!*\
   !*** ./~/react-overlays/lib/utils/addFocusListener.js ***!
   \********************************************************/
@@ -52392,7 +52482,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 624 */
+/* 625 */
 /*!****************************************!*\
   !*** ./~/dom-helpers/activeElement.js ***!
   \****************************************/
@@ -52400,7 +52490,7 @@
 
 	'use strict';
 	
-	var babelHelpers = __webpack_require__(/*! ./util/babelHelpers.js */ 613);
+	var babelHelpers = __webpack_require__(/*! ./util/babelHelpers.js */ 614);
 	
 	exports.__esModule = true;
 	
@@ -52409,7 +52499,7 @@
 	 */
 	exports['default'] = activeElement;
 	
-	var _ownerDocument = __webpack_require__(/*! ./ownerDocument */ 582);
+	var _ownerDocument = __webpack_require__(/*! ./ownerDocument */ 583);
 	
 	var _ownerDocument2 = babelHelpers.interopRequireDefault(_ownerDocument);
 	
@@ -52424,17 +52514,17 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 625 */
+/* 626 */
 /*!****************************************!*\
   !*** ./~/lodash-compat/object/pick.js ***!
   \****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseFlatten = __webpack_require__(/*! ../internal/baseFlatten */ 626),
-	    bindCallback = __webpack_require__(/*! ../internal/bindCallback */ 643),
-	    pickByArray = __webpack_require__(/*! ../internal/pickByArray */ 645),
-	    pickByCallback = __webpack_require__(/*! ../internal/pickByCallback */ 646),
-	    restParam = __webpack_require__(/*! ../function/restParam */ 653);
+	var baseFlatten = __webpack_require__(/*! ../internal/baseFlatten */ 627),
+	    bindCallback = __webpack_require__(/*! ../internal/bindCallback */ 644),
+	    pickByArray = __webpack_require__(/*! ../internal/pickByArray */ 646),
+	    pickByCallback = __webpack_require__(/*! ../internal/pickByCallback */ 647),
+	    restParam = __webpack_require__(/*! ../function/restParam */ 654);
 	
 	/**
 	 * Creates an object composed of the picked `object` properties. Property
@@ -52475,17 +52565,17 @@
 
 
 /***/ },
-/* 626 */
+/* 627 */
 /*!*************************************************!*\
   !*** ./~/lodash-compat/internal/baseFlatten.js ***!
   \*************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayPush = __webpack_require__(/*! ./arrayPush */ 627),
-	    isArguments = __webpack_require__(/*! ../lang/isArguments */ 628),
-	    isArray = __webpack_require__(/*! ../lang/isArray */ 638),
-	    isArrayLike = __webpack_require__(/*! ./isArrayLike */ 629),
-	    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 635);
+	var arrayPush = __webpack_require__(/*! ./arrayPush */ 628),
+	    isArguments = __webpack_require__(/*! ../lang/isArguments */ 629),
+	    isArray = __webpack_require__(/*! ../lang/isArray */ 639),
+	    isArrayLike = __webpack_require__(/*! ./isArrayLike */ 630),
+	    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 636);
 	
 	/**
 	 * The base implementation of `_.flatten` with added support for restricting
@@ -52525,7 +52615,7 @@
 
 
 /***/ },
-/* 627 */
+/* 628 */
 /*!***********************************************!*\
   !*** ./~/lodash-compat/internal/arrayPush.js ***!
   \***********************************************/
@@ -52554,14 +52644,14 @@
 
 
 /***/ },
-/* 628 */
+/* 629 */
 /*!*********************************************!*\
   !*** ./~/lodash-compat/lang/isArguments.js ***!
   \*********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArrayLike = __webpack_require__(/*! ../internal/isArrayLike */ 629),
-	    isObjectLike = __webpack_require__(/*! ../internal/isObjectLike */ 635);
+	var isArrayLike = __webpack_require__(/*! ../internal/isArrayLike */ 630),
+	    isObjectLike = __webpack_require__(/*! ../internal/isObjectLike */ 636);
 	
 	/** Used for native method references. */
 	var objectProto = Object.prototype;
@@ -52597,14 +52687,14 @@
 
 
 /***/ },
-/* 629 */
+/* 630 */
 /*!*************************************************!*\
   !*** ./~/lodash-compat/internal/isArrayLike.js ***!
   \*************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var getLength = __webpack_require__(/*! ./getLength */ 630),
-	    isLength = __webpack_require__(/*! ./isLength */ 637);
+	var getLength = __webpack_require__(/*! ./getLength */ 631),
+	    isLength = __webpack_require__(/*! ./isLength */ 638);
 	
 	/**
 	 * Checks if `value` is array-like.
@@ -52621,13 +52711,13 @@
 
 
 /***/ },
-/* 630 */
+/* 631 */
 /*!***********************************************!*\
   !*** ./~/lodash-compat/internal/getLength.js ***!
   \***********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseProperty = __webpack_require__(/*! ./baseProperty */ 631);
+	var baseProperty = __webpack_require__(/*! ./baseProperty */ 632);
 	
 	/**
 	 * Gets the "length" property value of `object`.
@@ -52645,13 +52735,13 @@
 
 
 /***/ },
-/* 631 */
+/* 632 */
 /*!**************************************************!*\
   !*** ./~/lodash-compat/internal/baseProperty.js ***!
   \**************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var toObject = __webpack_require__(/*! ./toObject */ 632);
+	var toObject = __webpack_require__(/*! ./toObject */ 633);
 	
 	/**
 	 * The base implementation of `_.property` without support for deep paths.
@@ -52670,15 +52760,15 @@
 
 
 /***/ },
-/* 632 */
+/* 633 */
 /*!**********************************************!*\
   !*** ./~/lodash-compat/internal/toObject.js ***!
   \**********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(/*! ../lang/isObject */ 633),
-	    isString = __webpack_require__(/*! ../lang/isString */ 634),
-	    support = __webpack_require__(/*! ../support */ 636);
+	var isObject = __webpack_require__(/*! ../lang/isObject */ 634),
+	    isString = __webpack_require__(/*! ../lang/isString */ 635),
+	    support = __webpack_require__(/*! ../support */ 637);
 	
 	/**
 	 * Converts `value` to an object if it's not one.
@@ -52705,7 +52795,7 @@
 
 
 /***/ },
-/* 633 */
+/* 634 */
 /*!******************************************!*\
   !*** ./~/lodash-compat/lang/isObject.js ***!
   \******************************************/
@@ -52742,13 +52832,13 @@
 
 
 /***/ },
-/* 634 */
+/* 635 */
 /*!******************************************!*\
   !*** ./~/lodash-compat/lang/isString.js ***!
   \******************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObjectLike = __webpack_require__(/*! ../internal/isObjectLike */ 635);
+	var isObjectLike = __webpack_require__(/*! ../internal/isObjectLike */ 636);
 	
 	/** `Object#toString` result references. */
 	var stringTag = '[object String]';
@@ -52786,7 +52876,7 @@
 
 
 /***/ },
-/* 635 */
+/* 636 */
 /*!**************************************************!*\
   !*** ./~/lodash-compat/internal/isObjectLike.js ***!
   \**************************************************/
@@ -52807,7 +52897,7 @@
 
 
 /***/ },
-/* 636 */
+/* 637 */
 /*!************************************!*\
   !*** ./~/lodash-compat/support.js ***!
   \************************************/
@@ -52912,7 +53002,7 @@
 
 
 /***/ },
-/* 637 */
+/* 638 */
 /*!**********************************************!*\
   !*** ./~/lodash-compat/internal/isLength.js ***!
   \**********************************************/
@@ -52941,15 +53031,15 @@
 
 
 /***/ },
-/* 638 */
+/* 639 */
 /*!*****************************************!*\
   !*** ./~/lodash-compat/lang/isArray.js ***!
   \*****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(/*! ../internal/getNative */ 639),
-	    isLength = __webpack_require__(/*! ../internal/isLength */ 637),
-	    isObjectLike = __webpack_require__(/*! ../internal/isObjectLike */ 635);
+	var getNative = __webpack_require__(/*! ../internal/getNative */ 640),
+	    isLength = __webpack_require__(/*! ../internal/isLength */ 638),
+	    isObjectLike = __webpack_require__(/*! ../internal/isObjectLike */ 636);
 	
 	/** `Object#toString` result references. */
 	var arrayTag = '[object Array]';
@@ -52990,13 +53080,13 @@
 
 
 /***/ },
-/* 639 */
+/* 640 */
 /*!***********************************************!*\
   !*** ./~/lodash-compat/internal/getNative.js ***!
   \***********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var isNative = __webpack_require__(/*! ../lang/isNative */ 640);
+	var isNative = __webpack_require__(/*! ../lang/isNative */ 641);
 	
 	/**
 	 * Gets the native function at `key` of `object`.
@@ -53015,15 +53105,15 @@
 
 
 /***/ },
-/* 640 */
+/* 641 */
 /*!******************************************!*\
   !*** ./~/lodash-compat/lang/isNative.js ***!
   \******************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(/*! ./isFunction */ 641),
-	    isHostObject = __webpack_require__(/*! ../internal/isHostObject */ 642),
-	    isObjectLike = __webpack_require__(/*! ../internal/isObjectLike */ 635);
+	var isFunction = __webpack_require__(/*! ./isFunction */ 642),
+	    isHostObject = __webpack_require__(/*! ../internal/isHostObject */ 643),
+	    isObjectLike = __webpack_require__(/*! ../internal/isObjectLike */ 636);
 	
 	/** Used to detect host constructors (Safari > 5). */
 	var reIsHostCtor = /^\[object .+?Constructor\]$/;
@@ -53073,13 +53163,13 @@
 
 
 /***/ },
-/* 641 */
+/* 642 */
 /*!********************************************!*\
   !*** ./~/lodash-compat/lang/isFunction.js ***!
   \********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(/*! ./isObject */ 633);
+	var isObject = __webpack_require__(/*! ./isObject */ 634);
 	
 	/** `Object#toString` result references. */
 	var funcTag = '[object Function]';
@@ -53120,7 +53210,7 @@
 
 
 /***/ },
-/* 642 */
+/* 643 */
 /*!**************************************************!*\
   !*** ./~/lodash-compat/internal/isHostObject.js ***!
   \**************************************************/
@@ -53150,13 +53240,13 @@
 
 
 /***/ },
-/* 643 */
+/* 644 */
 /*!**************************************************!*\
   !*** ./~/lodash-compat/internal/bindCallback.js ***!
   \**************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var identity = __webpack_require__(/*! ../utility/identity */ 644);
+	var identity = __webpack_require__(/*! ../utility/identity */ 645);
 	
 	/**
 	 * A specialized version of `baseCallback` which only supports `this` binding
@@ -53198,7 +53288,7 @@
 
 
 /***/ },
-/* 644 */
+/* 645 */
 /*!*********************************************!*\
   !*** ./~/lodash-compat/utility/identity.js ***!
   \*********************************************/
@@ -53227,13 +53317,13 @@
 
 
 /***/ },
-/* 645 */
+/* 646 */
 /*!*************************************************!*\
   !*** ./~/lodash-compat/internal/pickByArray.js ***!
   \*************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var toObject = __webpack_require__(/*! ./toObject */ 632);
+	var toObject = __webpack_require__(/*! ./toObject */ 633);
 	
 	/**
 	 * A specialized version of `_.pick` which picks `object` properties specified
@@ -53264,13 +53354,13 @@
 
 
 /***/ },
-/* 646 */
+/* 647 */
 /*!****************************************************!*\
   !*** ./~/lodash-compat/internal/pickByCallback.js ***!
   \****************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseForIn = __webpack_require__(/*! ./baseForIn */ 647);
+	var baseForIn = __webpack_require__(/*! ./baseForIn */ 648);
 	
 	/**
 	 * A specialized version of `_.pick` which picks `object` properties `predicate`
@@ -53295,14 +53385,14 @@
 
 
 /***/ },
-/* 647 */
+/* 648 */
 /*!***********************************************!*\
   !*** ./~/lodash-compat/internal/baseForIn.js ***!
   \***********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseFor = __webpack_require__(/*! ./baseFor */ 648),
-	    keysIn = __webpack_require__(/*! ../object/keysIn */ 650);
+	var baseFor = __webpack_require__(/*! ./baseFor */ 649),
+	    keysIn = __webpack_require__(/*! ../object/keysIn */ 651);
 	
 	/**
 	 * The base implementation of `_.forIn` without support for callback
@@ -53321,13 +53411,13 @@
 
 
 /***/ },
-/* 648 */
+/* 649 */
 /*!*********************************************!*\
   !*** ./~/lodash-compat/internal/baseFor.js ***!
   \*********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var createBaseFor = __webpack_require__(/*! ./createBaseFor */ 649);
+	var createBaseFor = __webpack_require__(/*! ./createBaseFor */ 650);
 	
 	/**
 	 * The base implementation of `baseForIn` and `baseForOwn` which iterates
@@ -53347,13 +53437,13 @@
 
 
 /***/ },
-/* 649 */
+/* 650 */
 /*!***************************************************!*\
   !*** ./~/lodash-compat/internal/createBaseFor.js ***!
   \***************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var toObject = __webpack_require__(/*! ./toObject */ 632);
+	var toObject = __webpack_require__(/*! ./toObject */ 633);
 	
 	/**
 	 * Creates a base function for `_.forIn` or `_.forInRight`.
@@ -53383,21 +53473,21 @@
 
 
 /***/ },
-/* 650 */
+/* 651 */
 /*!******************************************!*\
   !*** ./~/lodash-compat/object/keysIn.js ***!
   \******************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayEach = __webpack_require__(/*! ../internal/arrayEach */ 651),
-	    isArguments = __webpack_require__(/*! ../lang/isArguments */ 628),
-	    isArray = __webpack_require__(/*! ../lang/isArray */ 638),
-	    isFunction = __webpack_require__(/*! ../lang/isFunction */ 641),
-	    isIndex = __webpack_require__(/*! ../internal/isIndex */ 652),
-	    isLength = __webpack_require__(/*! ../internal/isLength */ 637),
-	    isObject = __webpack_require__(/*! ../lang/isObject */ 633),
-	    isString = __webpack_require__(/*! ../lang/isString */ 634),
-	    support = __webpack_require__(/*! ../support */ 636);
+	var arrayEach = __webpack_require__(/*! ../internal/arrayEach */ 652),
+	    isArguments = __webpack_require__(/*! ../lang/isArguments */ 629),
+	    isArray = __webpack_require__(/*! ../lang/isArray */ 639),
+	    isFunction = __webpack_require__(/*! ../lang/isFunction */ 642),
+	    isIndex = __webpack_require__(/*! ../internal/isIndex */ 653),
+	    isLength = __webpack_require__(/*! ../internal/isLength */ 638),
+	    isObject = __webpack_require__(/*! ../lang/isObject */ 634),
+	    isString = __webpack_require__(/*! ../lang/isString */ 635),
+	    support = __webpack_require__(/*! ../support */ 637);
 	
 	/** `Object#toString` result references. */
 	var arrayTag = '[object Array]',
@@ -53528,7 +53618,7 @@
 
 
 /***/ },
-/* 651 */
+/* 652 */
 /*!***********************************************!*\
   !*** ./~/lodash-compat/internal/arrayEach.js ***!
   \***********************************************/
@@ -53559,7 +53649,7 @@
 
 
 /***/ },
-/* 652 */
+/* 653 */
 /*!*********************************************!*\
   !*** ./~/lodash-compat/internal/isIndex.js ***!
   \*********************************************/
@@ -53592,7 +53682,7 @@
 
 
 /***/ },
-/* 653 */
+/* 654 */
 /*!***********************************************!*\
   !*** ./~/lodash-compat/function/restParam.js ***!
   \***********************************************/
@@ -53659,46 +53749,6 @@
 
 
 /***/ },
-/* 654 */
-/*!**************************!*\
-  !*** ./src/tabTitler.js ***!
-  \**************************/
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	var changeTime = 250;
-	var titleSprites = ['>', '>>', '>>>', '>>>>', '>>>>>'];
-	var i = 0;
-	var intervalId = null;
-	
-	function nextSprite() {
-	    var result = titleSprites[i];
-	    i = i === titleSprites.length - 1 ? 0 : ++i;
-	    document.title = result;
-	}
-	
-	function firstSprite() {
-	    document.title = titleSprites[0];
-	}
-	
-	function startSprites() {
-	    if (!intervalId) {
-	        intervalId = setInterval(function () {
-	            nextSprite();
-	        }, changeTime);
-	    }
-	}
-	
-	function stopSprites() {
-	    clearInterval(intervalId);
-	    intervalId = null;
-	    firstSprite();
-	}
-	
-	module.exports = { startSprites: startSprites, stopSprites: stopSprites };
-
-/***/ },
 /* 655 */
 /*!**********************!*\
   !*** ./src/Timer.js ***!
@@ -53760,6 +53810,46 @@
 
 /***/ },
 /* 656 */
+/*!**************************!*\
+  !*** ./src/tabTitler.js ***!
+  \**************************/
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	var changeTime = 250;
+	var titleSprites = ['>', '>>', '>>>', '>>>>', '>>>>>'];
+	var i = 0;
+	var intervalId = null;
+	
+	function nextSprite() {
+	    var result = titleSprites[i];
+	    i = i === titleSprites.length - 1 ? 0 : ++i;
+	    document.title = result;
+	}
+	
+	function firstSprite() {
+	    document.title = titleSprites[0];
+	}
+	
+	function startSprites() {
+	    if (!intervalId) {
+	        intervalId = setInterval(function () {
+	            nextSprite();
+	        }, changeTime);
+	    }
+	}
+	
+	function stopSprites() {
+	    clearInterval(intervalId);
+	    intervalId = null;
+	    firstSprite();
+	}
+	
+	module.exports = { startSprites: startSprites, stopSprites: stopSprites };
+
+/***/ },
+/* 657 */
 /*!*****************************************!*\
   !*** ./src/components/Registration.jsx ***!
   \*****************************************/
@@ -53809,7 +53899,7 @@
 	
 	var _reactRouter = __webpack_require__(/*! react-router */ 192);
 	
-	var _validatorsJs = __webpack_require__(/*! ../validators.js */ 657);
+	var _validatorsJs = __webpack_require__(/*! ../validators.js */ 658);
 	
 	var Registration = (function (_React$Component) {
 	    _inherits(Registration, _React$Component);
@@ -53989,7 +54079,7 @@
 	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "Registration.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
 
 /***/ },
-/* 657 */
+/* 658 */
 /*!***************************!*\
   !*** ./src/validators.js ***!
   \***************************/
@@ -54131,96 +54221,6 @@
 	}
 	
 	module.exports = { validateRegistrationData: validateRegistrationData };
-
-/***/ },
-/* 658 */
-/*!****************************************!*\
-  !*** ./src/components/ModalDialog.jsx ***!
-  \****************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	/* REACT HOT LOADER */ if (false) { (function () { var ReactHotAPI = require("/home/matv99v/Koding/Projects/time-tracker/time-tracker-matv99v/node_modules/react-hot-api/modules/index.js"), RootInstanceProvider = require("/home/matv99v/Koding/Projects/time-tracker/time-tracker-matv99v/node_modules/react-hot-loader/RootInstanceProvider.js"), ReactMount = require("react/lib/ReactMount"), React = require("react"); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	    value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var _react = __webpack_require__(/*! react */ 214);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactBootstrapLibModal = __webpack_require__(/*! react-bootstrap/lib/Modal */ 579);
-	
-	var _reactBootstrapLibModal2 = _interopRequireDefault(_reactBootstrapLibModal);
-	
-	var _reactBootstrapLibButton = __webpack_require__(/*! react-bootstrap/lib/Button */ 546);
-	
-	var _reactBootstrapLibButton2 = _interopRequireDefault(_reactBootstrapLibButton);
-	
-	var ModalDialog = (function (_React$Component) {
-	    _inherits(ModalDialog, _React$Component);
-	
-	    function ModalDialog() {
-	        _classCallCheck(this, ModalDialog);
-	
-	        _get(Object.getPrototypeOf(ModalDialog.prototype), 'constructor', this).apply(this, arguments);
-	    }
-	
-	    _createClass(ModalDialog, [{
-	        key: 'render',
-	        value: function render() {
-	            return _react2['default'].createElement(
-	                _reactBootstrapLibModal2['default'],
-	                { show: this.props.isVisible, bsSize: 'sm' },
-	                _react2['default'].createElement(
-	                    _reactBootstrapLibModal2['default'].Header,
-	                    null,
-	                    _react2['default'].createElement(
-	                        _reactBootstrapLibModal2['default'].Title,
-	                        null,
-	                        this.props.header
-	                    )
-	                ),
-	                _react2['default'].createElement(
-	                    _reactBootstrapLibModal2['default'].Body,
-	                    null,
-	                    this.props.body
-	                ),
-	                _react2['default'].createElement(
-	                    _reactBootstrapLibModal2['default'].Footer,
-	                    null,
-	                    _react2['default'].createElement(
-	                        _reactBootstrapLibButton2['default'],
-	                        {
-	                            bsStyle: 'primary',
-	                            onClick: this.props.clickYesCb
-	                        },
-	                        this.props.btnWording
-	                    )
-	                )
-	            );
-	        }
-	    }]);
-	
-	    return ModalDialog;
-	})(_react2['default'].Component);
-	
-	exports['default'] = ModalDialog;
-	module.exports = exports['default'];
-
-	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "ModalDialog.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
 
 /***/ }
 /******/ ]);
