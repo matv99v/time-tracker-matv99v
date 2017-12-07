@@ -1,12 +1,13 @@
 import React         from 'react';
 import ListGroup     from 'react-bootstrap/lib/ListGroup';
 import ListGroupItem from 'react-bootstrap/lib/ListGroupItem';
-import Grid          from 'react-bootstrap/lib/Grid';
-import Row           from 'react-bootstrap/lib/Row';
-import Col           from 'react-bootstrap/lib/Col';
 import Button        from 'react-bootstrap/lib/Button';
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
 import ButtonGroup   from 'react-bootstrap/lib/ButtonGroup';
+import Grid        from 'react-bootstrap/lib/Grid';
+import Row         from 'react-bootstrap/lib/Row';
+import Col         from 'react-bootstrap/lib/Col';
+
 
 import moment        from 'moment';
 import 'moment-duration-format';
@@ -30,9 +31,9 @@ export default class TasksList extends React.Component {
                     <Grid fluid>
                         <Row >
 
-                            <Col xs={4} >{task.name}</Col>
+                            <Col xs={5} >{task.name}</Col>
 
-                            <Col xs={4} >
+                            <Col xs={3} >
                                 {
                                     moment.duration(task.spentTime).format({
                                         template: 'HH:mm:ss',
@@ -41,7 +42,7 @@ export default class TasksList extends React.Component {
                                 }
                             </Col>
 
-                            <Col xs={4} >
+                            <Col xs={3} >
                                 <ButtonToolbar>
                                     <ButtonGroup bsSize = 'xsmall'>
                                         <Button onClick   = {this.handleStartStopClikc.bind(this, task)}
@@ -69,33 +70,24 @@ export default class TasksList extends React.Component {
 
     render() {
         return (
-            <Grid fluid>
-                <Row>
-                    <Col  xs={12} xsOffset={0}
-                          sm={10} smOffset={1}
-                          md={10} mdOffset={1}>
 
-                        <ListGroup>
-                            {
-                                this.props.tasks.length
-                                    ?   <ListGroupItem >
-                                            <Grid fluid>
-                                                <Row>
-                                                    <Col xs={4}>Task name</Col>
-                                                    <Col xs={4}>Spent time</Col>
-                                                    <Col xs={4}>Controls</Col>
-                                                </Row>
-                                            </Grid>
-                                        </ListGroupItem>
-                                    : null
-                            }
+            <ListGroup>
+                {
+                    this.props.tasks.length
+                        ?   <ListGroupItem >
+                                <Grid fluid>
+                                    <Row>
+                                        <Col xs={5}>Task name</Col>
+                                        <Col xs={3}>Spent time</Col>
+                                        <Col xs={3}>Controls</Col>
+                                    </Row>
+                                </Grid>
+                            </ListGroupItem>
+                        : null
+                }
 
-                            {this.formList()}
-                        </ListGroup>
-                    </Col>
-                    <Col  xs={0} sm={1} md={1}></Col>
-                </Row>
-            </Grid>
+                {this.formList()}
+            </ListGroup>
         );
     }
 }

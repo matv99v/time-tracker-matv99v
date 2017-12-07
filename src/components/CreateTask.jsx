@@ -52,16 +52,16 @@ export default class CreateTask extends React.Component {
                                 </Button>;
 
         return (
-            <Col xs={12} sm={10} smOffset={1}>
-                <Input  type        = 'text'
-                        ref         = 'newTaskNameInput'
-                        placeholder = 'New task'
-                        value       = {this.state.inputValue}
-                        onChange    = {this.handleInputChange}
-                        bsStyle     = {this.state.isValid ? 'success' : 'error'}
-                        buttonAfter = {submitButton}
-                />
-            </Col>
+
+            <Input
+                type        = 'text'
+                ref         = 'newTaskNameInput'
+                placeholder = 'New task'
+                value       = {this.state.inputValue}
+                onChange    = {this.handleInputChange}
+                bsStyle     = {this.state.isValid ? 'success' : 'error'}
+                buttonAfter = {submitButton}
+            />
         );
     }
 }

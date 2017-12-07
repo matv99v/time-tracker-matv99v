@@ -1,12 +1,17 @@
-import React      from 'react';
-import Header     from './Header.jsx';
-import CreateTask from './CreateTask.jsx';
-import ActiveTask from './ActiveTask.jsx';
-import TasksList  from './TasksList.jsx';
-import Reminder  from './Reminder.jsx';
-import ModalDialog   from './ModalDialog.jsx';
-import Timer      from '../Timer.js';
+import React       from 'react';
+import Grid        from 'react-bootstrap/lib/Grid';
+import Row         from 'react-bootstrap/lib/Row';
+import Col         from 'react-bootstrap/lib/Col';
+
+import CreateTask  from './CreateTask.jsx';
+import ActiveTask  from './ActiveTask.jsx';
+import TasksList   from './TasksList.jsx';
+import Settings    from './Settings.jsx';
+import ModalDialog from './ModalDialog.jsx';
 import tabTitler   from '../tabTitler.js';
+import utilities   from '../utilities.js';
+import ts          from '../timersStorage.js';
+
 
 
 
@@ -22,11 +27,6 @@ export default class App extends React.Component {
         areYouHereModal    : false
     };
 
-    timersStorage = {
-        addTimer    : (id, startTime = 0) => this.timersStorage[id] = new Timer(startTime),
-        deleteTimer : (id) => delete this.timersStorage[id]
-    };
-
     handleNewTaskSubmit = (taskName) => {
         const id = Date.now();
         const newTasks = [
@@ -38,7 +38,7 @@ export default class App extends React.Component {
                 id
             }
         ];
-        this.timersStorage.addTimer(id);
+        ts.addTimer(id);
         this.setState({tasks: newTasks});
     };
 
@@ -50,33 +50,43 @@ export default class App extends React.Component {
         newStateTasks.forEach( (task) => {
             if (task.id === taskId) {
                 task.isActive = true;
-                this.timersStorage[task.id].start();
+                ts[task.id].start();
             }
             if (task.id === prevActiveTaskId) {
                 task.isActive = false;
-                this.timersStorage[task.id].stop();
+                ts[task.id].stop();
             }
         });
 
         this.initTimerInterval();
-        this.setState({tasks: newStateTasks, activeTaskId: taskId});
+        this.setState({tasks: newStateTasks, activeTaskId: taskId}, this.activeTaskIdChanged);
+    };
+
+    activeTaskIdChanged = () => {
+        console.log('activeTaskIdChanged');
+        // if (this.state.activeTaskId) {
+        //     ts[this.state.activeTaskId].start();
+        // } else {
+        //     ts[this.state.activeTaskId].stop();
+        // }
     };
 
     handleStopTask = (taskId) => {
         clearInterval(this.intervalId);
-        const newStateTasks = [...this.state.tasks];
-        const targetTask = newStateTasks.find((task) => task.id === taskId);
+        const newTasks = [...this.state.tasks];
+        const targetTask = utilities.getTaskById(newTasks, taskId);
         targetTask.isActive = false;
-        this.timersStorage[targetTask.id].stop();
-        this.setState({tasks: newStateTasks, activeTaskId: null});
+        ts[targetTask.id].stop();
+
+        this.setState({tasks: newTasks, activeTaskId: null}, this.activeTaskIdChanged);
     };
 
     handleClearTimer = (taskId) => {
         if (confirm('Are you sure want to clear time?')) {
             const newStateTasks = [...this.state.tasks];
             const targetTask = newStateTasks.find((task) => task.id === taskId);
-            targetTask.spentTime = this.timersStorage[taskId].getSpentTime();
-            this.timersStorage[taskId].clear();
+            targetTask.spentTime = ts[taskId].getSpentTime();
+            ts[taskId].clear();
             this.setState({tasks: newStateTasks});
         }
     };
@@ -87,7 +97,7 @@ export default class App extends React.Component {
 
             if (this.state.activeTaskId === taskId) {
                 clearInterval(this.intervalId);
-                this.setState({tasks: newStateTasks, activeTaskId: null});
+                this.setState({tasks: newStateTasks, activeTaskId: null}, this.activeTaskIdChanged);
             } else {
                 this.setState({tasks: newStateTasks});
             }
@@ -101,7 +111,7 @@ export default class App extends React.Component {
         this.intervalId = setInterval( () => {
             const newStateTasks = [...this.state.tasks];
             const activeTask = newStateTasks.find(task => task.isActive);
-            activeTask.spentTime = this.timersStorage[activeTask.id].getSpentTime();
+            activeTask.spentTime = ts[activeTask.id].getSpentTime();
 
             this.setState({tasks: newStateTasks});
             this.check();
@@ -158,41 +168,53 @@ export default class App extends React.Component {
 
     render() {
         return (
-            <div>
-                <Reminder
-                    stopActiveTask  = {this.stopActiveTaskHandler}
-                    reminderTime    = {this.state.reminderTime}
-                    absenceTime     = {this.state.absenceTime}
-                    isWatcherActive = {this.state.isWatcherActive}
-                    toggleWatcher   = {this.toggleWatcherHandler}
-                />
+            <Grid>
 
-                <CreateTask
-                    onSubmit = {this.handleNewTaskSubmit}
-                />
+                <Row>
+                    <Col>
+                        <Settings
+                            stopActiveTask  = {this.stopActiveTaskHandler}
+                            reminderTime    = {this.state.reminderTime}
+                            absenceTime     = {this.state.absenceTime}
+                            isWatcherActive = {this.state.isWatcherActive}
+                            toggleWatcher   = {this.toggleWatcherHandler}
+                            generalTime = {this.getGeneralTime()}
+                            isVisible   = {this.state.tasks.length}
 
-                <Header
-                    generalTime = {this.getGeneralTime()}
-                    isVisible   = {this.state.tasks.length}
-                />
+                        />
+                    </Col>
+                </Row>
 
-                <TasksList
-                    tasks           = {this.state.tasks}
-                    onStartTask     = {this.handleStartTask}
-                    onStopTask      = {this.handleStopTask}
-                    onClearTimer    = {this.handleClearTimer}
-                    onDeleteTask    = {this.handleDeleteTask}
-                />
+                <Row>
+                    <Col>
+                        <CreateTask
+                            onSubmit = {this.handleNewTaskSubmit}
+                        />
+                    </Col>
+                </Row>
 
-                <ModalDialog
-                    isVisible     = {this.state.areYouHereModal}
-                    header        = {'Watcher'}
-                    body          = {'Are you here?'}
-                    btnWording    = {'yes'}
-                    clickYesCb    = {this.confirmPresenceClickHandler}
-                />
+                <Row>
+                    <TasksList
+                        tasks           = {this.state.tasks}
+                        onStartTask     = {this.handleStartTask}
+                        onStopTask      = {this.handleStopTask}
+                        onClearTimer    = {this.handleClearTimer}
+                        onDeleteTask    = {this.handleDeleteTask}
+                    />
+                </Row>
 
-            </div>
+                <Row>
+                    <ModalDialog
+                        isVisible     = {this.state.areYouHereModal}
+                        header        = {'Watcher'}
+                        body          = {'Are you here?'}
+                        btnWording    = {'yes'}
+                        clickYesCb    = {this.confirmPresenceClickHandler}
+                    />
+                </Row>
+
+            </Grid>
+
         );
     }
 }

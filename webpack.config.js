@@ -1,3 +1,5 @@
+const webpack = require('webpack');
+
 module.exports = {
     entry: './src/main.js',
     output: {
@@ -21,5 +23,11 @@ module.exports = {
     },
     eslint: {
         configFile: '.eslintrc'
-    }
+    },
+    plugins: [
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery'
+        })
+    ]
 };

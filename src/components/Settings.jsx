@@ -1,8 +1,14 @@
 import React       from 'react';
+import Button      from 'react-bootstrap/lib/Button';
 import Grid        from 'react-bootstrap/lib/Grid';
 import Row         from 'react-bootstrap/lib/Row';
 import Col         from 'react-bootstrap/lib/Col';
-import Button      from 'react-bootstrap/lib/Button';
+import Panel         from 'react-bootstrap/lib/Panel';
+
+import moment from 'moment';
+import 'moment-duration-format';
+
+
 
 
 export default class Reminder extends React.Component {
@@ -24,6 +30,11 @@ export default class Reminder extends React.Component {
         console.log('iAmHereClickHandler');
     };
 
+    formatTime = () => moment.duration(this.props.generalTime).format({
+        template: 'HH:mm:ss',
+        trim: false
+    });
+
 
 
     // componentWillUpdate = (nextProps, nextState) => {
@@ -31,13 +42,16 @@ export default class Reminder extends React.Component {
     // };
 
 
-
     render() {
         return (
-            <Grid fluid>
+            <Panel>
                 <Row>
-                    <Col sm={10} smOffset={1}>
-                    <span>Reminder</span>
+                    <Col xs={2}>
+                        <span>Reminder</span>
+
+                    </Col>
+
+                    <Col xs={10}>
                         <Button
                             onClick = {this.props.toggleWatcher}
                             bsStyle = {this.props.isWatcherActive ? 'info' : 'default' }
@@ -47,7 +61,22 @@ export default class Reminder extends React.Component {
                         </Button>
                     </Col>
                 </Row>
-            </Grid>
+
+                <Row>
+                    <Col xs={2}>
+                        <span>General time</span>
+
+                    </Col>
+
+                    <Col xs={10}>
+                        {this.formatTime()}
+                    </Col>
+                </Row>
+
+
+            </Panel>
+
+
         );
     }
 }
