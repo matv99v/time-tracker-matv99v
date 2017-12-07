@@ -49377,18 +49377,22 @@
 	                    _reactBootstrapLibRow2['default'],
 	                    null,
 	                    _react2['default'].createElement(
-	                        'span',
-	                        null,
-	                        'Reminder'
-	                    ),
-	                    _react2['default'].createElement(
-	                        _reactBootstrapLibButton2['default'],
-	                        {
-	                            onClick: this.props.toggleWatcher,
-	                            bsStyle: this.props.isWatcherActive ? 'info' : 'default',
-	                            bsSize: 'xsmall'
-	                        },
-	                        this.props.isWatcherActive ? 'On' : 'Off'
+	                        _reactBootstrapLibCol2['default'],
+	                        { sm: 10, smOffset: 1 },
+	                        _react2['default'].createElement(
+	                            'span',
+	                            null,
+	                            'Reminder'
+	                        ),
+	                        _react2['default'].createElement(
+	                            _reactBootstrapLibButton2['default'],
+	                            {
+	                                onClick: this.props.toggleWatcher,
+	                                bsStyle: this.props.isWatcherActive ? 'info' : 'default',
+	                                bsSize: 'xsmall'
+	                            },
+	                            this.props.isWatcherActive ? 'On' : 'Off'
+	                        )
 	                    )
 	                )
 	            );

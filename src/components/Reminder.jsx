@@ -36,6 +36,7 @@ export default class Reminder extends React.Component {
         return (
             <Grid fluid>
                 <Row>
+                    <Col sm={10} smOffset={1}>
                     <span>Reminder</span>
                         <Button
                             onClick = {this.props.toggleWatcher}
@@ -44,6 +45,7 @@ export default class Reminder extends React.Component {
                         >
                             {this.props.isWatcherActive ? 'On' : 'Off' }
                         </Button>
+                    </Col>
                 </Row>
             </Grid>
         );
