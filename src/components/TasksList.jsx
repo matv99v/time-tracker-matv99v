@@ -31,7 +31,7 @@ export default class TasksList extends React.Component {
                     <Grid fluid>
                         <Row >
 
-                            <Col xs={5} >{task.name}</Col>
+                            <Col xs={5}>{task.name}</Col>
 
                             <Col xs={3} >
                                 {

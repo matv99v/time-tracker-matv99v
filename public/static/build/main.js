@@ -31238,10 +31238,6 @@
 	
 	var _CreateTaskJsx2 = _interopRequireDefault(_CreateTaskJsx);
 	
-	var _ActiveTaskJsx = __webpack_require__(/*! ./ActiveTask.jsx */ 459);
-	
-	var _ActiveTaskJsx2 = _interopRequireDefault(_ActiveTaskJsx);
-	
 	var _TasksListJsx = __webpack_require__(/*! ./TasksList.jsx */ 565);
 	
 	var _TasksListJsx2 = _interopRequireDefault(_TasksListJsx);
@@ -31266,6 +31262,34 @@
 	
 	var _timersStorageJs2 = _interopRequireDefault(_timersStorageJs);
 	
+	var _notifyMe = __webpack_require__(/*! ../notifyMe */ 673);
+	
+	var _notifyMe2 = _interopRequireDefault(_notifyMe);
+	
+	var initId = Date.now();
+	
+	var initTasks = [{
+	    name: 'test1',
+	    spentTime: 3000,
+	    isActive: false
+	}, // id: initId
+	{
+	    name: 'test2',
+	    spentTime: 5000,
+	    isActive: false
+	}, // id: initId + 1
+	{
+	    name: 'test3',
+	    spentTime: 1000 * 62,
+	    isActive: false
+	}];
+	
+	// id: initId + 2
+	initTasks.forEach(function (task, i) {
+	    task.id = initId + i;
+	    _timersStorageJs2['default'].addTimer(task.id, task.spentTime);
+	});
+	
 	var App = (function (_React$Component) {
 	    _inherits(App, _React$Component);
 	
@@ -31277,12 +31301,9 @@
 	        _get(Object.getPrototypeOf(App.prototype), 'constructor', this).apply(this, arguments);
 	
 	        this.state = {
-	            tasks: [],
+	            tasks: initTasks,
 	            activeTaskId: null,
-	            remindTime: 1000 * 60 * 30,
-	            absenceTime: 1000 * 60,
-	            activationTimeStamp: Date.now(),
-	            areYouHereTimeStamp: null,
+	            remindTime: 1000 * 60 * 0.08,
 	            isWatcherActive: false,
 	            areYouHereModal: false
 	        };
@@ -31297,6 +31318,7 @@
 	            }]);
 	            _timersStorageJs2['default'].addTimer(id);
 	            _this.setState({ tasks: newTasks });
+	            _this.presenceConfirmed();
 	        };
 	
 	        this.handleStartTask = function (taskId) {
@@ -31316,16 +31338,9 @@
 	            });
 	
 	            _this.initTimerInterval();
-	            _this.setState({ tasks: newStateTasks, activeTaskId: taskId }, _this.activeTaskIdChanged);
-	        };
-	
-	        this.activeTaskIdChanged = function () {
-	            console.log('activeTaskIdChanged');
-	            // if (this.state.activeTaskId) {
-	            //     ts[this.state.activeTaskId].start();
-	            // } else {
-	            //     ts[this.state.activeTaskId].stop();
-	            // }
+	            _this.setState({ tasks: newStateTasks, activeTaskId: taskId });
+	            _this.presenceConfirmed();
+	            _tabTitlerJs2['default'].setPlay();
 	        };
 	
 	        this.handleStopTask = function (taskId) {
@@ -31336,32 +31351,41 @@
 	            _timersStorageJs2['default'][targetTask.id].stop();
 	
 	            _this.setState({ tasks: newTasks, activeTaskId: null }, _this.activeTaskIdChanged);
+	            _this.presenceConfirmed();
+	            _tabTitlerJs2['default'].setStop();
 	        };
 	
 	        this.handleClearTimer = function (taskId) {
-	            if (confirm('Are you sure want to clear time?')) {
-	                var newStateTasks = [].concat(_toConsumableArray(_this.state.tasks));
-	                var targetTask = newStateTasks.find(function (task) {
-	                    return task.id === taskId;
-	                });
-	                targetTask.spentTime = _timersStorageJs2['default'][taskId].getSpentTime();
-	                _timersStorageJs2['default'][taskId].clear();
-	                _this.setState({ tasks: newStateTasks });
+	            _this.presenceConfirmed();
+	
+	            if (!confirm('Are you sure want to clear time?')) {
+	                return;
 	            }
+	            var newStateTasks = [].concat(_toConsumableArray(_this.state.tasks));
+	            var targetTask = newStateTasks.find(function (task) {
+	                return task.id === taskId;
+	            });
+	            targetTask.spentTime = _timersStorageJs2['default'][taskId].getSpentTime();
+	            _timersStorageJs2['default'][taskId].clear();
+	            _this.setState({ tasks: newStateTasks });
 	        };
 	
 	        this.handleDeleteTask = function (taskId) {
-	            if (confirm('Are you sure want to delete task?')) {
-	                var newStateTasks = _this.state.tasks.filter(function (task) {
-	                    return task.id !== taskId;
-	                });
+	            _this.presenceConfirmed();
 	
-	                if (_this.state.activeTaskId === taskId) {
-	                    clearInterval(_this.intervalId);
-	                    _this.setState({ tasks: newStateTasks, activeTaskId: null }, _this.activeTaskIdChanged);
-	                } else {
-	                    _this.setState({ tasks: newStateTasks });
-	                }
+	            if (!confirm('Are you sure want to delete task?')) {
+	                return;
+	            }
+	
+	            var newStateTasks = _this.state.tasks.filter(function (task) {
+	                return task.id !== taskId;
+	            });
+	
+	            if (_this.state.activeTaskId === taskId) {
+	                clearInterval(_this.intervalId);
+	                _this.setState({ tasks: newStateTasks, activeTaskId: null });
+	            } else {
+	                _this.setState({ tasks: newStateTasks });
 	            }
 	        };
 	
@@ -31381,19 +31405,15 @@
 	        };
 	
 	        this.check = function () {
-	            function msToSec(ms) {
-	                return Math.floor(ms / 1000);
-	            }
-	
-	            var diffSec = msToSec(Date.now() - _this.state.activationTimeStamp);
-	            var remindSec = msToSec(_this.state.remindTime);
-	
-	            console.log(diffSec);
-	            if (!(diffSec % remindSec) && !_this.state.areYouHereModal) {
-	                console.log('start absence timer');
-	                _tabTitlerJs2['default'].startSprites();
+	            if (_this.state.isWatcherActive && !_this.state.areYouHereModal && _timersStorageJs2['default'].idleTimer.getSpentTime() > _this.state.remindTime) {
+	                _notifyMe2['default'].spawnNotification();
 	                _this.setState({ areYouHereModal: true });
+	                _tabTitlerJs2['default'].startSprites();
 	            }
+	        };
+	
+	        this.presenceConfirmed = function () {
+	            _timersStorageJs2['default'].idleTimer.clear();
 	        };
 	
 	        this.getGeneralTime = function () {
@@ -31406,6 +31426,11 @@
 	            clearInterval(_this.intervalId);
 	        };
 	
+	        this.componentWillMount = function () {
+	            console.log('componentWilMount');
+	            _timersStorageJs2['default'].startIdleTimer();
+	        };
+	
 	        this.stopActiveTaskHandler = function () {
 	            console.log('stopActiveTaskHandler');
 	            _this.handleStopTask(_this.state.activeTaskId);
@@ -31414,16 +31439,38 @@
 	        this.toggleWatcherHandler = function () {
 	            _this.setState({ isWatcherActive: !_this.state.isWatcherActive });
 	            console.log('toggleWatcherHandler');
+	            _this.presenceConfirmed();
 	        };
 	
-	        this.confirmPresenceClickHandler = function () {
-	            console.log('confirmPresenceClickHandler, stop absence timer');
+	        this.leaveAsIsCb = function () {
+	            console.log('leaveAsIsCb');
 	            _tabTitlerJs2['default'].stopSprites();
 	            _this.setState({ areYouHereModal: false });
+	            _this.presenceConfirmed();
 	        };
 	
-	        this.startAbsenceTimer = function () {
-	            console.log('startAbsenceTimer');
+	        this.revertTime = function () {
+	            console.log('revertTime');
+	            var newTasks = [].concat(_toConsumableArray(_this.state.tasks));
+	            var activeTask = newTasks.find(function (task) {
+	                return task.isActive;
+	            });
+	
+	            _timersStorageJs2['default'][activeTask.id].subtract(_timersStorageJs2['default'].idleTimer.getSpentTime());
+	
+	            var test1 = _timersStorageJs2['default'][activeTask.id].getSpentTime();
+	            var test2 = _timersStorageJs2['default'].idleTimer.getSpentTime();
+	            var test3 = test1 - test2;
+	
+	            _tabTitlerJs2['default'].stopSprites();
+	            _this.setState({ areYouHereModal: false, tasks: newTasks });
+	            _this.presenceConfirmed();
+	        };
+	
+	        this.changeRemindTimeHandler = function (event) {
+	            console.log('changeRemindTimeHandler');
+	            _this.presenceConfirmed();
+	            _this.setState({ remindTime: event.target.value * 60 * 1000 });
 	        };
 	    }
 	
@@ -31440,14 +31487,12 @@
 	                        _reactBootstrapLibCol2['default'],
 	                        null,
 	                        _react2['default'].createElement(_SettingsJsx2['default'], {
-	                            stopActiveTask: this.stopActiveTaskHandler,
-	                            reminderTime: this.state.reminderTime,
-	                            absenceTime: this.state.absenceTime,
 	                            isWatcherActive: this.state.isWatcherActive,
 	                            toggleWatcher: this.toggleWatcherHandler,
 	                            generalTime: this.getGeneralTime(),
-	                            isVisible: this.state.tasks.length
-	
+	                            idleTime: _timersStorageJs2['default'].idleTimer.getSpentTime(),
+	                            remindTime: this.state.remindTime / 60000,
+	                            changeRemindTime: this.changeRemindTimeHandler
 	                        })
 	                    )
 	                ),
@@ -31478,10 +31523,9 @@
 	                    null,
 	                    _react2['default'].createElement(_ModalDialogJsx2['default'], {
 	                        isVisible: this.state.areYouHereModal,
-	                        header: 'Watcher',
-	                        body: 'Are you here?',
-	                        btnWording: 'yes',
-	                        clickYesCb: this.confirmPresenceClickHandler
+	                        leaveAsIsCb: this.leaveAsIsCb,
+	                        revertTime: this.revertTime,
+	                        idleTime: _timersStorageJs2['default'].idleTimer.getSpentTime()
 	                    })
 	                )
 	            );
@@ -33863,99 +33907,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./~/process/browser.js */ 191)))
 
 /***/ },
-/* 459 */
-/*!***************************************!*\
-  !*** ./src/components/ActiveTask.jsx ***!
-  \***************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	/* REACT HOT LOADER */ if (false) { (function () { var ReactHotAPI = require("/home/matv99v/Koding/Projects/time-tracker/time-tracker-matv99v/node_modules/react-hot-api/modules/index.js"), RootInstanceProvider = require("/home/matv99v/Koding/Projects/time-tracker/time-tracker-matv99v/node_modules/react-hot-loader/RootInstanceProvider.js"), ReactMount = require("react/lib/ReactMount"), React = require("react"); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
-	
-	'use strict';
-	
-	Object.defineProperty(exports, '__esModule', {
-	    value: true
-	});
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var _react = __webpack_require__(/*! react */ 214);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactBootstrapLibGrid = __webpack_require__(/*! react-bootstrap/lib/Grid */ 407);
-	
-	var _reactBootstrapLibGrid2 = _interopRequireDefault(_reactBootstrapLibGrid);
-	
-	var _reactBootstrapLibRow = __webpack_require__(/*! react-bootstrap/lib/Row */ 428);
-	
-	var _reactBootstrapLibRow2 = _interopRequireDefault(_reactBootstrapLibRow);
-	
-	var _reactBootstrapLibCol = __webpack_require__(/*! react-bootstrap/lib/Col */ 429);
-	
-	var _reactBootstrapLibCol2 = _interopRequireDefault(_reactBootstrapLibCol);
-	
-	var _moment = __webpack_require__(/*! moment */ 460);
-	
-	var _moment2 = _interopRequireDefault(_moment);
-	
-	__webpack_require__(/*! moment-duration-format */ 560);
-	
-	__webpack_require__(/*! ./ActiveTask.less */ 561);
-	
-	var ActiveTask = (function (_React$Component) {
-	    _inherits(ActiveTask, _React$Component);
-	
-	    function ActiveTask() {
-	        _classCallCheck(this, ActiveTask);
-	
-	        _get(Object.getPrototypeOf(ActiveTask.prototype), 'constructor', this).apply(this, arguments);
-	    }
-	
-	    _createClass(ActiveTask, [{
-	        key: 'render',
-	        value: function render() {
-	            var str = this.props.activeTask ? this.props.activeTask.name + '\n                            ' + _moment2['default'].duration(this.props.activeTask.spentTime).format({
-	                template: 'HH:mm:ss',
-	                trim: false
-	            }) : 'none';
-	            return _react2['default'].createElement(
-	                _reactBootstrapLibGrid2['default'],
-	                { className: this.props.activeTask ? 'text-center' : 'ActiveTask__container' },
-	                _react2['default'].createElement(
-	                    _reactBootstrapLibRow2['default'],
-	                    null,
-	                    _react2['default'].createElement(
-	                        _reactBootstrapLibCol2['default'],
-	                        { xs: 12 },
-	                        _react2['default'].createElement(
-	                            'h2',
-	                            null,
-	                            str
-	                        )
-	                    )
-	                )
-	            );
-	        }
-	    }]);
-	
-	    return ActiveTask;
-	})(_react2['default'].Component);
-	
-	exports['default'] = ActiveTask;
-	module.exports = exports['default'];
-
-	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/matv99v/Koding/Projects/time-tracker/time-tracker-matv99v/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "ActiveTask.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
-
-/***/ },
+/* 459 */,
 /* 460 */
 /*!****************************!*\
   !*** ./~/moment/moment.js ***!
@@ -47850,52 +47802,8 @@
 
 
 /***/ },
-/* 561 */
-/*!****************************************!*\
-  !*** ./src/components/ActiveTask.less ***!
-  \****************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(/*! !./../../~/css-loader!./../../~/autoprefixer-loader!./../../~/less-loader!./ActiveTask.less */ 562);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(/*! ./../../~/style-loader/addStyles.js */ 564)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/autoprefixer-loader/index.js!./../../node_modules/less-loader/index.js!./ActiveTask.less", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/autoprefixer-loader/index.js!./../../node_modules/less-loader/index.js!./ActiveTask.less");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 562 */
-/*!***********************************************************************************************!*\
-  !*** ./~/css-loader!./~/autoprefixer-loader!./~/less-loader!./src/components/ActiveTask.less ***!
-  \***********************************************************************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(/*! ./../../~/css-loader/lib/css-base.js */ 563)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, ".ActiveTask__container {\n  visibility: hidden;\n}\n", ""]);
-	
-	// exports
-
-
-/***/ },
+/* 561 */,
+/* 562 */,
 /* 563 */
 /*!**************************************!*\
   !*** ./~/css-loader/lib/css-base.js ***!
@@ -49112,11 +49020,21 @@
 	
 	var _reactBootstrapLibPanel2 = _interopRequireDefault(_reactBootstrapLibPanel);
 	
+	var _reactBootstrapLibPanelGroup = __webpack_require__(/*! react-bootstrap/lib/PanelGroup */ 682);
+	
+	var _reactBootstrapLibPanelGroup2 = _interopRequireDefault(_reactBootstrapLibPanelGroup);
+	
 	var _moment = __webpack_require__(/*! moment */ 460);
 	
 	var _moment2 = _interopRequireDefault(_moment);
 	
 	__webpack_require__(/*! moment-duration-format */ 560);
+	
+	var _notifyMe = __webpack_require__(/*! ../notifyMe */ 673);
+	
+	var _notifyMe2 = _interopRequireDefault(_notifyMe);
+	
+	__webpack_require__(/*! ./Settings.less */ 671);
 	
 	var Reminder = (function (_React$Component) {
 	    _inherits(Reminder, _React$Component);
@@ -49132,6 +49050,9 @@
 	            // isWatcherActive: false,
 	            // isReminderVisible: false,
 	            // isAway: false
+	            // reminderTime: 30
+	            // isNotificationSupported:
+	
 	        };
 	
 	        this.confirmPresenceClickHandler = function () {
@@ -49146,31 +49067,30 @@
 	            console.log('iAmHereClickHandler');
 	        };
 	
-	        this.formatTime = function () {
-	            return _moment2['default'].duration(_this.props.generalTime).format({
+	        this.formatTime = function (ms) {
+	            return _moment2['default'].duration(ms).format({
 	                template: 'HH:mm:ss',
 	                trim: false
 	            });
+	        };
+	
+	        this.rangeChangeHanlde = function (event) {
+	            _this.setState({ reminderTime: event.target.value });
 	        };
 	    }
 	
 	    _createClass(Reminder, [{
 	        key: 'render',
-	
-	        // componentWillUpdate = (nextProps, nextState) => {
-	        //     console.log(this.state, nextState);
-	        // };
-	
 	        value: function render() {
-	            return _react2['default'].createElement(
+	            var settingsPanel = _react2['default'].createElement(
 	                _reactBootstrapLibPanel2['default'],
-	                null,
+	                { collapsible: true, defaultExpanded: true, header: 'Settings', eventKey: '1' },
 	                _react2['default'].createElement(
 	                    _reactBootstrapLibRow2['default'],
 	                    null,
 	                    _react2['default'].createElement(
 	                        _reactBootstrapLibCol2['default'],
-	                        { xs: 2 },
+	                        { xs: 3 },
 	                        _react2['default'].createElement(
 	                            'span',
 	                            null,
@@ -49179,7 +49099,7 @@
 	                    ),
 	                    _react2['default'].createElement(
 	                        _reactBootstrapLibCol2['default'],
-	                        { xs: 10 },
+	                        { xs: 9 },
 	                        _react2['default'].createElement(
 	                            _reactBootstrapLibButton2['default'],
 	                            {
@@ -49196,19 +49116,140 @@
 	                    null,
 	                    _react2['default'].createElement(
 	                        _reactBootstrapLibCol2['default'],
-	                        { xs: 2 },
+	                        { xs: 3 },
+	                        'Reminder time'
+	                    ),
+	                    _react2['default'].createElement(
+	                        _reactBootstrapLibCol2['default'],
+	                        { xs: 2, className: 'Settings__reminder-time-val' },
+	                        this.props.remindTime,
+	                        ' min'
+	                    ),
+	                    _react2['default'].createElement(
+	                        _reactBootstrapLibCol2['default'],
+	                        { xs: 3, className: 'Settings__reminder-time-val' },
+	                        _react2['default'].createElement('input', {
+	                            id: 'reminder-slider',
+	                            type: 'range',
+	                            min: '1', max: '60', step: '1',
+	                            value: this.props.remindTime,
+	                            onChange: this.props.changeRemindTime
+	                        })
+	                    )
+	                )
+	            );
+	
+	            var timeCalculationsPanel = _react2['default'].createElement(
+	                _reactBootstrapLibPanel2['default'],
+	                { collapsible: true, header: 'Time calculations', eventKey: '2' },
+	                _react2['default'].createElement(
+	                    _reactBootstrapLibRow2['default'],
+	                    null,
+	                    _react2['default'].createElement(
+	                        _reactBootstrapLibCol2['default'],
+	                        { xs: 3 },
 	                        _react2['default'].createElement(
 	                            'span',
 	                            null,
-	                            'General time'
+	                            'Total time'
 	                        )
 	                    ),
 	                    _react2['default'].createElement(
 	                        _reactBootstrapLibCol2['default'],
-	                        { xs: 10 },
-	                        this.formatTime()
+	                        { xs: 9 },
+	                        this.formatTime(this.props.generalTime)
+	                    )
+	                ),
+	                _react2['default'].createElement(
+	                    _reactBootstrapLibRow2['default'],
+	                    null,
+	                    _react2['default'].createElement(
+	                        _reactBootstrapLibCol2['default'],
+	                        { xs: 3 },
+	                        _react2['default'].createElement(
+	                            'span',
+	                            null,
+	                            'Session time'
+	                        )
+	                    ),
+	                    _react2['default'].createElement(_reactBootstrapLibCol2['default'], { xs: 9 })
+	                ),
+	                _react2['default'].createElement(
+	                    _reactBootstrapLibRow2['default'],
+	                    null,
+	                    _react2['default'].createElement(
+	                        _reactBootstrapLibCol2['default'],
+	                        { xs: 3 },
+	                        'Reminder timeout'
+	                    ),
+	                    _react2['default'].createElement(
+	                        _reactBootstrapLibCol2['default'],
+	                        { xs: 9 },
+	                        this.formatTime(this.props.idleTime)
 	                    )
 	                )
+	            );
+	
+	            var browserNotificationsPanel = _react2['default'].createElement(
+	                _reactBootstrapLibPanel2['default'],
+	                { collapsible: true, header: 'Browser notifications', eventKey: '3' },
+	                _react2['default'].createElement(
+	                    _reactBootstrapLibRow2['default'],
+	                    null,
+	                    _react2['default'].createElement(
+	                        _reactBootstrapLibCol2['default'],
+	                        { xs: 5 },
+	                        'Browser notifications supported'
+	                    ),
+	                    _react2['default'].createElement(
+	                        _reactBootstrapLibCol2['default'],
+	                        { xs: 2 },
+	                        _notifyMe2['default'].isSupported() ? 'yes' : 'no'
+	                    )
+	                ),
+	                _react2['default'].createElement(
+	                    _reactBootstrapLibRow2['default'],
+	                    null,
+	                    _react2['default'].createElement(
+	                        _reactBootstrapLibCol2['default'],
+	                        { xs: 5 },
+	                        'Browser notifications access granted'
+	                    ),
+	                    _react2['default'].createElement(
+	                        _reactBootstrapLibCol2['default'],
+	                        { xs: 2 },
+	                        _notifyMe2['default'].isPermissionGranted() ? 'yes' : 'no'
+	                    )
+	                ),
+	                _react2['default'].createElement(
+	                    _reactBootstrapLibRow2['default'],
+	                    { hidden: _notifyMe2['default'].isPermissionGranted() },
+	                    _react2['default'].createElement(
+	                        _reactBootstrapLibCol2['default'],
+	                        { xs: 5 },
+	                        'Request browser notifications access'
+	                    ),
+	                    _react2['default'].createElement(
+	                        _reactBootstrapLibCol2['default'],
+	                        { xs: 2 },
+	                        _react2['default'].createElement(
+	                            _reactBootstrapLibButton2['default'],
+	                            {
+	                                onClick: _notifyMe2['default'].requestPermission(),
+	                                bsSize: 'xsmall'
+	                            },
+	                            'Request'
+	                        )
+	                    )
+	                )
+	            );
+	
+	            return _react2['default'].createElement(
+	                _reactBootstrapLibPanelGroup2['default'],
+	                null,
+	                settingsPanel,
+	                timeCalculationsPanel,
+	                browserNotificationsPanel
 	            );
 	        }
 	    }]);
@@ -50531,6 +50572,10 @@
 	
 	var _reactBootstrapLibButton2 = _interopRequireDefault(_reactBootstrapLibButton);
 	
+	var _moment = __webpack_require__(/*! moment */ 460);
+	
+	var _moment2 = _interopRequireDefault(_moment);
+	
 	var ModalDialog = (function (_React$Component) {
 	    _inherits(ModalDialog, _React$Component);
 	
@@ -50538,6 +50583,13 @@
 	        _classCallCheck(this, ModalDialog);
 	
 	        _get(Object.getPrototypeOf(ModalDialog.prototype), 'constructor', this).apply(this, arguments);
+	
+	        this.formatTime = function (ms) {
+	            return _moment2['default'].duration(ms).format({
+	                template: 'HH:mm:ss',
+	                trim: false
+	            });
+	        };
 	    }
 	
 	    _createClass(ModalDialog, [{
@@ -50552,13 +50604,14 @@
 	                    _react2['default'].createElement(
 	                        _reactBootstrapLibModal2['default'].Title,
 	                        null,
-	                        this.props.header
+	                        'Are you here?'
 	                    )
 	                ),
 	                _react2['default'].createElement(
 	                    _reactBootstrapLibModal2['default'].Body,
 	                    null,
-	                    this.props.body
+	                    'You have been away for ',
+	                    this.formatTime(this.props.idleTime)
 	                ),
 	                _react2['default'].createElement(
 	                    _reactBootstrapLibModal2['default'].Footer,
@@ -50567,9 +50620,17 @@
 	                        _reactBootstrapLibButton2['default'],
 	                        {
 	                            bsStyle: 'primary',
-	                            onClick: this.props.clickYesCb
+	                            onClick: this.props.leaveAsIsCb
 	                        },
-	                        this.props.btnWording
+	                        'Leave as is'
+	                    ),
+	                    _react2['default'].createElement(
+	                        _reactBootstrapLibButton2['default'],
+	                        {
+	                            bsStyle: 'primary',
+	                            onClick: this.props.revertTime
+	                        },
+	                        'Revert time'
 	                    )
 	                )
 	            );
@@ -54102,19 +54163,23 @@
 
 	'use strict';
 	
-	var changeTime = 250;
-	var titleSprites = ['>', '>>', '>>>', '>>>>', '>>>>>'];
+	var changeTime = 125;
+	var titleSprites = ['>', '>>', '>>>'];
 	var i = 0;
 	var intervalId = null;
+	
+	function setTitle(str) {
+	    document.title = str;
+	}
 	
 	function nextSprite() {
 	    var result = titleSprites[i];
 	    i = i === titleSprites.length - 1 ? 0 : ++i;
-	    document.title = result;
+	    setTitle('⏸ ' + result);
 	}
 	
 	function firstSprite() {
-	    document.title = titleSprites[0];
+	    setTitle(titleSprites[0]);
 	}
 	
 	function startSprites() {
@@ -54128,10 +54193,19 @@
 	function stopSprites() {
 	    clearInterval(intervalId);
 	    intervalId = null;
-	    firstSprite();
+	    // firstSprite();
+	    setPlay();
 	}
 	
-	module.exports = { startSprites: startSprites, stopSprites: stopSprites };
+	function setPlay() {
+	    setTitle('▶ time');
+	}
+	
+	function setStop() {
+	    setTitle('⏹ time');
+	}
+	
+	module.exports = { startSprites: startSprites, stopSprites: stopSprites, setPlay: setPlay, setStop: setStop };
 
 /***/ },
 /* 654 */
@@ -54177,6 +54251,11 @@
 	    var startTime = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
 	
 	    ts[id] = new _TimerJs2['default'](startTime);
+	};
+	
+	ts.startIdleTimer = function () {
+	    ts.idleTimer = new _TimerJs2['default']();
+	    ts.idleTimer.start();
 	};
 	
 	module.exports = ts;
@@ -54234,12 +54313,239 @@
 	            this.timeStamp = Date.now();
 	            this.accumulatedTime = 0;
 	        }
+	    }, {
+	        key: 'subtract',
+	        value: function subtract(ms) {
+	            console.log('subtract', ms);
+	            this.accumulatedTime -= ms;
+	            // this.accumulatedTime = Date.now() - this.timeStamp - ms;
+	        }
 	    }]);
 	
 	    return Timer;
 	})();
 	
 	module.exports = Timer;
+
+/***/ },
+/* 657 */,
+/* 658 */,
+/* 659 */,
+/* 660 */,
+/* 661 */,
+/* 662 */,
+/* 663 */,
+/* 664 */,
+/* 665 */,
+/* 666 */,
+/* 667 */,
+/* 668 */,
+/* 669 */,
+/* 670 */,
+/* 671 */
+/*!**************************************!*\
+  !*** ./src/components/Settings.less ***!
+  \**************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(/*! !./../../~/css-loader!./../../~/autoprefixer-loader!./../../~/less-loader!./Settings.less */ 672);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(/*! ./../../~/style-loader/addStyles.js */ 564)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/autoprefixer-loader/index.js!./../../node_modules/less-loader/index.js!./Settings.less", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/autoprefixer-loader/index.js!./../../node_modules/less-loader/index.js!./Settings.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 672 */
+/*!*********************************************************************************************!*\
+  !*** ./~/css-loader!./~/autoprefixer-loader!./~/less-loader!./src/components/Settings.less ***!
+  \*********************************************************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(/*! ./../../~/css-loader/lib/css-base.js */ 563)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, ".Settings__reminder-time-val:hover {\n  cursor: pointer;\n}\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 673 */
+/*!*************************!*\
+  !*** ./src/notifyMe.js ***!
+  \*************************/
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	var retIt = {};
+	
+	retIt.isPermissionGranted = function () {
+	    return Notification.permission === 'granted';
+	};
+	
+	retIt.isSupported = function () {
+	    return !!Notification;
+	};
+	
+	retIt.requestPermission = function () {
+	    Notification.requestPermission();
+	};
+	
+	retIt.spawnNotification = function () {
+	    var notification = new Notification('Timer reminder');
+	};
+	
+	module.exports = retIt;
+
+/***/ },
+/* 674 */,
+/* 675 */,
+/* 676 */,
+/* 677 */,
+/* 678 */,
+/* 679 */,
+/* 680 */,
+/* 681 */,
+/* 682 */
+/*!*********************************************!*\
+  !*** ./~/react-bootstrap/lib/PanelGroup.js ***!
+  \*********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _objectWithoutProperties = __webpack_require__(/*! babel-runtime/helpers/object-without-properties */ 455)['default'];
+	
+	var _extends = __webpack_require__(/*! babel-runtime/helpers/extends */ 408)['default'];
+	
+	var _interopRequireDefault = __webpack_require__(/*! babel-runtime/helpers/interop-require-default */ 424)['default'];
+	
+	exports.__esModule = true;
+	
+	var _react = __webpack_require__(/*! react */ 214);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _classnames = __webpack_require__(/*! classnames */ 425);
+	
+	var _classnames2 = _interopRequireDefault(_classnames);
+	
+	var _utilsBootstrapUtils = __webpack_require__(/*! ./utils/bootstrapUtils */ 439);
+	
+	var _utilsBootstrapUtils2 = _interopRequireDefault(_utilsBootstrapUtils);
+	
+	var _utilsValidComponentChildren = __webpack_require__(/*! ./utils/ValidComponentChildren */ 568);
+	
+	var _utilsValidComponentChildren2 = _interopRequireDefault(_utilsValidComponentChildren);
+	
+	var PanelGroup = _react2['default'].createClass({
+	  displayName: 'PanelGroup',
+	
+	  propTypes: {
+	    accordion: _react2['default'].PropTypes.bool,
+	    activeKey: _react2['default'].PropTypes.any,
+	    className: _react2['default'].PropTypes.string,
+	    children: _react2['default'].PropTypes.node,
+	    defaultActiveKey: _react2['default'].PropTypes.any,
+	    onSelect: _react2['default'].PropTypes.func
+	  },
+	
+	  getDefaultProps: function getDefaultProps() {
+	    return {
+	      accordion: false
+	    };
+	  },
+	
+	  getInitialState: function getInitialState() {
+	    var defaultActiveKey = this.props.defaultActiveKey;
+	
+	    return {
+	      activeKey: defaultActiveKey
+	    };
+	  },
+	
+	  render: function render() {
+	    var classes = _utilsBootstrapUtils2['default'].getClassSet(this.props);
+	    var _props = this.props;
+	    var className = _props.className;
+	
+	    var props = _objectWithoutProperties(_props, ['className']);
+	
+	    if (this.props.accordion) {
+	      props.role = 'tablist';
+	    }
+	    return _react2['default'].createElement(
+	      'div',
+	      _extends({}, props, { className: _classnames2['default'](className, classes), onSelect: null }),
+	      _utilsValidComponentChildren2['default'].map(props.children, this.renderPanel)
+	    );
+	  },
+	
+	  renderPanel: function renderPanel(child, index) {
+	    var activeKey = this.props.activeKey != null ? this.props.activeKey : this.state.activeKey;
+	
+	    var props = {
+	      bsStyle: child.props.bsStyle || this.props.bsStyle,
+	      key: child.key ? child.key : index,
+	      ref: child.ref
+	    };
+	
+	    if (this.props.accordion) {
+	      props.headerRole = 'tab';
+	      props.panelRole = 'tabpanel';
+	      props.collapsible = true;
+	      props.expanded = child.props.eventKey === activeKey;
+	      props.onSelect = this.handleSelect;
+	    }
+	
+	    return _react.cloneElement(child, props);
+	  },
+	
+	  shouldComponentUpdate: function shouldComponentUpdate() {
+	    // Defer any updates to this component during the `onSelect` handler.
+	    return !this._isChanging;
+	  },
+	
+	  handleSelect: function handleSelect(e, key) {
+	    e.preventDefault();
+	
+	    if (this.props.onSelect) {
+	      this._isChanging = true;
+	      this.props.onSelect(key);
+	      this._isChanging = false;
+	    }
+	
+	    if (this.state.activeKey === key) {
+	      key = null;
+	    }
+	
+	    this.setState({
+	      activeKey: key
+	    });
+	  }
+	});
+	
+	exports['default'] = _utilsBootstrapUtils.bsClass('panel-group', PanelGroup);
+	module.exports = exports['default'];
 
 /***/ }
 /******/ ]);

@@ -4,25 +4,51 @@ import Row         from 'react-bootstrap/lib/Row';
 import Col         from 'react-bootstrap/lib/Col';
 
 import CreateTask  from './CreateTask.jsx';
-import ActiveTask  from './ActiveTask.jsx';
 import TasksList   from './TasksList.jsx';
 import Settings    from './Settings.jsx';
 import ModalDialog from './ModalDialog.jsx';
 import tabTitler   from '../tabTitler.js';
 import utilities   from '../utilities.js';
 import ts          from '../timersStorage.js';
+import notifyMe    from '../notifyMe';
 
 
+
+const initId = Date.now();
+
+const initTasks = [
+    {
+        name     : 'test1',
+        spentTime: 3000,
+        isActive : false,
+        // id: initId
+    },
+    {
+        name     : 'test2',
+        spentTime: 5000,
+        isActive : false,
+        // id: initId + 1
+    },
+    {
+        name     : 'test3',
+        spentTime: 1000 * 62,
+        isActive : false,
+        // id: initId + 2
+    }
+];
+
+initTasks.forEach((task, i) => {
+    task.id = initId + i;
+    ts.addTimer(task.id, task.spentTime);
+
+});
 
 
 export default class App extends React.Component {
     state = {
-        tasks              : [],
+        tasks              : initTasks,
         activeTaskId       : null,
-        remindTime         : (1000 * 60) * 30,
-        absenceTime        : (1000 * 60),
-        activationTimeStamp: Date.now(),
-        areYouHereTimeStamp: null,
+        remindTime         : (1000 * 60) * 0.08,
         isWatcherActive    : false,
         areYouHereModal    : false
     };
@@ -40,6 +66,7 @@ export default class App extends React.Component {
         ];
         ts.addTimer(id);
         this.setState({tasks: newTasks});
+        this.presenceConfirmed();
     };
 
     handleStartTask = (taskId) => {
@@ -59,16 +86,9 @@ export default class App extends React.Component {
         });
 
         this.initTimerInterval();
-        this.setState({tasks: newStateTasks, activeTaskId: taskId}, this.activeTaskIdChanged);
-    };
-
-    activeTaskIdChanged = () => {
-        console.log('activeTaskIdChanged');
-        // if (this.state.activeTaskId) {
-        //     ts[this.state.activeTaskId].start();
-        // } else {
-        //     ts[this.state.activeTaskId].stop();
-        // }
+        this.setState({tasks: newStateTasks, activeTaskId: taskId});
+        this.presenceConfirmed();
+        tabTitler.setPlay();
     };
 
     handleStopTask = (taskId) => {
@@ -79,30 +99,38 @@ export default class App extends React.Component {
         ts[targetTask.id].stop();
 
         this.setState({tasks: newTasks, activeTaskId: null}, this.activeTaskIdChanged);
+        this.presenceConfirmed();
+        tabTitler.setStop();
     };
 
     handleClearTimer = (taskId) => {
-        if (confirm('Are you sure want to clear time?')) {
-            const newStateTasks = [...this.state.tasks];
-            const targetTask = newStateTasks.find((task) => task.id === taskId);
-            targetTask.spentTime = ts[taskId].getSpentTime();
-            ts[taskId].clear();
-            this.setState({tasks: newStateTasks});
+        this.presenceConfirmed();
+
+        if (!confirm('Are you sure want to clear time?')) {
+            return;
         }
+        const newStateTasks = [...this.state.tasks];
+        const targetTask = newStateTasks.find((task) => task.id === taskId);
+        targetTask.spentTime = ts[taskId].getSpentTime();
+        ts[taskId].clear();
+        this.setState({tasks: newStateTasks});
     };
 
     handleDeleteTask = (taskId) => {
-        if (confirm('Are you sure want to delete task?')) {
-            const newStateTasks = this.state.tasks.filter( (task) => task.id !== taskId );
+        this.presenceConfirmed();
 
-            if (this.state.activeTaskId === taskId) {
-                clearInterval(this.intervalId);
-                this.setState({tasks: newStateTasks, activeTaskId: null}, this.activeTaskIdChanged);
-            } else {
-                this.setState({tasks: newStateTasks});
-            }
+        if (!confirm('Are you sure want to delete task?')) {
+            return;
         }
 
+        const newStateTasks = this.state.tasks.filter( (task) => task.id !== taskId );
+
+        if (this.state.activeTaskId === taskId) {
+            clearInterval(this.intervalId);
+            this.setState({tasks: newStateTasks, activeTaskId: null});
+        } else {
+            this.setState({tasks: newStateTasks});
+        }
     };
 
     intervalId = null;
@@ -121,19 +149,15 @@ export default class App extends React.Component {
     };
 
     check = () => {
-        function msToSec(ms) {
-            return Math.floor(ms / 1000);
-        }
-
-        const diffSec = msToSec(Date.now() - this.state.activationTimeStamp);
-        const remindSec = msToSec(this.state.remindTime);
-
-        console.log(diffSec);
-        if (!(diffSec % remindSec) && !this.state.areYouHereModal) {
-            console.log('start absence timer');
-            tabTitler.startSprites();
+        if (this.state.isWatcherActive && !this.state.areYouHereModal && ts.idleTimer.getSpentTime() > this.state.remindTime) {
+            notifyMe.spawnNotification();
             this.setState({areYouHereModal: true});
+            tabTitler.startSprites();
         }
+    };
+
+    presenceConfirmed = () => {
+        ts.idleTimer.clear();
     };
 
     getGeneralTime = () => {
@@ -144,6 +168,11 @@ export default class App extends React.Component {
         clearInterval(this.intervalId);
     };
 
+    componentWillMount = () => {
+        console.log('componentWilMount');
+        ts.startIdleTimer();
+    };
+
     stopActiveTaskHandler = () => {
         console.log('stopActiveTaskHandler');
         this.handleStopTask(this.state.activeTaskId);
@@ -152,19 +181,40 @@ export default class App extends React.Component {
     toggleWatcherHandler = () => {
         this.setState({isWatcherActive: !this.state.isWatcherActive});
         console.log('toggleWatcherHandler');
+        this.presenceConfirmed();
     };
 
-    confirmPresenceClickHandler = () => {
-        console.log('confirmPresenceClickHandler, stop absence timer');
+    leaveAsIsCb = () => {
+        console.log('leaveAsIsCb');
         tabTitler.stopSprites();
         this.setState({areYouHereModal: false});
+        this.presenceConfirmed();
     };
 
-    startAbsenceTimer = () => {
-        console.log('startAbsenceTimer');
+    revertTime = () => {
+        console.log('revertTime');
+        const newTasks = [...this.state.tasks];
+        const activeTask = newTasks.find(task => task.isActive);
+
+        ts[activeTask.id].subtract(
+            ts.idleTimer.getSpentTime()
+        );
+
+        const test1 = ts[activeTask.id].getSpentTime();
+        const test2 = ts.idleTimer.getSpentTime();
+        const test3 = test1 - test2;
+
+
+        tabTitler.stopSprites();
+        this.setState({areYouHereModal: false, tasks: newTasks});
+        this.presenceConfirmed();
     };
 
-
+    changeRemindTimeHandler = (event) => {
+        console.log('changeRemindTimeHandler');
+        this.presenceConfirmed();
+        this.setState({remindTime: event.target.value * 60 * 1000});
+    };
 
     render() {
         return (
@@ -173,14 +223,12 @@ export default class App extends React.Component {
                 <Row>
                     <Col>
                         <Settings
-                            stopActiveTask  = {this.stopActiveTaskHandler}
-                            reminderTime    = {this.state.reminderTime}
-                            absenceTime     = {this.state.absenceTime}
                             isWatcherActive = {this.state.isWatcherActive}
                             toggleWatcher   = {this.toggleWatcherHandler}
                             generalTime = {this.getGeneralTime()}
-                            isVisible   = {this.state.tasks.length}
-
+                            idleTime = {ts.idleTimer.getSpentTime()}
+                            remindTime = {this.state.remindTime / 60000}
+                            changeRemindTime = {this.changeRemindTimeHandler}
                         />
                     </Col>
                 </Row>
@@ -206,10 +254,9 @@ export default class App extends React.Component {
                 <Row>
                     <ModalDialog
                         isVisible     = {this.state.areYouHereModal}
-                        header        = {'Watcher'}
-                        body          = {'Are you here?'}
-                        btnWording    = {'yes'}
-                        clickYesCb    = {this.confirmPresenceClickHandler}
+                        leaveAsIsCb    = {this.leaveAsIsCb}
+                        revertTime    = {this.revertTime}
+                        idleTime = {ts.idleTimer.getSpentTime()}
                     />
                 </Row>
 

@@ -12,5 +12,10 @@ ts.addTimer = (id, startTime = 0) => {
     ts[id] = new Timer(startTime);
 };
 
+ts.startIdleTimer = () => {
+    ts.idleTimer = new Timer();
+    ts.idleTimer.start();
+};
+
 
 module.exports = ts;
