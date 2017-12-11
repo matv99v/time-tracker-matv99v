@@ -1,21 +1,36 @@
 'use strict';
 import Timer from './Timer.js';
 
+const timers = {};
 
-const ts = {};
+const retIt = {};
 
-ts.deleteTimer = (id) => {
-    delete ts[id];
+retIt.setTimer = (id, startTime = 0) => {
+    timers[id] = new Timer(startTime);
+    return timers[id];
 };
 
-ts.addTimer = (id, startTime = 0) => {
-    ts[id] = new Timer(startTime);
+retIt.getTimer = (id) => {
+    return timers[id];
 };
 
-ts.startIdleTimer = () => {
-    ts.idleTimer = new Timer();
-    ts.idleTimer.start();
+retIt.deleteTimer = (id) => {
+    delete timers[id];
 };
 
+retIt.getAllTimers = () => {
+    return timers;
+};
 
-module.exports = ts;
+// retIt.startAbsenceTimer = () => {
+//     retIt.absenceTimer = new Timer();
+//     retIt.absenceTimer.start();
+// };
+//
+// retIt.startSessionTimer = () => {
+//     retIt.sessionTimer = new Timer();
+//     retIt.sessionTimer.start();
+// };
+
+
+module.exports = retIt;

@@ -12,13 +12,7 @@ import 'moment-duration-format';
 import notifyMe    from '../notifyMe';
 
 
-import './Settings.less';
-
-
-
-
-
-export default class Reminder extends React.Component {
+export default class Settings extends React.Component {
     state = {
         // isWatcherActive: false,
         // isReminderVisible: false,
@@ -76,7 +70,7 @@ export default class Reminder extends React.Component {
                     </Col>
 
                     <Col xs={2} className="Settings__reminder-time-val">
-                        {this.props.remindTime} min
+                        {this.props.remindTimeout / 60000} min
                     </Col>
 
                     <Col xs={3} className="Settings__reminder-time-val">
@@ -84,7 +78,7 @@ export default class Reminder extends React.Component {
                             id="reminder-slider"
                             type="range"
                             min="1" max="60" step="1"
-                            value={this.props.remindTime}
+                            value={this.props.remindTimeout / 60000}
                             onChange={this.props.changeRemindTime}
                         />
                     </Col>
@@ -97,12 +91,12 @@ export default class Reminder extends React.Component {
 
                 <Row>
                     <Col xs={3}>
-                        <span>Total time</span>
+                        <span>Accumulated time</span>
 
                     </Col>
 
                     <Col xs={9}>
-                        {this.formatTime(this.props.generalTime)}
+                        {this.formatTime(this.props.accumulatedTime)}
                     </Col>
                 </Row>
 
@@ -113,7 +107,7 @@ export default class Reminder extends React.Component {
                     </Col>
 
                     <Col xs={9}>
-
+                        {this.formatTime(this.props.sessionTime)}
                     </Col>
                 </Row>
 
@@ -123,7 +117,7 @@ export default class Reminder extends React.Component {
                     </Col>
 
                     <Col xs={9}>
-                        {this.formatTime(this.props.idleTime)}
+                        {this.formatTime(this.props.remindTimeout - this.props.absenceTime)}
                     </Col>
                 </Row>
 
@@ -131,10 +125,10 @@ export default class Reminder extends React.Component {
         );
 
         const browserNotificationsPanel = (
-            <Panel collapsible header="Browser notifications" eventKey="3">
+            <Panel collapsible header="Native browser notifications" eventKey="3">
                 <Row>
-                    <Col xs={5}>
-                        Browser notifications supported
+                    <Col xs={3}>
+                        Supported
                     </Col>
 
                     <Col xs={2}>
@@ -143,8 +137,8 @@ export default class Reminder extends React.Component {
                 </Row>
 
                 <Row>
-                    <Col xs={5}>
-                        Browser notifications access granted
+                    <Col xs={3}>
+                        Access granted
                     </Col>
 
                     <Col xs={2}>
@@ -153,13 +147,13 @@ export default class Reminder extends React.Component {
                 </Row>
 
                 <Row hidden={notifyMe.isPermissionGranted()}>
-                    <Col xs={5}>
-                        Request browser notifications access
+                    <Col xs={3}>
+                        Request
                     </Col>
 
                     <Col xs={2}>
                         <Button
-                            onClick = {notifyMe.requestPermission()}
+                            onClick = {notifyMe.requestPermission}
                             bsSize = 'xsmall'
                         >
                             Request
