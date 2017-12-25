@@ -17,11 +17,15 @@ import './TasksList.less';
 export default class TasksList extends React.Component {
 
     handleStartStopClikc = (task) => {
-        if (task.isActive) {
+        if (this.isTaskActive(task.id)) {
             this.props.onStopTask(task.id);
         } else {
             this.props.onStartTask(task.id);
         }
+    };
+
+    isTaskActive = (id) => {
+        return this.props.activeTaskId === id;
     };
 
     formList = () => {
@@ -46,8 +50,8 @@ export default class TasksList extends React.Component {
                                 <ButtonToolbar>
                                     <ButtonGroup bsSize = 'xsmall'>
                                         <Button onClick   = {this.handleStartStopClikc.bind(this, task)}
-                                                bsStyle   = {task.isActive ? 'info' : 'default' }>
-                                            {task.isActive ? 'Stop' : 'Start' }
+                                                bsStyle   = {this.isTaskActive(task.id) ? 'info' : 'default' }>
+                                            {this.isTaskActive(task.id) ? 'Stop' : 'Start' }
                                         </Button>
 
                                         <Button onClick   = {this.props.onClearTimer.bind(this, task.id)}>

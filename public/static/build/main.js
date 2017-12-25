@@ -31234,6 +31234,10 @@
 	
 	var _reactBootstrapLibCol2 = _interopRequireDefault(_reactBootstrapLibCol);
 	
+	var _moment = __webpack_require__(/*! moment */ 466);
+	
+	var _moment2 = _interopRequireDefault(_moment);
+	
 	var _CreateTaskJsx = __webpack_require__(/*! ./CreateTask.jsx */ 437);
 	
 	var _CreateTaskJsx2 = _interopRequireDefault(_CreateTaskJsx);
@@ -31258,10 +31262,6 @@
 	
 	var _tabTitlerJs2 = _interopRequireDefault(_tabTitlerJs);
 	
-	var _utilitiesJs = __webpack_require__(/*! ../utilities.js */ 656);
-	
-	var _utilitiesJs2 = _interopRequireDefault(_utilitiesJs);
-	
 	var _timersStorageJs = __webpack_require__(/*! ../timersStorage.js */ 653);
 	
 	var _timersStorageJs2 = _interopRequireDefault(_timersStorageJs);
@@ -31270,29 +31270,28 @@
 	
 	var _notifyMe2 = _interopRequireDefault(_notifyMe);
 	
-	var initId = Date.now();
-	
-	var initTasks = [{
-	    name: 'test1',
-	    spentTime: 3000,
-	    isActive: false
-	}, // id: initId
-	{
-	    name: 'test2',
-	    spentTime: 5000,
-	    isActive: false
-	}, // id: initId + 1
-	{
-	    name: 'test3',
-	    spentTime: 1000 * 62,
-	    isActive: false
-	}];
-	
-	// id: initId + 2
-	initTasks.forEach(function (task, i) {
-	    task.id = initId + i;
-	    _timersStorageJs2['default'].setTimer(task.id, task.spentTime);
-	});
+	// const initId = Date.now();
+	//
+	// const initTasks = [
+	//     {
+	//         name     : 'test1',
+	//         spentTime: 3000
+	//     },
+	//     {
+	//         name     : 'test2',
+	//         spentTime: 5000
+	//     },
+	//     {
+	//         name     : 'test3',
+	//         spentTime: 1000 * 62
+	//     }
+	// ];
+	//
+	// initTasks.forEach((task, i) => {
+	//     task.id = initId + i;
+	//     ts.setTimer(task.id, task.spentTime);
+	//
+	// });
 	
 	var App = (function (_React$Component) {
 	    _inherits(App, _React$Component);
@@ -31305,63 +31304,49 @@
 	        _get(Object.getPrototypeOf(App.prototype), 'constructor', this).apply(this, arguments);
 	
 	        this.state = {
-	            tasks: initTasks,
+	            tasks: [], // initTasks
 	            activeTaskId: null,
 	            remindTimeout: 1000 * 60 * 0.08,
 	            isWatcherActive: false,
-	            areYouHereModal: false
+	            areYouHereModal: false,
+	            sessionTime: null,
+	            absenceTime: null
 	        };
 	
 	        this.handleNewTaskSubmit = function (taskName) {
-	            var id = Date.now();
-	            var newTasks = [].concat(_toConsumableArray(_this.state.tasks), [{
+	            var newTask = {
 	                name: taskName,
 	                spentTime: 0,
-	                isActive: false,
-	                id: id
-	            }]);
-	            _timersStorageJs2['default'].setTimer(id);
-	            _this.setState({ tasks: newTasks });
-	            _this.presenceConfirmed();
+	                id: Date.now()
+	            };
+	
+	            var newTasks = [].concat(_toConsumableArray(_this.state.tasks), [newTask]);
+	            _timersStorageJs2['default'].setTimer(newTask.id);
+	            _this.setState({ tasks: newTasks }, _this.presenceConfirmed);
 	        };
 	
 	        this.handleStartTask = function (taskId) {
-	            clearInterval(_this.intervalId);
-	            var prevActiveTaskId = _this.state.activeTaskId;
-	            var newStateTasks = [].concat(_toConsumableArray(_this.state.tasks));
+	            _this.setState(function (prevState, props) {
+	                _timersStorageJs2['default'].getTimer(taskId).start();
 	
-	            newStateTasks.forEach(function (task) {
-	                if (task.id === taskId) {
-	                    task.isActive = true;
-	                    _timersStorageJs2['default'].getTimer(task.id).start();
+	                if (prevState.activeTaskId) {
+	                    _timersStorageJs2['default'].getTimer(prevState.activeTaskId).stop();
 	                }
-	                if (task.id === prevActiveTaskId) {
-	                    task.isActive = false;
-	                    _timersStorageJs2['default'].getTimer(task.id).stop();
-	                }
+	
+	                _this.presenceConfirmed();
+	                return { activeTaskId: taskId };
 	            });
 	
-	            _this.initTimerInterval();
-	            _this.setState({ tasks: newStateTasks, activeTaskId: taskId });
-	            _this.presenceConfirmed();
 	            _tabTitlerJs2['default'].setPlay();
 	        };
 	
 	        this.handleStopTask = function (taskId) {
-	            clearInterval(_this.intervalId);
-	            var newTasks = [].concat(_toConsumableArray(_this.state.tasks));
-	            var targetTask = _utilitiesJs2['default'].getTaskById(newTasks, taskId);
-	            targetTask.isActive = false;
-	            _timersStorageJs2['default'].getTimer(targetTask.id).stop();
-	
-	            _this.setState({ tasks: newTasks, activeTaskId: null }, _this.activeTaskIdChanged);
-	            _this.presenceConfirmed();
+	            _timersStorageJs2['default'].getTimer(taskId).stop();
+	            _this.setState({ activeTaskId: null }, _this.presenceConfirmed);
 	            _tabTitlerJs2['default'].setStop();
 	        };
 	
 	        this.handleClearTimer = function (taskId) {
-	            _this.presenceConfirmed();
-	
 	            if (!confirm('Are you sure want to clear time?')) {
 	                return;
 	            }
@@ -31371,12 +31356,10 @@
 	            });
 	            targetTask.spentTime = _timersStorageJs2['default'].getTimer(taskId).getSpentTime();
 	            _timersStorageJs2['default'].getTimer(taskId).clear();
-	            _this.setState({ tasks: newStateTasks });
+	            _this.setState({ tasks: newStateTasks }, _this.presenceConfirmed);
 	        };
 	
 	        this.handleDeleteTask = function (taskId) {
-	            _this.presenceConfirmed();
-	
 	            if (!confirm('Are you sure want to delete task?')) {
 	                return;
 	            }
@@ -31387,39 +31370,15 @@
 	                return task.id !== taskId;
 	            });
 	
-	            if (_this.state.activeTaskId === taskId) {
-	                clearInterval(_this.intervalId);
-	                _this.setState({ tasks: newStateTasks, activeTaskId: null });
-	            } else {
-	                _this.setState({ tasks: newStateTasks });
-	            }
-	        };
-	
-	        this.intervalId = null;
-	
-	        this.initTimerInterval = function () {
-	            _this.intervalId = setInterval(function () {
-	                var newStateTasks = [].concat(_toConsumableArray(_this.state.tasks));
-	                var activeTask = newStateTasks.find(function (task) {
-	                    return task.isActive;
-	                });
-	                activeTask.spentTime = _timersStorageJs2['default'].getTimer(activeTask.id).getSpentTime();
-	
-	                _this.setState({ tasks: newStateTasks });
-	                _this.check();
-	            }, 1000);
-	        };
-	
-	        this.check = function () {
-	            if (_this.state.isWatcherActive && !_this.state.areYouHereModal && _timersStorageJs2['default'].getTimer('absence').getSpentTime() > _this.state.remindTimeout) {
-	                _notifyMe2['default'].spawnNotification();
-	                _this.setState({ areYouHereModal: true });
-	                _tabTitlerJs2['default'].startSprites();
-	            }
+	            _this.setState({
+	                tasks: newStateTasks,
+	                activeTaskId: _this.state.activeTaskId === taskId ? null : _this.state.activeTaskId
+	            }, _this.presenceConfirmed);
 	        };
 	
 	        this.presenceConfirmed = function () {
 	            _timersStorageJs2['default'].getTimer('absence').clear();
+	            _this.backupTimers();
 	        };
 	
 	        this.getGeneralTime = function () {
@@ -31429,40 +31388,103 @@
 	        };
 	
 	        this.componentWillUnmount = function () {
-	            clearInterval(_this.intervalId);
+	            _this.backupTimers();
+	            clearInterval(_this.intervalRef);
 	        };
 	
 	        this.componentWillMount = function () {
-	            console.log('componentWilMount');
 	            _timersStorageJs2['default'].setTimer('absence').start();
 	            _timersStorageJs2['default'].setTimer('session').start();
-	            // ts.startAbsenceTimer();
-	            // ts.startSessionTimer();
+	
+	            var timersStr = localStorage.getItem('timers');
+	
+	            if (timersStr) {
+	                var tasks = JSON.parse(timersStr);
+	                tasks.forEach(function (task) {
+	                    _timersStorageJs2['default'].setTimer(task.id, task.spentTime);
+	                });
+	
+	                _this.setState({
+	                    tasks: tasks
+	                });
+	            }
+	        };
+	
+	        this.intervalRef = setTimeout(function () {
+	            _this.tick();
+	        }, 1000);
+	
+	        this.tick = function () {
+	            var newTasks = [].concat(_toConsumableArray(_this.state.tasks));
+	
+	            if (_this.state.activeTaskId) {
+	                var activeTask = newTasks.find(function (task) {
+	                    return task.id === _this.state.activeTaskId;
+	                });
+	                activeTask.spentTime = _timersStorageJs2['default'].getTimer(_this.state.activeTaskId).getSpentTime();
+	            }
+	
+	            _this.setState({
+	                sessionTime: _timersStorageJs2['default'].getTimer('session').getSpentTime(),
+	                absenceTime: _timersStorageJs2['default'].getTimer('absence').getSpentTime(),
+	                tasks: newTasks
+	            });
+	
+	            _this.intervalRef = setTimeout(_this.tick, 1000);
+	
+	            _this.checkPresence();
+	            _this.checkBackup();
+	        };
+	
+	        this.intervalRef = null;
+	
+	        this.checkPresence = function () {
+	            var notificationPredicate = _this.state.isWatcherActive && _this.state.activeTaskId && !_this.state.areYouHereModal && _timersStorageJs2['default'].getTimer('absence').getSpentTime() > _this.state.remindTimeout;
+	
+	            if (notificationPredicate) {
+	                _notifyMe2['default'].spawnNotification();
+	                _this.setState({ areYouHereModal: true });
+	                _tabTitlerJs2['default'].startSprites();
+	            }
+	        };
+	
+	        this.checkBackup = function () {
+	            var seconds = +_moment2['default'].duration(_this.state.sessionTime).format({
+	                template: 'ss',
+	                trim: false
+	            });
+	
+	            var backupLocalStoragePredicate = !(seconds % 60); // make record to localStorage every 60 seconds
+	
+	            if (backupLocalStoragePredicate) {
+	                _this.backupTimers();
+	            }
+	        };
+	
+	        this.backupTimers = function () {
+	            console.log('backup to localStorage');
+	            localStorage.setItem('timers', JSON.stringify(_this.state.tasks));
 	        };
 	
 	        this.stopActiveTaskHandler = function () {
-	            console.log('stopActiveTaskHandler');
 	            _this.handleStopTask(_this.state.activeTaskId);
 	        };
 	
 	        this.toggleWatcherHandler = function () {
 	            _this.setState({ isWatcherActive: !_this.state.isWatcherActive });
-	            console.log('toggleWatcherHandler');
 	            _this.presenceConfirmed();
 	        };
 	
 	        this.leaveAsIsCb = function () {
-	            console.log('leaveAsIsCb');
 	            _tabTitlerJs2['default'].stopSprites();
 	            _this.setState({ areYouHereModal: false });
 	            _this.presenceConfirmed();
 	        };
 	
 	        this.revertTime = function () {
-	            console.log('revertTime');
 	            var newTasks = [].concat(_toConsumableArray(_this.state.tasks));
 	            var activeTask = newTasks.find(function (task) {
-	                return task.isActive;
+	                return task.id = _this.state.activeTaskId;
 	            });
 	
 	            _timersStorageJs2['default'].getTimer(activeTask.id).subtract(_timersStorageJs2['default'].getTimer('absence').getSpentTime());
@@ -31473,7 +31495,6 @@
 	        };
 	
 	        this.changeRemindTimeHandler = function (event) {
-	            console.log('changeRemindTimeHandler');
 	            _this.presenceConfirmed();
 	            _this.setState({ remindTimeout: event.target.value * 60 * 1000 });
 	        };
@@ -31500,8 +31521,8 @@
 	                            isWatcherActive: this.state.isWatcherActive,
 	                            toggleWatcher: this.toggleWatcherHandler,
 	                            accumulatedTime: this.getGeneralTime(),
-	                            absenceTime: _timersStorageJs2['default'].getTimer('absence').getSpentTime(),
-	                            sessionTime: _timersStorageJs2['default'].getTimer('session').getSpentTime(),
+	                            absenceTime: this.state.sessionTime,
+	                            sessionTime: this.state.absenceTime,
 	                            remindTimeout: this.state.remindTimeout,
 	                            changeRemindTime: this.changeRemindTimeHandler
 	                        })
@@ -31526,7 +31547,8 @@
 	                        onStartTask: this.handleStartTask,
 	                        onStopTask: this.handleStopTask,
 	                        onClearTimer: this.handleClearTimer,
-	                        onDeleteTask: this.handleDeleteTask
+	                        onDeleteTask: this.handleDeleteTask,
+	                        activeTaskId: this.state.activeTaskId
 	                    })
 	                ),
 	                _react2['default'].createElement(
@@ -33997,11 +34019,15 @@
 	        _get(Object.getPrototypeOf(TasksList.prototype), 'constructor', this).apply(this, arguments);
 	
 	        this.handleStartStopClikc = function (task) {
-	            if (task.isActive) {
+	            if (_this.isTaskActive(task.id)) {
 	                _this.props.onStopTask(task.id);
 	            } else {
 	                _this.props.onStartTask(task.id);
 	            }
+	        };
+	
+	        this.isTaskActive = function (id) {
+	            return _this.props.activeTaskId === id;
 	        };
 	
 	        this.formList = function () {
@@ -34040,8 +34066,8 @@
 	                                        _react2['default'].createElement(
 	                                            _reactBootstrapLibButton2['default'],
 	                                            { onClick: _this.handleStartStopClikc.bind(_this, task),
-	                                                bsStyle: task.isActive ? 'info' : 'default' },
-	                                            task.isActive ? 'Stop' : 'Start'
+	                                                bsStyle: _this.isTaskActive(task.id) ? 'info' : 'default' },
+	                                            _this.isTaskActive(task.id) ? 'Stop' : 'Start'
 	                                        ),
 	                                        _react2['default'].createElement(
 	                                            _reactBootstrapLibButton2['default'],
@@ -54370,6 +54396,14 @@
 	        this.logTimers = function () {
 	            console.log('logTimers', _timersStorageJs2['default'].getAllTimers());
 	        };
+	
+	        this.logLocalStorage = function () {
+	            console.log('logLocalStorage', localStorage);
+	        };
+	
+	        this.clearLocalStorage = function () {
+	            console.log('clearLocalStorage', localStorage.clear());
+	        };
 	    }
 	
 	    _createClass(Test, [{
@@ -54382,7 +54416,19 @@
 	                    _reactBootstrapLibButton2['default'],
 	                    { onClick: this.logTimers
 	                    },
-	                    'Log timers storage'
+	                    'Log timers'
+	                ),
+	                _react2['default'].createElement(
+	                    _reactBootstrapLibButton2['default'],
+	                    { onClick: this.logLocalStorage
+	                    },
+	                    'Log local storage'
+	                ),
+	                _react2['default'].createElement(
+	                    _reactBootstrapLibButton2['default'],
+	                    { onClick: this.clearLocalStorage
+	                    },
+	                    'Clear local storage'
 	                )
 	            );
 	        }
@@ -54565,25 +54611,6 @@
 	}
 	
 	module.exports = { startSprites: startSprites, stopSprites: stopSprites, setPlay: setPlay, setStop: setStop };
-
-/***/ },
-/* 656 */
-/*!**************************!*\
-  !*** ./src/utilities.js ***!
-  \**************************/
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	var retIt = {};
-	
-	retIt.getTaskById = function (tasks, id) {
-	    return tasks.find(function (task) {
-	        return task.id === id;
-	    });
-	};
-	
-	module.exports = retIt;
 
 /***/ }
 /******/ ]);

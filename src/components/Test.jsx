@@ -12,12 +12,30 @@ export default class Test extends React.Component {
         console.log('logTimers', ts.getAllTimers());
     };
 
+    logLocalStorage = () => {
+        console.log('logLocalStorage', localStorage);
+    };
+
+    clearLocalStorage = () => {
+        console.log('clearLocalStorage', localStorage.clear());
+    };
+
     render() {
         return (
             <Panel bsStyle="warning">
                 <Button onClick = {this.logTimers}
                 >
-                    Log timers storage
+                    Log timers
+                </Button>
+
+                <Button onClick = {this.logLocalStorage}
+                >
+                    Log local storage
+                </Button>
+
+                <Button onClick = {this.clearLocalStorage}
+                >
+                    Clear local storage
                 </Button>
             </Panel>
 
