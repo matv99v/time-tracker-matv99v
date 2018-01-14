@@ -32,18 +32,21 @@ export default class TimerEl extends TimerElBaseLifecycle {
     // tasks control
 
     handleNewTaskSubmit = (taskName) => {
+        utils.log(`handleNewTaskSubmit ${taskName}`);
+
         const newTask = {
             name     : taskName,
             spentTime: 0,
             id       : Date.now()
         };
 
-        const newTasks = [...this.state.tasks, newTask];
+        const newTasks = [newTask, ...this.state.tasks];
         ts.setTimer(newTask.id);
         this.setState({tasks: newTasks}, this.presenceConfirmed);
     };
 
     handleStartTask = (taskId) => {
+        utils.log(`handleStartTask ${taskId}`);
         this.setState((prevState, props) => {
             ts.getTimer(taskId).start();
 
@@ -57,11 +60,14 @@ export default class TimerEl extends TimerElBaseLifecycle {
     };
 
     handleStopTask = (taskId) => {
+        utils.log(`handleStopTask ${taskId}`);
         ts.getTimer(taskId).stop();
         this.setState({activeTaskId: null}, this.presenceConfirmed);
     };
 
     handleClearTimer = (taskId) => {
+        utils.log(`handleClearTimer ${taskId}`);
+
         if (!confirm('Are you sure want to clear time?')) {
             return;
         }
@@ -73,6 +79,8 @@ export default class TimerEl extends TimerElBaseLifecycle {
     };
 
     handleDeleteTask = (taskId) => {
+        utils.log(`handleDeleteTask ${taskId}`);
+
         if (!confirm('Are you sure want to delete task?')) {
             return;
         }
@@ -127,6 +135,7 @@ export default class TimerEl extends TimerElBaseLifecycle {
     };
 
     presenceConfirmed = () => {
+        utils.log('presenceConfirmed');
         ts.getTimer('absence').clear();
         this.backupTimers();
     };
@@ -142,7 +151,7 @@ export default class TimerEl extends TimerElBaseLifecycle {
     };
 
     backupTimers = () => {
-        console.log('backup to localStorage');
+        utils.log('backupTimers');
         localStorage.setItem('timers', JSON.stringify(this.state.tasks));
     };
 
@@ -168,6 +177,7 @@ export default class TimerEl extends TimerElBaseLifecycle {
     // settings
 
     toggleSettingsModal = (newSettings) => {
+        utils.log('toggleSettingsModal');
         let newState = {showSettingsModal: !this.state.showSettingsModal};
 
         if (this.state.showSettingsModal) {

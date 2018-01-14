@@ -4,12 +4,15 @@ import Button     from 'react-bootstrap/lib/Button';
 import Row        from 'react-bootstrap/lib/Row';
 import Col        from 'react-bootstrap/lib/Col';
 import Modal  from 'react-bootstrap/lib/Modal';
+
+import Logger  from './Logger.jsx';
+
+
 import ts              from '../timersStorage.js';
 import utils              from '../utils.js';
 
 
 export default class Settings extends React.Component {
-
     state = {
         remindTimeout   : this.props.settings.remindTimeout,
         isWatcherActive : this.props.settings.isWatcherActive
@@ -98,6 +101,16 @@ export default class Settings extends React.Component {
                             />
                         </Col>
                     </Row>
+
+
+                    <Row>
+                        <Col xs={12}>
+                            <Logger />
+                        </Col>
+                    </Row>
+
+
+
                 </Modal.Body>
 
                 <Modal.Footer>

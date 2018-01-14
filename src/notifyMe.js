@@ -10,7 +10,6 @@ retIt.isSupported = () => {
 
 retIt.requestPermission = () => {
     Notification.requestPermission((premission) => {
-        console.log(premission);
     });
 };
 
