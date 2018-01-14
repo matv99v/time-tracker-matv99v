@@ -1,16 +1,12 @@
 import React       from 'react';
 import Modal      from 'react-bootstrap/lib/Modal';
 import Button      from 'react-bootstrap/lib/Button';
-import moment from 'moment';
+import utils              from '../utils.js';
 
 
 
-export default class ModalDialog extends React.Component {
-    formatTime = (ms) => moment.duration(ms).format({
-        template: 'HH:mm:ss',
-        trim: false
-    });
 
+export default class AreYouHereModal extends React.Component {
     render() {
         return (
 
@@ -20,7 +16,7 @@ export default class ModalDialog extends React.Component {
                 </Modal.Header>
 
                 <Modal.Body>
-                    You have been away for {this.formatTime(this.props.idleTime)}
+                    You have been away for {utils.formatTime(this.props.idleTime)}
                 </Modal.Body>
 
                 <Modal.Footer>

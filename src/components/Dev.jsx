@@ -7,7 +7,7 @@ import ts          from '../timersStorage.js';
 
 
 
-export default class Test extends React.Component {
+export default class Dev extends React.Component {
     logTimers = () => {
         console.log('logTimers', ts.getAllTimers());
     };

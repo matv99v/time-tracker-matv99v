@@ -2,55 +2,34 @@ import React       from 'react';
 import Grid        from 'react-bootstrap/lib/Grid';
 import Row         from 'react-bootstrap/lib/Row';
 import Col         from 'react-bootstrap/lib/Col';
-import moment      from 'moment';
+import Button      from 'react-bootstrap/lib/Button';
 
-import CreateTask  from './CreateTask.jsx';
-import TasksList   from './TasksList.jsx';
-import Settings    from './Settings.jsx';
-import ModalDialog from './ModalDialog.jsx';
-import Test        from './Test.jsx';
-import tabTitler   from '../tabTitler.js';
-import ts          from '../timersStorage.js';
-import notifyMe    from '../notifyMe';
+import TimerElBaseLifecycle      from './TimerElBaseLifecycle.jsx';
+import CreateTask      from './CreateTask.jsx';
+import TasksList       from './TasksList.jsx';
+import AreYouHereModal from './AreYouHereModal.jsx';
+import Settings        from './Settings.jsx';
+import Navigation      from './Navigation.jsx';
+import ts              from '../timersStorage.js';
+import utils              from '../utils.js';
 
-
-
-
-
-// const initId = Date.now();
-//
-// const initTasks = [
-//     {
-//         name     : 'test1',
-//         spentTime: 3000
-//     },
-//     {
-//         name     : 'test2',
-//         spentTime: 5000
-//     },
-//     {
-//         name     : 'test3',
-//         spentTime: 1000 * 62
-//     }
-// ];
-//
-// initTasks.forEach((task, i) => {
-//     task.id = initId + i;
-//     ts.setTimer(task.id, task.spentTime);
-//
-// });
+import './TimerEl.less';
 
 
-export default class App extends React.Component {
+
+export default class TimerEl extends TimerElBaseLifecycle {
     state = {
-        tasks           : [], // initTasks
-        activeTaskId    : null,
-        remindTimeout   : (1000 * 60) * 0.08,
-        isWatcherActive : false,
-        areYouHereModal : false,
-        sessionTime     : null,
-        absenceTime     : null
+        tasks: [],
+        activeTaskId: null,
+        areYouHereModal: false,
+        showSettingsModal: false,
+        settings: {
+            isWatcherActive: false,
+            remindTimeout: (1000 * 60) * 0.08
+        }
     };
+
+    // tasks control
 
     handleNewTaskSubmit = (taskName) => {
         const newTask = {
@@ -75,14 +54,11 @@ export default class App extends React.Component {
             this.presenceConfirmed();
             return {activeTaskId: taskId};
         });
-
-        tabTitler.setPlay();
     };
 
     handleStopTask = (taskId) => {
         ts.getTimer(taskId).stop();
         this.setState({activeTaskId: null}, this.presenceConfirmed);
-        tabTitler.setStop();
     };
 
     handleClearTimer = (taskId) => {
@@ -111,38 +87,11 @@ export default class App extends React.Component {
         }, this.presenceConfirmed);
     };
 
-    presenceConfirmed = () => {
-        ts.getTimer('absence').clear();
-        this.backupTimers();
-    };
-
     getGeneralTime = () => {
         return this.state.tasks.reduce((sum, task) => sum + task.spentTime, 0);
     };
 
-    componentWillUnmount = () => {
-        this.backupTimers();
-        clearInterval(this.intervalRef);
-    };
-
-    componentWillMount = () => {
-        ts.setTimer('absence').start();
-        ts.setTimer('session').start();
-
-        const timersStr = localStorage.getItem('timers');
-
-        if (timersStr) {
-            const tasks = JSON.parse(timersStr);
-            tasks.forEach(task => {
-                ts.setTimer(task.id, task.spentTime);
-            });
-
-            this.setState({
-                tasks
-            });
-        }
-
-    };
+    // interval update
 
     intervalRef = setTimeout(() => {
         this.tick();
@@ -157,8 +106,6 @@ export default class App extends React.Component {
         }
 
         this.setState({
-            sessionTime: ts.getTimer('session').getSpentTime(),
-            absenceTime: ts.getTimer('absence').getSpentTime(),
             tasks: newTasks
         });
 
@@ -168,27 +115,25 @@ export default class App extends React.Component {
         this.checkBackup();
     }
 
-    intervalRef = null;
-
     checkPresence = () => {
-        const notificationPredicate = this.state.isWatcherActive &&
+        const notificationPredicate = this.state.settings.isWatcherActive &&
             this.state.activeTaskId &&
             !this.state.areYouHereModal &&
-            ts.getTimer('absence').getSpentTime() > this.state.remindTimeout;
+            ts.getTimer('absence').getSpentTime() > this.state.settings.remindTimeout;
 
         if (notificationPredicate) {
-            notifyMe.spawnNotification();
             this.setState({areYouHereModal: true});
-            tabTitler.startSprites();
         }
     };
 
-    checkBackup = () => {
-        const seconds = +moment.duration(this.state.sessionTime).format({
-            template: 'ss',
-            trim: false
-        });
+    presenceConfirmed = () => {
+        ts.getTimer('absence').clear();
+        this.backupTimers();
+    };
 
+    checkBackup = () => {
+        const sessionTime =  ts.getTimer('session').getSpentTime();
+        const seconds = +utils.getSeconds(sessionTime);
         const backupLocalStoragePredicate = !(seconds % 60); // make record to localStorage every 60 seconds
 
         if (backupLocalStoragePredicate) {
@@ -201,17 +146,9 @@ export default class App extends React.Component {
         localStorage.setItem('timers', JSON.stringify(this.state.tasks));
     };
 
-    stopActiveTaskHandler = () => {
-        this.handleStopTask(this.state.activeTaskId);
-    };
-
-    toggleWatcherHandler = () => {
-        this.setState({isWatcherActive: !this.state.isWatcherActive});
-        this.presenceConfirmed();
-    };
+    // are you here modal
 
     leaveAsIsCb = () => {
-        tabTitler.stopSprites();
         this.setState({areYouHereModal: false});
         this.presenceConfirmed();
     };
@@ -224,34 +161,41 @@ export default class App extends React.Component {
             ts.getTimer('absence').getSpentTime()
         );
 
-        tabTitler.stopSprites();
         this.setState({areYouHereModal: false, tasks: newTasks});
         this.presenceConfirmed();
     };
 
-    changeRemindTimeHandler = (event) => {
-        this.presenceConfirmed();
-        this.setState({remindTimeout: event.target.value * 60 * 1000});
+    // settings
+
+    toggleSettingsModal = (newSettings) => {
+        let newState = {showSettingsModal: !this.state.showSettingsModal};
+
+        if (this.state.showSettingsModal) {
+            newState = {
+                ...newState,
+                settings: {...newSettings}
+            };
+        }
+
+        this.setState(newState);
     };
 
     render() {
+        const gt = utils.formatTime(this.getGeneralTime());
         return (
             <Grid>
 
                 <Row>
-                    <Test />
+                    <Col className='Timer__settingsBtn'>
+                        <Button onClick={this.toggleSettingsModal} >
+                            Settings
+                        </Button>
+                    </Col>
                 </Row>
+
                 <Row>
-                    <Col>
-                        <Settings
-                            isWatcherActive  = {this.state.isWatcherActive}
-                            toggleWatcher    = {this.toggleWatcherHandler}
-                            accumulatedTime  = {this.getGeneralTime()}
-                            absenceTime      = {this.state.sessionTime}
-                            sessionTime      = {this.state.absenceTime}
-                            remindTimeout    = {this.state.remindTimeout}
-                            changeRemindTime = {this.changeRemindTimeHandler}
-                        />
+                    <Col className='Timer__accumulatedTime'>
+                        <h3>Accumulated time: {gt}</h3>
                     </Col>
                 </Row>
 
@@ -275,11 +219,19 @@ export default class App extends React.Component {
                 </Row>
 
                 <Row>
-                    <ModalDialog
+                    <AreYouHereModal
                         isVisible   = {this.state.areYouHereModal}
                         leaveAsIsCb = {this.leaveAsIsCb}
                         revertTime  = {this.revertTime}
                         idleTime    = {ts.getTimer('absence').getSpentTime()}
+                    />
+                </Row>
+
+                <Row>
+                    <Settings
+                        isVisible      = {this.state.showSettingsModal}
+                        settings       = {this.state.settings}
+                        updateSettings = {this.toggleSettingsModal}
                     />
                 </Row>
 

@@ -35,9 +35,7 @@ class Timer {
     }
 
     subtract(ms) {
-        console.log('subtract', ms);
         this.accumulatedTime -= ms;
-        // this.accumulatedTime = Date.now() - this.timeStamp - ms;
     }
 }
 

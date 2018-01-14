@@ -8,10 +8,7 @@ import Grid        from 'react-bootstrap/lib/Grid';
 import Row         from 'react-bootstrap/lib/Row';
 import Col         from 'react-bootstrap/lib/Col';
 
-
-import moment        from 'moment';
-import 'moment-duration-format';
-
+import utils from '../utils.js';
 import './TasksList.less';
 
 export default class TasksList extends React.Component {
@@ -39,10 +36,7 @@ export default class TasksList extends React.Component {
 
                             <Col xs={3} >
                                 {
-                                    moment.duration(task.spentTime).format({
-                                        template: 'HH:mm:ss',
-                                        trim: false
-                                    })
+                                    utils.formatTime(task.spentTime)
                                 }
                             </Col>
 
