@@ -22,6 +22,12 @@ retIt.getAllTimers = () => {
     return timers;
 };
 
+retIt.setMultipleTimers = (tasks) => {
+    tasks.forEach(task => {
+        retIt.setTimer(task.id, task.spentTime);
+    });
+};
+
 // retIt.startAbsenceTimer = () => {
 //     retIt.absenceTimer = new Timer();
 //     retIt.absenceTimer.start();
