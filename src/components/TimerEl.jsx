@@ -4,7 +4,6 @@ import Row         from 'react-bootstrap/lib/Row';
 import Col         from 'react-bootstrap/lib/Col';
 import Button      from 'react-bootstrap/lib/Button';
 
-import TimerElBaseLifecycle      from './TimerElBaseLifecycle.jsx';
 import CreateTask      from './CreateTask.jsx';
 import TasksList       from './TasksList.jsx';
 import AreYouHereModal from './AreYouHereModal.jsx';
@@ -17,7 +16,7 @@ import './TimerEl.less';
 
 
 
-export default class TimerEl extends TimerElBaseLifecycle {
+export default class TimerEl extends React.Component {
     state = {
         tasks: [],
         activeTaskId: null,
@@ -31,68 +30,61 @@ export default class TimerEl extends TimerElBaseLifecycle {
 
     // tasks control
 
-    handleNewTaskSubmit = (taskName) => {
-        utils.log(`handleNewTaskSubmit ${taskName}`);
-
-        const newTask = {
-            name     : taskName,
-            spentTime: 0,
-            id       : Date.now()
-        };
-
-        const newTasks = [newTask, ...this.state.tasks];
-        ts.setTimer(newTask.id);
-        this.setState({tasks: newTasks}, this.presenceConfirmed);
+    handleNewTaskSubmit = (name, spentTime = 0, id = Date.now()) => {
+        utils.log(`handleNewTaskSubmit name: ${name}, spentTime: ${spentTime}, id: ${id}`);
+        const newTask = { name, spentTime, id };
+        const newTasks = this.state.tasks.map(t => ({...t})); // clone array of objects
+        this.setState({tasks: [newTask, ...newTasks]}, () => {
+            ts.setTimer(newTask.id, spentTime);
+        });
     };
 
     handleStartTask = (taskId) => {
         utils.log(`handleStartTask ${taskId}`);
         this.setState((prevState, props) => {
-            ts.getTimer(taskId).start();
-
-            if (prevState.activeTaskId) {
+            if (prevState.activeTaskId) { // stop prev active task
                 ts.getTimer(prevState.activeTaskId).stop();
             }
-
-            this.presenceConfirmed();
-            return {activeTaskId: taskId};
+            return { activeTaskId: taskId };
+        }, () => {
+            ts.getTimer(taskId).start();
         });
     };
 
     handleStopTask = (taskId) => {
         utils.log(`handleStopTask ${taskId}`);
-        ts.getTimer(taskId).stop();
-        this.setState({activeTaskId: null}, this.presenceConfirmed);
+        this.setState({activeTaskId: null}, () => {
+            ts.getTimer(taskId).stop();
+        });
     };
 
     handleClearTimer = (taskId) => {
         utils.log(`handleClearTimer ${taskId}`);
-
-        if (!confirm('Are you sure want to clear time?')) {
-            return;
-        }
-        const newStateTasks = [...this.state.tasks];
-        const targetTask = newStateTasks.find(task => task.id === taskId);
-        targetTask.spentTime = ts.getTimer(taskId).getSpentTime();
-        ts.getTimer(taskId).clear();
-        this.setState({tasks: newStateTasks}, this.presenceConfirmed);
+        // if (!confirm('Are you sure want to clear time?')) {
+        //     return;
+        // }
+        const newTasks = this.state.tasks.map(t => ({...t})); // clone array of objects
+        const targetTask = newTasks.find(task => task.id === taskId);
+        targetTask.spentTime = 0;
+        this.setState({tasks: newTasks}, () => {
+            ts.getTimer(taskId).clear();
+        });
     };
 
     handleDeleteTask = (taskId) => {
         utils.log(`handleDeleteTask ${taskId}`);
-
-        if (!confirm('Are you sure want to delete task?')) {
-            return;
-        }
-
-        ts.deleteTimer(taskId);
-
-        const newStateTasks = this.state.tasks.filter(task => task.id !== taskId );
-
+        // if (!confirm('Are you sure want to delete task?')) {
+        //     return;
+        // }
+        const newTasks = this.state.tasks
+            .map(t => ({...t})) // clone array of objects
+            .filter(task => task.id !== taskId); // filter without deleted task
         this.setState({
-            tasks: newStateTasks,
+            tasks: newTasks,
             activeTaskId: this.state.activeTaskId === taskId ? null : this.state.activeTaskId
-        }, this.presenceConfirmed);
+        }, () => {
+            ts.deleteTimer(taskId);
+        });
     };
 
     getGeneralTime = () => {
@@ -106,72 +98,40 @@ export default class TimerEl extends TimerElBaseLifecycle {
     }, 1000);
 
     tick = () => {
-        const newTasks = [...this.state.tasks];
-
+        // update active task spent time
+        const newTasks = this.state.tasks.map(t => ({...t})); // clone array of objects
         if (this.state.activeTaskId) {
             const activeTask = newTasks.find(task => task.id === this.state.activeTaskId);
             activeTask.spentTime = ts.getTimer(this.state.activeTaskId).getSpentTime();
         }
-
-        this.setState({
-            tasks: newTasks
-        });
-
-        this.intervalRef = setTimeout(this.tick, 1000);
-
-        this.checkPresence();
-        this.checkBackup();
-    }
-
-    checkPresence = () => {
+        let newState = { tasks: newTasks };
+        // check absence state
         const notificationPredicate = this.state.settings.isWatcherActive &&
             this.state.activeTaskId &&
             !this.state.areYouHereModal &&
             ts.getTimer('absence').getSpentTime() > this.state.settings.remindTimeout;
-
         if (notificationPredicate) {
-            this.setState({areYouHereModal: true});
+            newState = {...newState,  ...{areYouHereModal: true} };
         }
-    };
-
-    presenceConfirmed = () => {
-        utils.log('presenceConfirmed');
-        ts.getTimer('absence').clear();
-        this.backupTimers();
-    };
-
-    checkBackup = () => {
-        const sessionTime =  ts.getTimer('session').getSpentTime();
-        const seconds = +utils.getSeconds(sessionTime);
-        const backupLocalStoragePredicate = !(seconds % 60); // make record to localStorage every 60 seconds
-
-        if (backupLocalStoragePredicate) {
-            this.backupTimers();
-        }
-    };
-
-    backupTimers = () => {
-        utils.log('backupTimers');
-        localStorage.setItem('timers', JSON.stringify(this.state.tasks));
-    };
+        this.setState(newState, () => {
+            this.intervalRef = setTimeout(this.tick, 1000); // restart 1 sec update tick
+        });
+    }
 
     // are you here modal
 
     leaveAsIsCb = () => {
         this.setState({areYouHereModal: false});
-        this.presenceConfirmed();
     };
 
     revertTime = () => {
-        const newTasks = [...this.state.tasks];
+        const newTasks = this.state.tasks.map(t => ({...t})); // clone array of objects
         const activeTask = newTasks.find(task => task.id = this.state.activeTaskId);
-
-        ts.getTimer(activeTask.id).subtract(
-            ts.getTimer('absence').getSpentTime()
-        );
-
-        this.setState({areYouHereModal: false, tasks: newTasks});
-        this.presenceConfirmed();
+        const targetTimer = ts.getTimer(activeTask.id);
+        const absenceTimer = ts.getTimer('absence');
+        this.setState({areYouHereModal: false, tasks: newTasks}, () => {
+            targetTimer.subtract( absenceTimer.getSpentTime() );
+        });
     };
 
     // settings
@@ -179,15 +139,51 @@ export default class TimerEl extends TimerElBaseLifecycle {
     toggleSettingsModal = (newSettings) => {
         utils.log('toggleSettingsModal');
         let newState = {showSettingsModal: !this.state.showSettingsModal};
-
         if (this.state.showSettingsModal) {
             newState = {
                 ...newState,
                 settings: {...newSettings}
             };
         }
-
         this.setState(newState);
+    };
+
+    // restore data
+
+    restoreTasks = () => {
+        utils.log('restoreTasks');
+        const tasks = utils.restore('tasks');
+        this.setState({ tasks }, () => {
+            ts.setMultipleTimers(tasks);
+        });
+    };
+
+    // lifecycle
+
+    componentWillUnmount = () => {
+        clearInterval(this.intervalRef);
+    };
+
+    componentWillMount = () => {
+        ts.setTimer('absence').start();
+        ts.setTimer('session').start();
+        this.restoreTasks();
+    };
+
+    componentDidUpdate = (nextProps, nextState) => {
+        const haveTasksChanged = !utils.areArraysEqual(nextState.tasks, this.state.tasks);
+        // track any changes in this.state.tasks
+        if (haveTasksChanged) {
+            utils.log('backup tasks');
+            utils.backup('tasks', this.state.tasks);
+        }
+    };
+
+    // not used
+    presenceConfirmed = () => {
+        utils.log('presenceConfirmed');
+        ts.getTimer('absence').clear();
+        utils.backup('tasks', this.state.tasks);
     };
 
     render() {
